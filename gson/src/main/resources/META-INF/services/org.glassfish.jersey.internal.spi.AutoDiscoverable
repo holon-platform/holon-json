@@ -1,2 +1,2 @@
-com.holonplatform.json.gson.internal.jaxrs.GsonAutoDiscoverable
-com.holonplatform.json.gson.internal.jaxrs.GsonConfigurationAutoDiscoverable
+com.holonplatform.json.gson.internal.jaxrs.jersey.GsonAutoDiscoverable
+com.holonplatform.json.gson.internal.jaxrs.jersey.GsonConfigurationAutoDiscoverable

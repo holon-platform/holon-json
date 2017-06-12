@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.holonplatform.json.gson.internal.jaxrs;
+package com.holonplatform.json.gson.internal.jaxrs.jersey;
 
 import javax.annotation.Priority;
 import javax.ws.rs.core.FeatureContext;
@@ -21,16 +21,17 @@ import javax.ws.rs.core.FeatureContext;
 import org.glassfish.jersey.internal.spi.AutoDiscoverable;
 
 import com.holonplatform.core.internal.Logger;
-import com.holonplatform.core.property.PropertyBox;
 import com.holonplatform.json.gson.internal.GsonLogger;
+import com.holonplatform.json.gson.internal.jaxrs.GsonFeature;
+import com.holonplatform.json.gson.internal.jaxrs.JaxrsUtils;
 
 /**
- * {@link AutoDiscoverable} class to configure Gson with {@link PropertyBox} marshalling capabilities.
+ * {@link AutoDiscoverable} registering {@link GsonFeature} if it is not already registered.
  *
  * @since 5.0.0
  */
-@Priority(AutoDiscoverable.DEFAULT_PRIORITY + 10000)
-public class GsonConfigurationAutoDiscoverable implements AutoDiscoverable {
+@Priority(AutoDiscoverable.DEFAULT_PRIORITY - 100)
+public class GsonAutoDiscoverable implements AutoDiscoverable {
 
 	private final static Logger LOGGER = GsonLogger.create();
 
@@ -40,16 +41,8 @@ public class GsonConfigurationAutoDiscoverable implements AutoDiscoverable {
 	 */
 	@Override
 	public void configure(FeatureContext context) {
-		if (!context.getConfiguration().isRegistered(GsonConfigurationFeature.class)) {
-			if (!context.getConfiguration().getProperties()
-					.containsKey(GsonConfigurationFeature.DISABLE_GSON_AUTO_CONFIG)) {
-				LOGGER.debug(() -> "GsonConfigurationAutoDiscoverable: registering GsonConfigurationFeature");
-				context.register(GsonConfigurationFeature.class);
-			} else {
-				LOGGER.debug(() -> "GsonConfigurationAutoDiscoverable: skip GsonConfigurationFeature registration, ["
-						+ GsonConfigurationFeature.DISABLE_GSON_AUTO_CONFIG + "] property detected");
-			}
-		}
+		LOGGER.debug(() -> "GsonAutoDiscoverable: registering GsonFeature");
+		JaxrsUtils.registerFeature(context, GsonFeature.class, GsonFeature.JSON_FEATURE, "jersey.config.jsonFeature");
 	}
 
 }

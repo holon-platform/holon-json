@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.holonplatform.json.jackson.internal.jaxrs;
+package com.holonplatform.json.gson.internal.jaxrs.jersey;
 
 import javax.annotation.Priority;
 import javax.ws.rs.core.FeatureContext;
@@ -22,17 +22,18 @@ import org.glassfish.jersey.internal.spi.AutoDiscoverable;
 
 import com.holonplatform.core.internal.Logger;
 import com.holonplatform.core.property.PropertyBox;
-import com.holonplatform.json.jackson.internal.JacksonLogger;
+import com.holonplatform.json.gson.internal.GsonLogger;
+import com.holonplatform.json.gson.internal.jaxrs.GsonConfigurationFeature;
 
 /**
- * {@link AutoDiscoverable} class to configure Jackson object mapper with {@link PropertyBox} marshalling capabilities.
+ * {@link AutoDiscoverable} class to configure Gson with {@link PropertyBox} marshalling capabilities.
  *
  * @since 5.0.0
  */
 @Priority(AutoDiscoverable.DEFAULT_PRIORITY + 10000)
-public class JacksonConfigurationAutoDiscoverable implements AutoDiscoverable {
+public class GsonConfigurationAutoDiscoverable implements AutoDiscoverable {
 
-	private final static Logger LOGGER = JacksonLogger.create();
+	private final static Logger LOGGER = GsonLogger.create();
 
 	/*
 	 * (non-Javadoc)
@@ -40,15 +41,14 @@ public class JacksonConfigurationAutoDiscoverable implements AutoDiscoverable {
 	 */
 	@Override
 	public void configure(FeatureContext context) {
-		if (!context.getConfiguration().isRegistered(JacksonConfigurationFeature.class)) {
+		if (!context.getConfiguration().isRegistered(GsonConfigurationFeature.class)) {
 			if (!context.getConfiguration().getProperties()
-					.containsKey(JacksonConfigurationFeature.DISABLE_JACKSON_AUTO_CONFIG)) {
-				LOGGER.debug(() -> "JacksonConfigurationAutoDiscoverable: registering JacksonConfigurationFeature");
-				context.register(JacksonConfigurationFeature.class);
+					.containsKey(GsonConfigurationFeature.DISABLE_GSON_AUTO_CONFIG)) {
+				LOGGER.debug(() -> "GsonConfigurationAutoDiscoverable: registering GsonConfigurationFeature");
+				context.register(GsonConfigurationFeature.class);
 			} else {
-				LOGGER.debug(
-						() -> "JacksonConfigurationAutoDiscoverable: skip JacksonConfigurationFeature registration, ["
-								+ JacksonConfigurationFeature.DISABLE_JACKSON_AUTO_CONFIG + "] property detected");
+				LOGGER.debug(() -> "GsonConfigurationAutoDiscoverable: skip GsonConfigurationFeature registration, ["
+						+ GsonConfigurationFeature.DISABLE_GSON_AUTO_CONFIG + "] property detected");
 			}
 		}
 	}
