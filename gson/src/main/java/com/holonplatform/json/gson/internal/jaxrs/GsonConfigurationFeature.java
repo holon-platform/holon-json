@@ -31,11 +31,6 @@ public class GsonConfigurationFeature implements Feature {
 
 	private final static Logger LOGGER = GsonLogger.create();
 
-	/**
-	 * Property name to put in jax-rs application configuration to disable Gson context resolver auto-configuration.
-	 */
-	public static final String DISABLE_GSON_AUTO_CONFIG = "holon.gson.disable-autoconfig";
-
 	/*
 	 * (non-Javadoc)
 	 * @see javax.ws.rs.core.Feature#configure(javax.ws.rs.core.FeatureContext)
@@ -43,7 +38,7 @@ public class GsonConfigurationFeature implements Feature {
 	@Override
 	public boolean configure(FeatureContext context) {
 		if (!context.getConfiguration().isRegistered(GsonContextResolver.class)) {
-			LOGGER.debug(() -> "GsonConfigurationFeature: registering GsonContextResolver");
+			LOGGER.info("Registering ContextResolver [" + GsonContextResolver.class.getName() + "]");
 			context.register(GsonContextResolver.class);
 		}
 		return true;

@@ -22,6 +22,7 @@ import org.glassfish.jersey.internal.spi.AutoDiscoverable;
 
 import com.holonplatform.core.internal.Logger;
 import com.holonplatform.core.property.PropertyBox;
+import com.holonplatform.json.gson.GsonConfiguration;
 import com.holonplatform.json.gson.internal.GsonLogger;
 import com.holonplatform.json.gson.internal.jaxrs.GsonConfigurationFeature;
 
@@ -42,14 +43,21 @@ public class GsonConfigurationAutoDiscoverable implements AutoDiscoverable {
 	@Override
 	public void configure(FeatureContext context) {
 		if (!context.getConfiguration().isRegistered(GsonConfigurationFeature.class)) {
-			if (!context.getConfiguration().getProperties()
-					.containsKey(GsonConfigurationFeature.DISABLE_GSON_AUTO_CONFIG)) {
-				LOGGER.debug(() -> "GsonConfigurationAutoDiscoverable: registering GsonConfigurationFeature");
-				context.register(GsonConfigurationFeature.class);
-			} else {
-				LOGGER.debug(() -> "GsonConfigurationAutoDiscoverable: skip GsonConfigurationFeature registration, ["
-						+ GsonConfigurationFeature.DISABLE_GSON_AUTO_CONFIG + "] property detected");
+			// check disabled
+			if (context.getConfiguration().getProperties()
+					.containsKey(GsonConfiguration.JAXRS_DISABLE_GSON_AUTO_CONFIG)) {
+				LOGGER.debug(() -> "Skip GsonConfigurationFeature registration, ["
+						+ GsonConfiguration.JAXRS_DISABLE_GSON_AUTO_CONFIG + "] property detected");
+				return;
 			}
+			if (context.getConfiguration().getProperties()
+					.containsKey(GsonConfiguration.JAXRS_DISABLE_GSON_CONTEXT_RESOLVER)) {
+				LOGGER.debug(() -> "Skip GsonConfigurationFeature registration, ["
+						+ GsonConfiguration.JAXRS_DISABLE_GSON_CONTEXT_RESOLVER + "] property detected");
+				return;
+			}
+			// register feature
+			context.register(GsonConfigurationFeature.class);
 		}
 	}
 

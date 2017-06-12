@@ -39,7 +39,7 @@ public class GsonFeature implements Feature {
 	@Override
 	public boolean configure(FeatureContext context) {
 		if (!context.getConfiguration().isRegistered(GsonJsonProvider.class)) {
-			LOGGER.debug(() -> "GsonFeature: registering GsonJsonProvider");
+			LOGGER.info("Registering provider [" + GsonJsonProvider.class.getName() + "]");
 			context.register(GsonJsonProvider.class);
 		}
 		return true;

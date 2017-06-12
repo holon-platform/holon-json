@@ -21,6 +21,7 @@ import javax.ws.rs.core.FeatureContext;
 import org.glassfish.jersey.internal.spi.AutoDiscoverable;
 
 import com.holonplatform.core.internal.Logger;
+import com.holonplatform.json.gson.GsonConfiguration;
 import com.holonplatform.json.gson.internal.GsonLogger;
 import com.holonplatform.json.gson.internal.jaxrs.GsonFeature;
 import com.holonplatform.json.gson.internal.jaxrs.JaxrsUtils;
@@ -41,7 +42,13 @@ public class GsonAutoDiscoverable implements AutoDiscoverable {
 	 */
 	@Override
 	public void configure(FeatureContext context) {
-		LOGGER.debug(() -> "GsonAutoDiscoverable: registering GsonFeature");
+		// check disabled
+		if (context.getConfiguration().getProperties().containsKey(GsonConfiguration.JAXRS_DISABLE_GSON_AUTO_CONFIG)) {
+			LOGGER.debug(() -> "Skip GsonFeature registration, ["
+					+ GsonConfiguration.JAXRS_DISABLE_GSON_AUTO_CONFIG + "] property detected");
+			return;
+		}
+		// register feature
 		JaxrsUtils.registerFeature(context, GsonFeature.class, GsonFeature.JSON_FEATURE, "jersey.config.jsonFeature");
 	}
 
