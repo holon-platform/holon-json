@@ -61,12 +61,12 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.holon-platform.json</groupId>
-			<artifactId>holon-json-gson</artifactId>
+			<artifactId>holon-gson</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.holon-platform.json</groupId>
-			<artifactId>holon-json-jackson</artifactId>
+			<artifactId>holon-jackson</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 	</dependencies>
