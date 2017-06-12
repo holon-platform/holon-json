@@ -13,23 +13,22 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.holonplatform.json.gson.jaxrs;
+package com.holonplatform.json.jackson.jaxrs;
 
 import javax.ws.rs.core.Feature;
 import javax.ws.rs.core.FeatureContext;
 
-import com.holonplatform.json.gson.internal.jaxrs.GsonContextResolverFeature;
-import com.holonplatform.json.gson.internal.jaxrs.GsonProviderFeature;
+import com.holonplatform.json.jackson.internal.jaxrs.JacksonConfigurationFeature;
 
 /**
  * JAX-RS {@link Feature} to register Gson JSON providers and context resolver.
  * 
  * @since 5.0.0
  */
-public class GsonFeature implements Feature {
+public class JacksonFeature implements Feature {
 
-	public static final String FEATURE_NAME = GsonFeature.class.getName();
-	
+	public static final String FEATURE_NAME = JacksonFeature.class.getName();
+
 	/*
 	 * (non-Javadoc)
 	 * @see javax.ws.rs.core.Feature#configure(javax.ws.rs.core.FeatureContext)
@@ -37,12 +36,8 @@ public class GsonFeature implements Feature {
 	@Override
 	public boolean configure(FeatureContext context) {
 		// context resolver
-		if (!context.getConfiguration().isRegistered(GsonContextResolverFeature.class)) {
-			context.register(GsonContextResolverFeature.class);
-		}
-		// message body reader and writer
-		if (!context.getConfiguration().isRegistered(GsonProviderFeature.class)) {
-			context.register(GsonProviderFeature.class);
+		if (!context.getConfiguration().isRegistered(JacksonConfigurationFeature.class)) {
+			context.register(JacksonConfigurationFeature.class);
 		}
 		return true;
 	}

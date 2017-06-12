@@ -20,6 +20,7 @@ import javax.ws.rs.core.FeatureContext;
 
 import com.holonplatform.core.internal.Logger;
 import com.holonplatform.core.property.PropertyBox;
+import com.holonplatform.json.jackson.JacksonConfiguration;
 import com.holonplatform.json.jackson.internal.JacksonLogger;
 
 /**
@@ -29,11 +30,6 @@ import com.holonplatform.json.jackson.internal.JacksonLogger;
  */
 public class JacksonConfigurationFeature implements Feature {
 
-	/**
-	 * Property name to put in jax-rs application configuration to disable jackson object mapper auto-configuration.
-	 */
-	public static final String DISABLE_JACKSON_AUTO_CONFIG = "holon.jackson.disable-autoconfig";
-	
 	private final static Logger LOGGER = JacksonLogger.create();
 
 	/*
@@ -42,11 +38,16 @@ public class JacksonConfigurationFeature implements Feature {
 	 */
 	@Override
 	public boolean configure(FeatureContext context) {
-		if (!context.getConfiguration().isRegistered(JacksonContextResolver.class)) {
-			LOGGER.info("<Runtime: " + context.getConfiguration().getRuntimeType() + "> Registering ContextResolver ["
-					+ JacksonContextResolver.class.getName() + "]");
-			context.register(JacksonContextResolver.class);
+		if (context.getConfiguration().getProperties()
+				.containsKey(JacksonConfiguration.JAXRS_DISABLE_JACKSON_CONTEXT_RESOLVER)) {
+			LOGGER.debug(() -> "Skip JacksonContextResolver registration, ["
+					+ JacksonConfiguration.JAXRS_DISABLE_JACKSON_CONTEXT_RESOLVER + "] property detected");
+			return false;
 		}
+		// register
+		LOGGER.debug(() -> "<Runtime: " + context.getConfiguration().getRuntimeType()
+				+ "> Registering ContextResolver [" + JacksonContextResolver.class.getName() + "]");
+		context.register(JacksonContextResolver.class);
 		return true;
 	}
 

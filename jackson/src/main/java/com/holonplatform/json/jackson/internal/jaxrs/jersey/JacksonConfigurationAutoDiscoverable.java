@@ -20,10 +20,8 @@ import javax.ws.rs.core.FeatureContext;
 
 import org.glassfish.jersey.internal.spi.AutoDiscoverable;
 
-import com.holonplatform.core.internal.Logger;
 import com.holonplatform.core.property.PropertyBox;
-import com.holonplatform.json.jackson.internal.JacksonLogger;
-import com.holonplatform.json.jackson.internal.jaxrs.JacksonConfigurationFeature;
+import com.holonplatform.json.jackson.jaxrs.JacksonFeature;
 
 /**
  * {@link AutoDiscoverable} class to configure Jackson object mapper with {@link PropertyBox} marshalling capabilities.
@@ -33,25 +31,13 @@ import com.holonplatform.json.jackson.internal.jaxrs.JacksonConfigurationFeature
 @Priority(AutoDiscoverable.DEFAULT_PRIORITY + 10000)
 public class JacksonConfigurationAutoDiscoverable implements AutoDiscoverable {
 
-	private final static Logger LOGGER = JacksonLogger.create();
-
 	/*
 	 * (non-Javadoc)
 	 * @see org.glassfish.jersey.internal.spi.AutoDiscoverable#configure(javax.ws.rs.core.FeatureContext)
 	 */
 	@Override
 	public void configure(FeatureContext context) {
-		if (!context.getConfiguration().isRegistered(JacksonConfigurationFeature.class)) {
-			if (!context.getConfiguration().getProperties()
-					.containsKey(JacksonConfigurationFeature.DISABLE_JACKSON_AUTO_CONFIG)) {
-				LOGGER.debug(() -> "JacksonConfigurationAutoDiscoverable: registering JacksonConfigurationFeature");
-				context.register(JacksonConfigurationFeature.class);
-			} else {
-				LOGGER.debug(
-						() -> "JacksonConfigurationAutoDiscoverable: skip JacksonConfigurationFeature registration, ["
-								+ JacksonConfigurationFeature.DISABLE_JACKSON_AUTO_CONFIG + "] property detected");
-			}
-		}
+		context.register(JacksonFeature.class);
 	}
 
 }
