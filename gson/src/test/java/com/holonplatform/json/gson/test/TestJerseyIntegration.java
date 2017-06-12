@@ -22,9 +22,11 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.client.Client;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MediaType;
 
+import org.glassfish.jersey.client.JerseyClientBuilder;
 import org.glassfish.jersey.logging.LoggingFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
@@ -77,7 +79,11 @@ public class TestJerseyIntegration extends JerseyTest {
 		return new ResourceConfig().register(LoggingFeature.class).register(TestEndpoint.class);
 	}
 
-	// ------- Test
+	// Avoid conflict with Resteasy in classpath
+	@Override
+	protected Client getClient() {
+		return JerseyClientBuilder.createClient();
+	}
 
 	@Test
 	public void testGsonConfig() {

@@ -17,9 +17,11 @@ package com.holonplatform.json.gson.test;
 
 import static com.holonplatform.json.gson.test.TestJerseyIntegration.SET;
 
+import javax.ws.rs.client.Client;
 import javax.ws.rs.core.Application;
 
 import org.glassfish.jersey.client.ClientConfig;
+import org.glassfish.jersey.client.JerseyClientBuilder;
 import org.glassfish.jersey.logging.LoggingFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
@@ -45,9 +47,12 @@ public class TestDisableJerseyIntegration extends JerseyTest {
 				.property(GsonConfiguration.JAXRS_DISABLE_GSON_AUTO_CONFIG, "");
 	}
 
+	// Avoid conflict with Resteasy in classpath
 	@Override
-	protected void configureClient(ClientConfig config) {
-		config.property(GsonConfiguration.JAXRS_DISABLE_GSON_AUTO_CONFIG, "");
+	protected Client getClient() {
+		ClientConfig config = new ClientConfig();
+		config = config.property(GsonConfiguration.JAXRS_DISABLE_GSON_AUTO_CONFIG, "");
+		return JerseyClientBuilder.createClient(config);
 	}
 
 	@Test(expected = RuntimeException.class)

@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2016 Holon TDCN.
+ * Copyright 2000-2017 Holon TDCN.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -13,33 +13,36 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.holonplatform.json.gson.internal.jaxrs;
+package com.holonplatform.json.gson.jaxrs;
 
 import javax.ws.rs.core.Feature;
 import javax.ws.rs.core.FeatureContext;
 
-import com.holonplatform.core.internal.Logger;
-import com.holonplatform.core.property.PropertyBox;
-import com.holonplatform.json.gson.internal.GsonLogger;
+import com.holonplatform.json.gson.internal.jaxrs.GsonContextResolverFeature;
+import com.holonplatform.json.gson.internal.jaxrs.GsonProviderFeature;
 
 /**
- * {@link Feature} to configure Gson with {@link PropertyBox} marshalling capabilities.
- *
+ * JAX-RS {@link Feature} to register Gson JSON providers and context resolver.
+ * 
  * @since 5.0.0
  */
-public class GsonConfigurationFeature implements Feature {
+public class GsonFeature implements Feature {
 
-	private final static Logger LOGGER = GsonLogger.create();
-
+	public static final String FEATURE_NAME = GsonFeature.class.getSimpleName();
+	
 	/*
 	 * (non-Javadoc)
 	 * @see javax.ws.rs.core.Feature#configure(javax.ws.rs.core.FeatureContext)
 	 */
 	@Override
 	public boolean configure(FeatureContext context) {
-		if (!context.getConfiguration().isRegistered(GsonContextResolver.class)) {
-			LOGGER.info("Registering ContextResolver [" + GsonContextResolver.class.getName() + "]");
-			context.register(GsonContextResolver.class);
+		// context resolver
+		if (!context.getConfiguration().isRegistered(GsonContextResolverFeature.class)) {
+			context.register(GsonContextResolverFeature.class);
+		}
+		// message body reader and writer
+		if (!context.getConfiguration().isRegistered(GsonProviderFeature.class)) {
+			context.register(GsonProviderFeature.class);
 		}
 		return true;
 	}

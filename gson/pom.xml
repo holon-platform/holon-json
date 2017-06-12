@@ -63,6 +63,14 @@
 			<optional>true</optional>
 		</dependency>
 
+		<!-- Optional Resteasy -->
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-jaxrs</artifactId>
+			<version>${resteasy.version}</version>
+			<optional>true</optional>
+		</dependency>
+
 		<!-- Test -->
 		<dependency>
 			<groupId>junit</groupId>
@@ -75,7 +83,7 @@
 			<scope>test</scope>
 		</dependency>
 
-		<!-- Test jaxrs integration -->
+		<!-- Test Jersey integration -->
 		<dependency>
 			<groupId>org.glassfish.jersey.test-framework.providers</groupId>
 			<artifactId>jersey-test-framework-provider-grizzly2</artifactId>
@@ -85,6 +93,14 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>jul-to-slf4j</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- Test Resteasy integration -->
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-undertow</artifactId>
+			<version>${resteasy.version}</version>
 			<scope>test</scope>
 		</dependency>
 

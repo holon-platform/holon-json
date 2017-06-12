@@ -19,18 +19,18 @@ import javax.ws.rs.core.Feature;
 import javax.ws.rs.core.FeatureContext;
 
 import com.holonplatform.core.internal.Logger;
+import com.holonplatform.core.property.PropertyBox;
+import com.holonplatform.json.gson.GsonConfiguration;
 import com.holonplatform.json.gson.internal.GsonLogger;
 
 /**
- * {@link Feature} to register Gson JSON providers.
- * 
+ * {@link Feature} to configure Gson with {@link PropertyBox} marshalling capabilities.
+ *
  * @since 5.0.0
  */
-public class GsonFeature implements Feature {
+public class GsonContextResolverFeature implements Feature {
 
 	private final static Logger LOGGER = GsonLogger.create();
-
-	public static final String JSON_FEATURE = GsonFeature.class.getSimpleName();
 
 	/*
 	 * (non-Javadoc)
@@ -38,10 +38,22 @@ public class GsonFeature implements Feature {
 	 */
 	@Override
 	public boolean configure(FeatureContext context) {
-		if (!context.getConfiguration().isRegistered(GsonJsonProvider.class)) {
-			LOGGER.info("Registering provider [" + GsonJsonProvider.class.getName() + "]");
-			context.register(GsonJsonProvider.class);
+		// check disabled
+		if (context.getConfiguration().getProperties().containsKey(GsonConfiguration.JAXRS_DISABLE_GSON_AUTO_CONFIG)) {
+			LOGGER.debug(() -> "Skip GsonContextResolver registration, ["
+					+ GsonConfiguration.JAXRS_DISABLE_GSON_AUTO_CONFIG + "] property detected");
+			return false;
 		}
+		if (context.getConfiguration().getProperties()
+				.containsKey(GsonConfiguration.JAXRS_DISABLE_GSON_CONTEXT_RESOLVER)) {
+			LOGGER.debug(() -> "Skip GsonContextResolver registration, ["
+					+ GsonConfiguration.JAXRS_DISABLE_GSON_CONTEXT_RESOLVER + "] property detected");
+			return false;
+		}
+		// register
+		LOGGER.debug(() -> "<Runtime: " + context.getConfiguration().getRuntimeType()
+				+ "> Registering ContextResolver [" + GsonContextResolver.class.getName() + "]");
+		context.register(GsonContextResolver.class);
 		return true;
 	}
 
