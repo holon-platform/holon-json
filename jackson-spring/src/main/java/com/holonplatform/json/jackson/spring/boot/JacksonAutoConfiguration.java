@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.holonplatform.json.jackson.internal.spring;
+package com.holonplatform.json.jackson.spring.boot;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
@@ -37,7 +37,7 @@ import com.holonplatform.json.jackson.JacksonConfiguration;
 @ConditionalOnClass(ObjectMapper.class)
 @ConditionalOnBean(ObjectMapper.class)
 @AutoConfigureAfter(org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration.class)
-public class HolonJacksonAutoConfiguration {
+public class JacksonAutoConfiguration {
 
 	@Bean
 	public static ObjectMapperPostProcessor jacksonObjectMapperPostProcessor() {

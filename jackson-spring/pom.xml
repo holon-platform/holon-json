@@ -8,11 +8,11 @@
 		<version>5.0.0-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>holon-jackson</artifactId>
+	<artifactId>holon-jackson-spring</artifactId>
 	<packaging>jar</packaging>
 
 	<name>${project.groupId}:${project.artifactId}</name>
-	<description>Holon JSON support using Jackson</description>
+	<description>Holon JSON support using Jackson - Spring integration</description>
 
 	<url>https://holon-platform.com</url>
 
@@ -33,34 +33,24 @@
 
 	<dependencies>
 
-		<!-- Holon core -->
+		<!-- Gson support -->
 		<dependency>
-			<groupId>com.holon-platform.core</groupId>
-			<artifactId>holon-core</artifactId>
-			<version>${holon.core.version}</version>
+			<groupId>com.holon-platform.json</groupId>
+			<artifactId>holon-jackson</artifactId>
+			<version>${project.version}</version>
 		</dependency>
 
-		<!-- Jackson -->
+		<!-- Spring web (provided) -->
 		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-databind</artifactId>
-			<version>${jackson.version}</version>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-web</artifactId>
+			<scope>provided</scope>
 		</dependency>
-
-		<!-- Optional JAX-RS -->
+		<!-- Spring boot (provided) -->
 		<dependency>
-			<groupId>javax.ws.rs</groupId>
-			<artifactId>javax.ws.rs-api</artifactId>
-			<version>${jax-rs.api.version}</version>
-			<optional>true</optional>
-		</dependency>
-
-		<!-- Optional Jersey -->
-		<dependency>
-			<groupId>org.glassfish.jersey.core</groupId>
-			<artifactId>jersey-common</artifactId>
-			<version>${jersey.version}</version>
-			<optional>true</optional>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-autoconfigure</artifactId>
+			<scope>provided</scope>
 		</dependency>
 
 		<!-- Test -->
@@ -74,23 +64,14 @@
 			<artifactId>logback-classic</artifactId>
 			<scope>test</scope>
 		</dependency>
-
-		<!-- Test jaxrs integration -->
 		<dependency>
-			<groupId>org.glassfish.jersey.test-framework.providers</groupId>
-			<artifactId>jersey-test-framework-provider-grizzly2</artifactId>
-			<version>${jersey.version}</version>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.glassfish.jersey.media</groupId>
-			<artifactId>jersey-media-json-jackson</artifactId>
-			<version>${jersey.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>jul-to-slf4j</artifactId>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-jersey</artifactId>
 			<scope>test</scope>
 		</dependency>
 

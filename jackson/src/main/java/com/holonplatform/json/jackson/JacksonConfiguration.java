@@ -16,12 +16,6 @@
 package com.holonplatform.json.jackson;
 
 import java.io.Serializable;
-import java.util.Optional;
-
-import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.http.converter.json.AbstractJackson2HttpMessageConverter;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
@@ -60,35 +54,6 @@ public final class JacksonConfiguration implements Serializable {
 	public static void configure(ObjectMapper objectMapper) {
 		ObjectUtils.argumentNotNull(objectMapper, "Null ObjectMapper");
 		objectMapper.registerModule(PROPERTY_BOX_MODULE);
-	}
-
-	/**
-	 * Configure Spring RestTemplate, setting up serializers and deserializers for {@link PropertyBox} type handling in
-	 * Jackson HttpMessageConverters, if any. If no Jackson HttpMessageConverter is registered, a configured
-	 * {@link MappingJackson2HttpMessageConverter} will be registered in RestTemplate.
-	 * <p>
-	 * In order to this method to work, <code>spring-web</code> artifact must be present in classpath.
-	 * </p>
-	 * @param restTemplate RestTemplate to configure
-	 */
-	public static void configure(RestTemplate restTemplate) {
-		configure(
-				getJacksonConverter(restTemplate).orElse(new MappingJackson2HttpMessageConverter()).getObjectMapper());
-
-	}
-
-	/**
-	 * Get a registered AbstractJackson2HttpMessageConverter from RestTemplate
-	 * @param restTemplate RestTemplate
-	 * @return Optional AbstractJackson2HttpMessageConverter, empty if not registered
-	 */
-	private static Optional<AbstractJackson2HttpMessageConverter> getJacksonConverter(RestTemplate restTemplate) {
-		for (HttpMessageConverter<?> converter : restTemplate.getMessageConverters()) {
-			if (AbstractJackson2HttpMessageConverter.class.isAssignableFrom(converter.getClass())) {
-				return Optional.of((AbstractJackson2HttpMessageConverter) converter);
-			}
-		}
-		return Optional.empty();
 	}
 
 }
