@@ -25,11 +25,21 @@
 				<artifactId>holon-jackson</artifactId>
 				<version>${project.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>com.holon-platform.json</groupId>
+				<artifactId>holon-jackson-spring</artifactId>
+				<version>${project.version}</version>
+			</dependency>
 
 			<!-- Gson -->
 			<dependency>
 				<groupId>com.holon-platform.json</groupId>
 				<artifactId>holon-gson</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.holon-platform.json</groupId>
+				<artifactId>holon-gson-spring</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 

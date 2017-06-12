@@ -16,11 +16,6 @@
 package com.holonplatform.json.gson;
 
 import java.io.Serializable;
-import java.util.Optional;
-
-import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.http.converter.json.GsonHttpMessageConverter;
-import org.springframework.web.client.RestTemplate;
 
 import com.google.gson.GsonBuilder;
 import com.holonplatform.core.internal.property.DefaultPropertyBox;
@@ -62,34 +57,6 @@ public final class GsonConfiguration implements Serializable {
 		builder.registerTypeAdapter(PropertyBox.class, new GsonPropertyBoxDeserializer());
 		builder.registerTypeAdapter(DefaultPropertyBox.class, new GsonPropertyBoxSerializer());
 		builder.registerTypeAdapter(DefaultPropertyBox.class, new GsonPropertyBoxDeserializer());
-	}
-
-	/**
-	 * Configure Spring RestTemplate, setting up serializers and deserializers for {@link PropertyBox} type handling in
-	 * Gson HttpMessageConverters, if any. If no Jackson Gson is registered, a {@link GsonHttpMessageConverter} with a
-	 * configured Gson instance will be registered in RestTemplate.
-	 * <p>
-	 * In order to this method to work, <code>spring-web</code> artifact must be present in classpath.
-	 * </p>
-	 * @param restTemplate RestTemplate to configure
-	 */
-	public static void configure(RestTemplate restTemplate) {
-		getGsonConverter(restTemplate).orElse(new GsonHttpMessageConverter()).setGson(builder().create());
-
-	}
-
-	/**
-	 * Get a registered GsonHttpMessageConverter from RestTemplate
-	 * @param restTemplate RestTemplate
-	 * @return Optional GsonHttpMessageConverter, empty if not registered
-	 */
-	private static Optional<GsonHttpMessageConverter> getGsonConverter(RestTemplate restTemplate) {
-		for (HttpMessageConverter<?> converter : restTemplate.getMessageConverters()) {
-			if (GsonHttpMessageConverter.class.isAssignableFrom(converter.getClass())) {
-				return Optional.of((GsonHttpMessageConverter) converter);
-			}
-		}
-		return Optional.empty();
 	}
 
 }

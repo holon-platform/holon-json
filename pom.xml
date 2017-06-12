@@ -80,6 +80,8 @@
 	<modules>
 		<module>jackson</module>
 		<module>gson</module>
+		<module>jackson-spring</module>
+		<module>gson-spring</module>
 		<module>bom</module>
 		<module>bom-platform</module>
 		<module>documentation</module>
