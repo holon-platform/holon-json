@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.holonplatform.json.gson.test;
+package com.holonplatform.json.jackson.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -38,7 +38,7 @@ import com.holonplatform.core.property.PropertyBox;
 import com.holonplatform.core.property.PropertySet;
 import com.holonplatform.core.property.VirtualProperty;
 
-public class TestJaxrsIntegration extends JerseyTest {
+public class TestJerseyIntegration extends JerseyTest {
 
 	public static final Property<Integer> NUM = PathProperty.create("num", Integer.class);
 	public static final Property<Double> DBL = PathProperty.create("dbl", Double.class);
@@ -80,8 +80,7 @@ public class TestJaxrsIntegration extends JerseyTest {
 	// ------- Test
 
 	@Test
-	public void testGsonConfig() {
-
+	public void testJacksonConfig() {
 		String pong = target("/test/ping").request().get(String.class);
 		assertEquals("pong", pong);
 
@@ -95,7 +94,6 @@ public class TestJaxrsIntegration extends JerseyTest {
 		assertNotNull(box);
 		assertEquals(Integer.valueOf(2), box.getValue(NUM));
 		assertEquals("Str_2", box.getValue(STR));
-
 	}
 
 }
