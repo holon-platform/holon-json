@@ -25,9 +25,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.Application;
 
+import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.plugins.server.undertow.UndertowJaxrsServer;
 import org.jboss.resteasy.test.TestPortProvider;
 import org.junit.AfterClass;
@@ -68,10 +68,13 @@ public class TestResteasyIntegration {
 		server.stop();
 	}
 
+	@SuppressWarnings("static-access")
 	@Test
 	public void testGsonConfig() {
 
-		Client client = ClientBuilder.newClient().register(GsonFeature.class);
+		Client client = ResteasyClientBuilder.newClient() // Avoid conflict with Jersey in classpath
+				// ClientBuilder.newClient()
+				.register(GsonFeature.class);
 
 		String pong = client.target(TestPortProvider.generateURL("/test/ping")).request().get(String.class);
 		assertEquals("pong", pong);
