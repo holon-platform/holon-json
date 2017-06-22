@@ -1,6 +1,6 @@
 = Holon JSON support
 :revnumber: {project-version}
-:apidir: ../../api/holon-json
+:apidir: ../api/holon-json
 :linkattrs:
 :sectnums:
 :nofooter:
