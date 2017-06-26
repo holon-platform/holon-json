@@ -21,11 +21,14 @@ import static com.holonplatform.json.gson.spring.test.data.TestData.PROPERTIES;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import org.glassfish.jersey.server.ResourceConfig;
 import org.junit.Test;
@@ -44,6 +47,8 @@ import org.springframework.web.client.RestTemplate;
 
 import com.google.gson.Gson;
 import com.holonplatform.core.property.PropertyBox;
+import com.holonplatform.core.property.PropertySetRef;
+import com.holonplatform.json.gson.spring.test.data.TestData;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT)
@@ -72,6 +77,14 @@ public class TestAutoConfiguration {
 			return PropertyBox.builder(PROPERTIES).set(ID, id).set(DESCRIPTION, "Test-" + id).build();
 		}
 
+		@PUT
+		@Path("srlz")
+		@Consumes(MediaType.APPLICATION_JSON)
+		public Response srlz(@PropertySetRef(TestData.class) PropertyBox data) {
+			data.getValue(ID);
+			return Response.accepted().build();
+		}
+
 	}
 
 	@Autowired
@@ -93,7 +106,7 @@ public class TestAutoConfiguration {
 		assertEquals(new Integer(1), readBox.getValue(ID));
 		assertEquals("Test", readBox.getValue(DESCRIPTION));
 	}
-	
+
 	@Test
 	public void testRestTemplateConfig() throws Exception {
 		RestTemplate rt = restTemplateBuilder.build();
@@ -116,6 +129,10 @@ public class TestAutoConfiguration {
 		assertNotNull(box);
 		assertEquals(Integer.valueOf(7), box.getValue(ID));
 		assertEquals("Test-7", box.getValue(DESCRIPTION));
+
+		final PropertyBox box2 = PropertyBox.builder(PROPERTIES).set(ID, 7).set(DESCRIPTION, "Test7").build();
+
+		restTemplateBuilder.build().put("http://localhost:9999/test/srlz", box2);
 	}
 
 }
