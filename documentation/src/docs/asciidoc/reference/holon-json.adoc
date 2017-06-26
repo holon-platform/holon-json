@@ -65,6 +65,27 @@ The Holon Platform provides an *overall Maven BOM (Bill of Materials)* to easily
 
 See link:index.html#obtain-the-platform-artifacts[Obtain the platform artifacts] for details.
 
+== Dealing with properties and `PropertySet`
+
+A link:holon-core.html#PropertyBox[PropertyBox] is a versatile and general-purpose data container object which uses link:holon-core.html#Property[Property] type keys as reference for the data it manages.
+
+The *Properties* to which data are bound, i.e. the `PropertySet` associated with the `PropertyBox`, are complex and extensible objects, highly customizable by the developer. For this reason, a `Property` is *never serialized in JSON* by this module. 
+
+=== Serialization
+
+Only `Path` properties are serialized into _JSON_, using the path *name* as property name of the produced _JSON object_ and _JSON_ data type consistent with the property type.
+
+This way, the _JSON_ definitions produced by the serialization of a `PropertyBox` are fully analogous to a standard _JSON_ *object*, composed by a list of property _names_ associated to a _value_ of a suitable type, which can be eventually deserialized in a generic data object (with a consistent internal structure) even a language different from Java.  
+
+=== Deserialization
+
+To deserialize a _JSON object_ into a `PropertyBox` instance, the `PropertySet` to use for the `PropertyBox` is required and must be available as a link:holon-core.html#Context[Context] resource (typically thread-bound).
+
+To bound a `PropertySet` instance to the default thread-scoped resource set of the Holon Platform _Context_, the `execute(Callable operation)` method can be used.
+
+See the next sections for further details and use-case examples.
+
+
 // Inclusions
 
 include::_gson.adoc[]

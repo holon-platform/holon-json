@@ -1,2 +1,3 @@
 == Gson integration
 
+A `JsonSerializer` and a `JsonDeserializer` are provided to configure link:holon-core.html#PropertyBox[PropertyBox] serialization to _JSON_ format and deserialization from _JSON_ format.
