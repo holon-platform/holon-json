@@ -18,13 +18,18 @@ package com.holonplatform.json.gson.test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.client.Client;
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import org.glassfish.jersey.client.JerseyClientBuilder;
 import org.glassfish.jersey.logging.LoggingFeature;
@@ -38,6 +43,7 @@ import com.holonplatform.core.property.PathProperty;
 import com.holonplatform.core.property.Property;
 import com.holonplatform.core.property.PropertyBox;
 import com.holonplatform.core.property.PropertySet;
+import com.holonplatform.core.property.PropertySetRef;
 import com.holonplatform.core.property.VirtualProperty;
 
 public class TestJerseyIntegration extends JerseyTest {
@@ -64,6 +70,14 @@ public class TestJerseyIntegration extends JerseyTest {
 		@Produces(MediaType.APPLICATION_JSON)
 		public PropertyBox getData(@PathParam("num") int num) {
 			return PropertyBox.builder(SET).set(NUM, num).set(DBL, 7.5).build();
+		}
+
+		@PUT
+		@Path("srlz")
+		@Consumes(MediaType.APPLICATION_JSON)
+		public Response srlz(@PropertySetRef(TestJerseyIntegration.class) PropertyBox data) {
+			data.getValue(NUM);
+			return Response.accepted().build();
 		}
 
 	}
@@ -101,6 +115,12 @@ public class TestJerseyIntegration extends JerseyTest {
 		assertNotNull(box);
 		assertEquals(Integer.valueOf(2), box.getValue(NUM));
 		assertEquals("Str_2", box.getValue(STR));
+
+		PropertyBox boxToSrlz = PropertyBox.builder(SET).set(NUM, 100).set(DBL, 77.7).build();
+
+		Response response = target("/test/srlz").request().put(Entity.entity(boxToSrlz, MediaType.APPLICATION_JSON));
+		assertNotNull(response);
+		assertEquals(Status.ACCEPTED.getStatusCode(), response.getStatus());
 
 	}
 

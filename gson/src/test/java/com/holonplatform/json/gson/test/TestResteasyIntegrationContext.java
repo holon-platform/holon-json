@@ -15,6 +15,7 @@
  */
 package com.holonplatform.json.gson.test;
 
+import static com.holonplatform.json.gson.test.TestJerseyIntegration.DBL;
 import static com.holonplatform.json.gson.test.TestJerseyIntegration.NUM;
 import static com.holonplatform.json.gson.test.TestJerseyIntegration.SET;
 import static com.holonplatform.json.gson.test.TestJerseyIntegration.STR;
@@ -26,7 +27,11 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.ws.rs.client.Client;
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Application;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.plugins.server.undertow.UndertowJaxrsServer;
@@ -96,6 +101,13 @@ public class TestResteasyIntegrationContext {
 		assertNotNull(box);
 		assertEquals(Integer.valueOf(2), box.getValue(NUM));
 		assertEquals("Str_2", box.getValue(STR));
+		
+		PropertyBox boxToSrlz = PropertyBox.builder(SET).set(NUM, 100).set(DBL, 77.7).build();
+		
+		Response response = client.target(TestPortProvider.generateURL("/test/srlz")).request()
+				.put(Entity.entity(boxToSrlz, MediaType.APPLICATION_JSON));
+		assertNotNull(response);
+		assertEquals(Status.ACCEPTED.getStatusCode(), response.getStatus());
 
 	}
 

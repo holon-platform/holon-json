@@ -1,3 +1,49 @@
 == Gson integration
 
 A `JsonSerializer` and a `JsonDeserializer` are provided to configure link:holon-core.html#PropertyBox[PropertyBox] serialization to _JSON_ format and deserialization from _JSON_ format.
+
+=== Configuration and use
+
+To enable `PropertyBox` handling in Gson, registering the suitable `JsonSerializer` and a `JsonDeserializer` pair, the link:{apidir}/com/holonplatform/json/gson/GsonConfiguration.html[GsonConfiguration^] utility class can be used:
+
+[source, java]
+----
+include::{examplesdir}/com/holonplatform/json/examples/ExampleGson.java[tag=configuration,indent=0]
+----
+<1> Get a pre-configured `GsonBuilder` with `PropertyBox` support
+<2> Get a previously available `GsonBuilder`
+<3> Configure the builder for `PropertyBox` support
+
+With a properly configured `Gson` instance, a `PropertyBox` can be serialized and deserialized just like any another object. As described in <<JsonPropertySet>>, you need to declare the `PropertySet` to use as a _Context_ resource at `PropertyBox` deserialization time.
+
+[source, java]
+----
+include::{examplesdir}/com/holonplatform/json/examples/ExampleGson.java[tag=serdeser,indent=0]
+----
+<1> Obtain a pre-configured `Gson` instance
+<2> Build a `PropertyBox` using `PROPERTY_SET` as property set
+<3> Serialize the `PropertyBox` to JSON. 
+<4> Deserialize back the JSON definition to a `PropertyBox` instance using `PROPERTY_SET` as property set, declaring it as thread-bound _Context_ resource through the `execute(...)` method
+
+In the example above, the `PropertyBox` instance will be serialized as a JSON object like this:
+
+[source, json]
+----
+{
+  "id": 1,
+  "description": "Test"
+}
+----
+
+=== JAX-RS integration
+
+A set of JAX-RS extension classes are provided to configure `PropertyBox` JSON support in JAX-RS using _Gson_, and in a more general sense, to configure _Gson_ as main serializer/deserializer in a JAX-RS server and/or client for the JSON media type.
+
+The JAX-RS _Gson_ extensions relies on standard `ContextResolver` type to provide the `Gson` instance to use to perform JSON serialization and deserialization. This `Gson` instance must be configured with `PropertyBox` support as described above to handle `PropertyBox` types consistently.
+
+To setup _Gson_ as provider for JSON message type handling, the link:{apidir}/com/holonplatform/json/gson/jaxrs/GsonFeature.html[GsonFeature^] JAX-RS `Feature` can be registered in the JAX-RS application.
+
+If you use link:https://github.com/jersey[Jersey^] or link:http://resteasy.jboss.org[Resteasy^] as JAX-RS implementation, there no need to explicitly register the `GsonFeature`, just ensure the `holon-gson` is in classpath and the _Gson_ support will be configured automatically, leveraging Jersey _AutoDiscoverable_ and Resteasy Java Service extensions features.
+
+
+

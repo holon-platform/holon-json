@@ -65,6 +65,7 @@ The Holon Platform provides an *overall Maven BOM (Bill of Materials)* to easily
 
 See link:index.html#obtain-the-platform-artifacts[Obtain the platform artifacts] for details.
 
+[[JsonPropertySet]]
 == Dealing with properties and `PropertySet`
 
 A link:holon-core.html#PropertyBox[PropertyBox] is a versatile and general-purpose data container object which uses link:holon-core.html#Property[Property] type keys as reference for the data it manages.

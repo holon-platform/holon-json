@@ -42,6 +42,11 @@ import javax.ws.rs.ext.Providers;
 import com.google.gson.Gson;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
+import com.holonplatform.core.internal.property.PropertySetRefIntrospector;
+import com.holonplatform.core.internal.property.PropertySetRefIntrospector.PropertySetIntrospectionException;
+import com.holonplatform.core.property.PropertyBox;
+import com.holonplatform.core.property.PropertySet;
+import com.holonplatform.core.property.PropertySetRef;
 import com.holonplatform.json.gson.GsonConfiguration;
 
 /**
@@ -60,6 +65,12 @@ public class GsonJsonProvider implements MessageBodyWriter<Object>, MessageBodyR
 
 	private Gson gson;
 
+	private PropertySetRefIntrospector propertySetRefIntrospector;
+
+	/**
+	 * Get the {@link Gson} instance to use.
+	 * @return The {@link Gson} instance to use, from {@link ContextResolver} if available or the default one
+	 */
 	private Gson getGson() {
 		if (gson == null) {
 			// init using a contextresolver, if available
@@ -74,6 +85,27 @@ public class GsonJsonProvider implements MessageBodyWriter<Object>, MessageBodyR
 			}
 		}
 		return gson;
+	}
+
+	/**
+	 * Get the {@link PropertySetRefIntrospector} instance to use.
+	 * @return The {@link PropertySetRefIntrospector} instance to use, from {@link ContextResolver} if available or the
+	 *         default one
+	 */
+	private PropertySetRefIntrospector getPropertySetRefIntrospector() {
+		if (propertySetRefIntrospector == null) {
+			// init using a contextresolver, if available
+			ContextResolver<PropertySetRefIntrospector> contextResolver = providers
+					.getContextResolver(PropertySetRefIntrospector.class, MediaType.APPLICATION_JSON_TYPE);
+			if (contextResolver != null) {
+				propertySetRefIntrospector = contextResolver.getContext(PropertySetRefIntrospector.class);
+			}
+			if (propertySetRefIntrospector == null) {
+				// use default
+				propertySetRefIntrospector = PropertySetRefIntrospector.getDefault();
+			}
+		}
+		return propertySetRefIntrospector;
 	}
 
 	/*
@@ -96,8 +128,41 @@ public class GsonJsonProvider implements MessageBodyWriter<Object>, MessageBodyR
 	public Object readFrom(Class<Object> type, Type genericType, Annotation[] annotations, MediaType mediaType,
 			MultivaluedMap<String, String> httpHeaders, InputStream entityStream)
 			throws IOException, WebApplicationException {
+
 		final Type jsonType = type.equals(genericType) ? type : genericType;
 		try (final Reader reader = new InputStreamReader(entityStream, CHARSET)) {
+
+			// check property set
+			PropertySet<?> propertySet = null;
+			if (!com.holonplatform.core.Context.get().resource(PropertySet.CONTEXT_KEY, PropertySet.class)
+					.isPresent()) {
+				PropertySetRef propertySetRef = PropertySetRefIntrospector.getPropertySetRef(annotations).orElse(null);
+				if (propertySetRef != null) {
+					try {
+						propertySet = getPropertySetRefIntrospector().getPropertySet(propertySetRef);
+					} catch (PropertySetIntrospectionException e) {
+						throw new WebApplicationException(e.getMessage(), e, Status.INTERNAL_SERVER_ERROR);
+					}
+				}
+			}
+			if (propertySet != null) {
+				return propertySet.execute(() -> readPropertyBox(reader, jsonType));
+			} else {
+				return readPropertyBox(reader, jsonType);
+			}
+		}
+	}
+
+	/**
+	 * Read a {@link PropertyBox} from JSON content, using current {@link com.holonplatform.core.Context} property set.
+	 * @param reader Reader
+	 * @param jsonType JSON type
+	 * @return The deserialized {@link PropertyBox} instance
+	 * @throws IOException IO read error
+	 * @throws WebApplicationException JSON syntax exception
+	 */
+	private Object readPropertyBox(Reader reader, Type jsonType) throws IOException {
+		try {
 			return getGson().fromJson(reader, jsonType);
 		} catch (JsonIOException e) {
 			throw new IOException(e);
