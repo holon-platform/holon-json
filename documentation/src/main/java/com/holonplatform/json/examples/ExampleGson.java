@@ -26,12 +26,17 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.springframework.context.annotation.Bean;
+import org.springframework.web.client.RestTemplate;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.holonplatform.core.property.PathProperty;
 import com.holonplatform.core.property.PropertyBox;
 import com.holonplatform.core.property.PropertySet;
+import com.holonplatform.core.property.PropertySetRef;
 import com.holonplatform.json.gson.GsonConfiguration;
+import com.holonplatform.json.gson.spring.SpringGsonConfiguration;
 
 @SuppressWarnings("unused")
 public class ExampleGson {
@@ -69,6 +74,8 @@ public class ExampleGson {
 	final static PathProperty<Integer> CODE = PathProperty.create("code", Integer.class);
 	final static PathProperty<String> NAME = PathProperty.create("name", String.class);
 
+	final static PropertySet<?> PROPERTYSET = PropertySet.of(CODE, NAME);
+
 	// JAX-RS example endpoint
 	@Path("test")
 	public static class Endpoint {
@@ -76,7 +83,7 @@ public class ExampleGson {
 		@PUT
 		@Path("serialize")
 		@Consumes(MediaType.APPLICATION_JSON)
-		public Response create(PropertyBox data) {
+		public Response create(@PropertySetRef(value = ExampleGson.class, field = "PROPERTYSET") PropertyBox data) {
 			return Response.accepted().build();
 		}
 
@@ -84,7 +91,7 @@ public class ExampleGson {
 		@Path("deserialize")
 		@Produces(MediaType.APPLICATION_JSON)
 		public PropertyBox getData() {
-			return PropertyBox.builder(CODE, NAME).set(CODE, 1).set(NAME, "Test").build();
+			return PropertyBox.builder(PROPERTYSET).set(CODE, 1).set(NAME, "Test").build();
 		}
 
 	}
@@ -92,15 +99,28 @@ public class ExampleGson {
 	public void jaxrs() {
 		Client client = ClientBuilder.newClient(); // <1>
 
-		PropertyBox box1 = PropertyBox.builder(CODE, NAME).set(CODE, 1).set(NAME, "Test").build();
+		PropertyBox box1 = PropertyBox.builder(PROPERTYSET).set(CODE, 1).set(NAME, "Test").build();
 
 		client.target("https://host/test/serialize").request().put(Entity.entity(box1, MediaType.APPLICATION_JSON)); // <2>
 
-		PropertyBox box2 = PropertySet.of(CODE, NAME)
+		PropertyBox box2 = PROPERTYSET
 				.execute(() -> client.target("https://host/test/deserialize").request().get(PropertyBox.class)); // <3>
 
 	}
 	// end::jaxrs[]
+
+	// tag::spring[]
+	class Config {
+
+		@Bean
+		public RestTemplate restTemplate() {
+			RestTemplate rt = new RestTemplate();
+			SpringGsonConfiguration.configure(rt); // <1>
+			return rt;
+		}
+
+	}
+	// end::spring[]
 
 	@SuppressWarnings("static-method")
 	private GsonBuilder getGsonBuilder() {

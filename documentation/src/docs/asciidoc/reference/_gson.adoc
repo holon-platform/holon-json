@@ -2,6 +2,14 @@
 
 A `JsonSerializer` and a `JsonDeserializer` are provided to configure link:holon-core.html#PropertyBox[PropertyBox] serialization to _JSON_ format and deserialization from _JSON_ format.
 
+_Maven coordinates_:
+[source, xml, subs="attributes+"]
+----
+<groupId>com.holon-platform.json</groupId>
+<artifactId>holon-gson</artifactId>
+<version>{revnumber}</version>
+----
+
 === Configuration and use
 
 To enable `PropertyBox` handling in Gson, registering the suitable `JsonSerializer` and a `JsonDeserializer` pair, the link:{apidir}/com/holonplatform/json/gson/GsonConfiguration.html[GsonConfiguration^] utility class can be used:
@@ -45,5 +53,64 @@ To setup _Gson_ as provider for JSON message type handling, the link:{apidir}/co
 
 If you use link:https://github.com/jersey[Jersey^] or link:http://resteasy.jboss.org[Resteasy^] as JAX-RS implementation, there no need to explicitly register the `GsonFeature`, just ensure the `holon-gson` is in classpath and the _Gson_ support will be configured automatically, leveraging Jersey _AutoDiscoverable_ and Resteasy Java Service extensions features.
 
+==== `PropertyBox` deserialization
 
+When a `PropertyBox` is used a JAX-RS resource method *parameter* (for methods which declare to consume  `application/json` media type), the JSON deserialization of the input into a `PropertyBox` instance needs to know the `PropertySet` to use to create the property box. For this purpose, the `@PropertySetRef` annotation cn be used at method parameter level to declare the `PropertySet` instance to use to deserialize the property box.
 
+The link:../api/holon-core/com/holonplatform/core/property/PropertySetRef.html[PropertySetRef^] annotation allows to declare the `PropertySet` instance as the `public static` *field* of a given class, which must be specified in the `value()` annotation attribute. If more than one `public static` field of `PropertySet` type is present in declared class, the `field()` annotation attribute can be used to specify the right field name.
+
+[source, java]
+----
+include::{examplesdir}/com/holonplatform/json/examples/ExampleGson.java[tag=jaxrs,indent=0]
+----
+<1> Create a JAX-RS `Client`
+<2> Perform a `PUT` request providing a `PropertyBox` value as JSON. At endpoint resource level, the `PropertyBox` type input parameter of the `serialize` method is annotated with `@PropertySetRef` to declare the property set to use to deserialize the property box from JSON
+<3> Perform a `GET` request for a JSON serialized `PropertyBox` value, providing the `PropertySet` to use for deserialization as a `Context` thread-bound resource
+
+==== JAX-RS integration configuration
+
+Two configuration properties are available to tune or disable the JAX-RS integration features for _Gson_ and `PropertyBox` support:
+
+* `holon.gson.disable-resolver`: If this property is present in JAX-RS application properties, the Gson *ContextResolver* auto-configuration is disabled
+* `holon.gson.disable-autoconfig`: If this property is present in JAX-RS application properties, all the Gson and `PropertyBox` JSON serialization/deserialization features will be disabled
+
+=== Spring integration
+
+_Maven coordinates_:
+[source, xml, subs="attributes+"]
+----
+<groupId>com.holon-platform.json</groupId>
+<artifactId>holon-gson-spring</artifactId>
+<version>{revnumber}</version>
+----
+
+The link:{apidir}/com/holonplatform/json/gson/spring/SpringGsonConfiguration.html[SpringGsonConfiguration^] utility class can be used to configure a Spring `RestTemplate`, ensuring that a `GsonHttpMessageConverter` is registered and bound to a `Gson` instance correctly configured for `PropertyBox` JSON serialization/deserialization.
+
+[source, java]
+----
+include::{examplesdir}/com/holonplatform/json/examples/ExampleGson.java[tag=spring,indent=0]
+----
+<1> Configure the `RestTemplate`
+
+=== Spring Boot integration
+
+_Maven coordinates_:
+[source, xml, subs="attributes+"]
+----
+<groupId>com.holon-platform.json</groupId>
+<artifactId>holon-gson-spring</artifactId>
+<version>{revnumber}</version>
+----
+
+The `GsonAutoConfiguration` Spring Boot _auto-configuration_ class is provided to automatically configure a `Gson` instance *singleton bean*, correctly configured for `PropertyBox` JSON serialization/deserialization. 
+
+This way, the `RestTemplate` instances obtained through the `RestTemplateBuilder` Spring Boot builder will be automatically pre-configured with a `Gson` message converter with `PropertyBox` support.
+
+IMPORTANT: The `Gson` auto-configuration is triggered only if a `Gson` type bean is not already registered in Spring context.
+
+To disable this auto-configuration feature the `GsonAutoConfiguration` class can be excluded:
+
+[source, java]
+----
+@EnableAutoConfiguration(exclude={GsonAutoConfiguration.class})
+----
