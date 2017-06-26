@@ -19,9 +19,10 @@ import javax.ws.rs.core.Feature;
 import javax.ws.rs.core.FeatureContext;
 
 import com.holonplatform.json.jackson.internal.jaxrs.JacksonConfigurationFeature;
+import com.holonplatform.json.jackson.internal.jaxrs.JacksonProviderFeature;
 
 /**
- * JAX-RS {@link Feature} to register Gson JSON providers and context resolver.
+ * JAX-RS {@link Feature} to register Jackson JSON providers and context resolver.
  * 
  * @since 5.0.0
  */
@@ -38,6 +39,10 @@ public class JacksonFeature implements Feature {
 		// context resolver
 		if (!context.getConfiguration().isRegistered(JacksonConfigurationFeature.class)) {
 			context.register(JacksonConfigurationFeature.class);
+		}
+		// message body reader and writer
+		if (!context.getConfiguration().isRegistered(JacksonProviderFeature.class)) {
+			context.register(JacksonProviderFeature.class);
 		}
 		return true;
 	}

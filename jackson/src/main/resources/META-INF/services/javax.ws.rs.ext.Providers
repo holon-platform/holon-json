@@ -1,1 +1,2 @@
+com.holonplatform.json.jackson.internal.jaxrs.JacksonJsonProvider
 com.holonplatform.json.jackson.internal.jaxrs.JacksonContextResolver

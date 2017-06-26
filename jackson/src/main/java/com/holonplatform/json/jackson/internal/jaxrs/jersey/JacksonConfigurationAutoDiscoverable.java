@@ -16,9 +16,13 @@
 package com.holonplatform.json.jackson.internal.jaxrs.jersey;
 
 import javax.annotation.Priority;
+import javax.ws.rs.core.Configuration;
+import javax.ws.rs.core.Feature;
 import javax.ws.rs.core.FeatureContext;
 
+import org.glassfish.jersey.CommonProperties;
 import org.glassfish.jersey.internal.spi.AutoDiscoverable;
+import org.glassfish.jersey.internal.util.PropertiesHelper;
 
 import com.holonplatform.core.property.PropertyBox;
 import com.holonplatform.json.jackson.jaxrs.JacksonFeature;
@@ -28,8 +32,14 @@ import com.holonplatform.json.jackson.jaxrs.JacksonFeature;
  *
  * @since 5.0.0
  */
-@Priority(AutoDiscoverable.DEFAULT_PRIORITY + 10000)
+@Priority(AutoDiscoverable.DEFAULT_PRIORITY - 100)
 public class JacksonConfigurationAutoDiscoverable implements AutoDiscoverable {
+
+	/*
+	 * @Override public void configure(FeatureContext context) { context.register(JacksonFeature.class); }
+	 */
+
+	private static final String JERSEY_JSON_PROVIDER_PROPERTY = "jersey.config.jsonFeature";
 
 	/*
 	 * (non-Javadoc)
@@ -37,7 +47,36 @@ public class JacksonConfigurationAutoDiscoverable implements AutoDiscoverable {
 	 */
 	@Override
 	public void configure(FeatureContext context) {
-		context.register(JacksonFeature.class);
+		registerJerseyJsonFeature(context, JacksonFeature.class, JacksonFeature.FEATURE_NAME);
+	}
+
+	/**
+	 * Register a Jersey JSON provider feature only if another JSON provider is not already registered, checking
+	 * {@link #JERSEY_JSON_PROVIDER_PROPERTY} property value.
+	 * @param context Feature context
+	 * @param feature Feature to register
+	 * @param featureName Feature name to register
+	 * @return <code>true</code> if feature was registered, <code>false</code> otherwise
+	 */
+	private static boolean registerJerseyJsonFeature(FeatureContext context, Class<? extends Feature> feature,
+			String featureName) {
+		final Configuration config = context.getConfiguration();
+
+		final String jsonFeature = CommonProperties.getValue(config.getProperties(), config.getRuntimeType(),
+				JERSEY_JSON_PROVIDER_PROPERTY, featureName, String.class);
+		if (!featureName.equalsIgnoreCase(jsonFeature)) {
+			// Other JSON providers registered
+			return false;
+		}
+		// Disable other JSON providers
+		context.property(
+				PropertiesHelper.getPropertyNameForRuntime(JERSEY_JSON_PROVIDER_PROPERTY, config.getRuntimeType()),
+				featureName);
+		// Register
+		if (!config.isRegistered(feature)) {
+			context.register(feature);
+		}
+		return true;
 	}
 
 }
