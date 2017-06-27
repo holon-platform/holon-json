@@ -13,12 +13,12 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.holonplatform.json.gson.test;
+package com.holonplatform.json.gson.jaxrs.test;
 
-import static com.holonplatform.json.gson.test.TestJerseyIntegration.DBL;
-import static com.holonplatform.json.gson.test.TestJerseyIntegration.NUM;
-import static com.holonplatform.json.gson.test.TestJerseyIntegration.SET;
-import static com.holonplatform.json.gson.test.TestJerseyIntegration.STR;
+import static com.holonplatform.json.gson.jaxrs.test.TestJerseyIntegration.DBL;
+import static com.holonplatform.json.gson.jaxrs.test.TestJerseyIntegration.NUM;
+import static com.holonplatform.json.gson.jaxrs.test.TestJerseyIntegration.SET;
+import static com.holonplatform.json.gson.jaxrs.test.TestJerseyIntegration.STR;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -43,7 +43,7 @@ import org.junit.Test;
 
 import com.holonplatform.core.property.PropertyBox;
 import com.holonplatform.json.gson.jaxrs.GsonFeature;
-import com.holonplatform.json.gson.test.TestJerseyIntegration.TestEndpoint;
+import com.holonplatform.json.gson.jaxrs.test.TestJerseyIntegration.TestEndpoint;
 
 public class TestResteasyIntegrationContext {
 

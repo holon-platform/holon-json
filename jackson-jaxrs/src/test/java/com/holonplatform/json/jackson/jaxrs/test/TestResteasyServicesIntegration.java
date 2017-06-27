@@ -13,11 +13,11 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.holonplatform.json.jackson.test;
+package com.holonplatform.json.jackson.jaxrs.test;
 
-import static com.holonplatform.json.jackson.test.TestJerseyIntegration.NUM;
-import static com.holonplatform.json.jackson.test.TestJerseyIntegration.SET;
-import static com.holonplatform.json.jackson.test.TestJerseyIntegration.STR;
+import static com.holonplatform.json.jackson.jaxrs.test.TestJerseyIntegration.NUM;
+import static com.holonplatform.json.jackson.jaxrs.test.TestJerseyIntegration.SET;
+import static com.holonplatform.json.jackson.jaxrs.test.TestJerseyIntegration.STR;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -35,10 +35,9 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.holonplatform.core.property.PropertyBox;
-import com.holonplatform.json.jackson.jaxrs.JacksonFeature;
-import com.holonplatform.json.jackson.test.TestJerseyIntegration.TestEndpoint;
+import com.holonplatform.json.jackson.jaxrs.test.TestJerseyIntegration.TestEndpoint;
 
-public class TestResteasyIntegration {
+public class TestResteasyServicesIntegration {
 
 	private static UndertowJaxrsServer server;
 
@@ -46,8 +45,6 @@ public class TestResteasyIntegration {
 		@Override
 		public Set<Class<?>> getClasses() {
 			final HashSet<Class<?>> classes = new HashSet<>();
-			// features
-			classes.add(JacksonFeature.class);
 			// endpoint
 			classes.add(TestEndpoint.class);
 			return classes;
@@ -72,9 +69,8 @@ public class TestResteasyIntegration {
 	@Test
 	public void testGsonConfig() {
 
-		Client client = ResteasyClientBuilder.newClient() // Avoid conflict with Jersey in classpath
+		Client client = ResteasyClientBuilder.newClient(); // Avoid conflict with Jersey in classpath
 				// ClientBuilder.newClient()
-				.register(JacksonFeature.class);
 
 		String pong = client.target(TestPortProvider.generateURL("/test/ping")).request().get(String.class);
 		assertEquals("pong", pong);

@@ -13,10 +13,10 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.holonplatform.json.gson.test;
+package com.holonplatform.json.gson.jaxrs.test;
 
-import static com.holonplatform.json.gson.test.TestJerseyIntegration.NUM;
-import static com.holonplatform.json.gson.test.TestJerseyIntegration.SET;
+import static com.holonplatform.json.gson.jaxrs.test.TestJerseyIntegration.NUM;
+import static com.holonplatform.json.gson.jaxrs.test.TestJerseyIntegration.SET;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -47,7 +47,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.holonplatform.core.property.PropertyBox;
 import com.holonplatform.json.gson.GsonConfiguration;
-import com.holonplatform.json.gson.test.TestJerseyIntegration.TestEndpoint;
+import com.holonplatform.json.gson.jaxrs.test.TestJerseyIntegration.TestEndpoint;
 
 public class TestJerseyIntegrationCustomResolver extends JerseyTest {
 

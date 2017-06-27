@@ -13,9 +13,9 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.holonplatform.json.gson.test;
+package com.holonplatform.json.gson.jaxrs.test;
 
-import static com.holonplatform.json.gson.test.TestJerseyIntegration.SET;
+import static com.holonplatform.json.gson.jaxrs.test.TestJerseyIntegration.SET;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.core.Application;
@@ -31,7 +31,7 @@ import org.slf4j.bridge.SLF4JBridgeHandler;
 
 import com.holonplatform.core.property.PropertyBox;
 import com.holonplatform.json.gson.GsonConfiguration;
-import com.holonplatform.json.gson.test.TestJerseyIntegration.TestEndpoint;
+import com.holonplatform.json.gson.jaxrs.test.TestJerseyIntegration.TestEndpoint;
 
 public class TestDisableJerseyIntegration extends JerseyTest {
 

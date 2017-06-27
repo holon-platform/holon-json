@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.holonplatform.json.gson.test;
+package com.holonplatform.json.jackson.jaxrs.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -100,8 +100,7 @@ public class TestJerseyIntegration extends JerseyTest {
 	}
 
 	@Test
-	public void testGsonConfig() {
-
+	public void testJacksonConfig() {
 		String pong = target("/test/ping").request().get(String.class);
 		assertEquals("pong", pong);
 
@@ -121,7 +120,6 @@ public class TestJerseyIntegration extends JerseyTest {
 		Response response = target("/test/srlz").request().put(Entity.entity(boxToSrlz, MediaType.APPLICATION_JSON));
 		assertNotNull(response);
 		assertEquals(Status.ACCEPTED.getStatusCode(), response.getStatus());
-
 	}
 
 }

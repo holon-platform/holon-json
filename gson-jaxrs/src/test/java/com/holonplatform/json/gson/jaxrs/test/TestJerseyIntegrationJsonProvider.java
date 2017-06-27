@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.holonplatform.json.gson.test;
+package com.holonplatform.json.gson.jaxrs.test;
 
 import static org.junit.Assert.assertEquals;
 
@@ -43,7 +43,7 @@ import org.junit.Test;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 
 import com.holonplatform.core.property.PropertyBox;
-import com.holonplatform.json.gson.test.TestJerseyIntegration.TestEndpoint;
+import com.holonplatform.json.gson.jaxrs.test.TestJerseyIntegration.TestEndpoint;
 
 public class TestJerseyIntegrationJsonProvider extends JerseyTest {
 

@@ -32,30 +32,6 @@
 			<version>${gson.version}</version>
 		</dependency>
 
-		<!-- Optional JAX-RS -->
-		<dependency>
-			<groupId>javax.ws.rs</groupId>
-			<artifactId>javax.ws.rs-api</artifactId>
-			<version>${jax-rs.api.version}</version>
-			<optional>true</optional>
-		</dependency>
-
-		<!-- Optional Jersey -->
-		<dependency>
-			<groupId>org.glassfish.jersey.core</groupId>
-			<artifactId>jersey-common</artifactId>
-			<version>${jersey.version}</version>
-			<optional>true</optional>
-		</dependency>
-
-		<!-- Optional Resteasy -->
-		<dependency>
-			<groupId>org.jboss.resteasy</groupId>
-			<artifactId>resteasy-jaxrs</artifactId>
-			<version>${resteasy.version}</version>
-			<optional>true</optional>
-		</dependency>
-
 		<!-- Test -->
 		<dependency>
 			<groupId>junit</groupId>
@@ -65,28 +41,6 @@
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
-			<scope>test</scope>
-		</dependency>
-
-		<!-- Test Jersey integration -->
-		<dependency>
-			<groupId>org.glassfish.jersey.test-framework.providers</groupId>
-			<artifactId>jersey-test-framework-provider-grizzly2</artifactId>
-			<version>${jersey.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>jul-to-slf4j</artifactId>
-			<version>1.7.25</version>
-			<scope>test</scope>
-		</dependency>
-
-		<!-- Test Resteasy integration -->
-		<dependency>
-			<groupId>org.jboss.resteasy</groupId>
-			<artifactId>resteasy-undertow</artifactId>
-			<version>${resteasy.version}</version>
 			<scope>test</scope>
 		</dependency>
 

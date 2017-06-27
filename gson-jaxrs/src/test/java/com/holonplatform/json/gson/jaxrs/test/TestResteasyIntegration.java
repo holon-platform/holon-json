@@ -13,12 +13,12 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.holonplatform.json.gson.test;
+package com.holonplatform.json.gson.jaxrs.test;
 
-import static com.holonplatform.json.gson.test.TestJerseyIntegration.DBL;
-import static com.holonplatform.json.gson.test.TestJerseyIntegration.NUM;
-import static com.holonplatform.json.gson.test.TestJerseyIntegration.SET;
-import static com.holonplatform.json.gson.test.TestJerseyIntegration.STR;
+import static com.holonplatform.json.gson.jaxrs.test.TestJerseyIntegration.DBL;
+import static com.holonplatform.json.gson.jaxrs.test.TestJerseyIntegration.NUM;
+import static com.holonplatform.json.gson.jaxrs.test.TestJerseyIntegration.SET;
+import static com.holonplatform.json.gson.jaxrs.test.TestJerseyIntegration.STR;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -40,9 +40,10 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.holonplatform.core.property.PropertyBox;
-import com.holonplatform.json.gson.test.TestJerseyIntegration.TestEndpoint;
+import com.holonplatform.json.gson.jaxrs.GsonFeature;
+import com.holonplatform.json.gson.jaxrs.test.TestJerseyIntegration.TestEndpoint;
 
-public class TestResteasyServicesIntegration {
+public class TestResteasyIntegration {
 
 	private static UndertowJaxrsServer server;
 
@@ -50,6 +51,8 @@ public class TestResteasyServicesIntegration {
 		@Override
 		public Set<Class<?>> getClasses() {
 			final HashSet<Class<?>> classes = new HashSet<>();
+			// features
+			classes.add(GsonFeature.class);
 			// endpoint
 			classes.add(TestEndpoint.class);
 			return classes;
@@ -74,8 +77,9 @@ public class TestResteasyServicesIntegration {
 	@Test
 	public void testGsonConfig() {
 
-		Client client = ResteasyClientBuilder.newClient(); // Avoid conflict with Jersey in classpath
-		// ClientBuilder.newClient();
+		Client client = ResteasyClientBuilder.newClient() // Avoid conflict with Jersey in classpath
+				// ClientBuilder.newClient()
+				.register(GsonFeature.class);
 
 		String pong = client.target(TestPortProvider.generateURL("/test/ping")).request().get(String.class);
 		assertEquals("pong", pong);
