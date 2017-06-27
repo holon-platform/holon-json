@@ -102,6 +102,12 @@ public class TestResteasyIntegration {
 				.put(Entity.entity(boxToSrlz, MediaType.APPLICATION_JSON));
 		assertNotNull(response);
 		assertEquals(Status.ACCEPTED.getStatusCode(), response.getStatus());
+		
+		// check cache
+		response = client.target(TestPortProvider.generateURL("/test/srlz")).request()
+				.put(Entity.entity(boxToSrlz, MediaType.APPLICATION_JSON));
+		assertNotNull(response);
+		assertEquals(Status.ACCEPTED.getStatusCode(), response.getStatus());
 
 	}
 
