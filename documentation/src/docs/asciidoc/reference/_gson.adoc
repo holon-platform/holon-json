@@ -59,7 +59,7 @@ The JAX-RS _Gson_ extensions relies on standard `ContextResolver` type to provid
 
 To setup _Gson_ as provider for JSON message type handling, the link:{apidir}/com/holonplatform/json/gson/jaxrs/GsonFeature.html[GsonFeature^] JAX-RS `Feature` can be registered in the JAX-RS application.
 
-If you use link:https://github.com/jersey[Jersey^] or link:http://resteasy.jboss.org[Resteasy^] as JAX-RS implementation, there no need to explicitly register the `GsonFeature`, just ensure the `holon-gson` is in classpath and the _Gson_ support will be configured automatically, leveraging Jersey _AutoDiscoverable_ and Resteasy Java Service extensions features.
+If you use link:https://github.com/jersey[Jersey^] or link:http://resteasy.jboss.org[Resteasy^] as JAX-RS implementation, there no need to explicitly register the `GsonFeature`, just ensure the `holon-gson` jar is in classpath and the _Gson_ support will be configured automatically, leveraging Jersey _AutoDiscoverable_ and Resteasy Java Service extensions features.
 
 ==== `PropertyBox` deserialization
 
