@@ -19,8 +19,8 @@ import javax.ws.rs.core.Feature;
 import javax.ws.rs.core.FeatureContext;
 
 import com.holonplatform.core.internal.Logger;
-import com.holonplatform.json.gson.GsonConfiguration;
 import com.holonplatform.json.gson.internal.GsonLogger;
+import com.holonplatform.json.gson.jaxrs.GsonFeature;
 
 /**
  * {@link Feature} to register Gson JSON providers.
@@ -37,14 +37,14 @@ public class GsonProviderFeature implements Feature {
 	 */
 	@Override
 	public boolean configure(FeatureContext context) {
-		if (!context.getConfiguration().getProperties().containsKey(GsonConfiguration.JAXRS_DISABLE_GSON_AUTO_CONFIG)) {
+		if (!context.getConfiguration().getProperties().containsKey(GsonFeature.JAXRS_DISABLE_GSON_AUTO_CONFIG)) {
 			LOGGER.debug(() -> "<Runtime: " + context.getConfiguration().getRuntimeType() + "> Registering provider ["
 					+ GsonJsonProvider.class.getName() + "]");
 			context.register(GsonJsonProvider.class);
 			return true;
 		} else {
-			LOGGER.debug(() -> "Skip GsonJsonProvider registration, ["
-					+ GsonConfiguration.JAXRS_DISABLE_GSON_AUTO_CONFIG + "] property detected");
+			LOGGER.debug(() -> "Skip GsonJsonProvider registration, [" + GsonFeature.JAXRS_DISABLE_GSON_AUTO_CONFIG
+					+ "] property detected");
 			return false;
 		}
 

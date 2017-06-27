@@ -30,7 +30,7 @@ import org.junit.Test;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 
 import com.holonplatform.core.property.PropertyBox;
-import com.holonplatform.json.gson.GsonConfiguration;
+import com.holonplatform.json.gson.jaxrs.GsonFeature;
 import com.holonplatform.json.gson.jaxrs.test.TestJerseyIntegration.TestEndpoint;
 
 public class TestDisableJerseyIntegration extends JerseyTest {
@@ -44,14 +44,14 @@ public class TestDisableJerseyIntegration extends JerseyTest {
 	@Override
 	protected Application configure() {
 		return new ResourceConfig().register(LoggingFeature.class).register(TestEndpoint.class)
-				.property(GsonConfiguration.JAXRS_DISABLE_GSON_AUTO_CONFIG, "");
+				.property(GsonFeature.JAXRS_DISABLE_GSON_AUTO_CONFIG, "");
 	}
 
 	// Avoid conflict with Resteasy in classpath
 	@Override
 	protected Client getClient() {
 		ClientConfig config = new ClientConfig();
-		config = config.property(GsonConfiguration.JAXRS_DISABLE_GSON_AUTO_CONFIG, "");
+		config = config.property(GsonFeature.JAXRS_DISABLE_GSON_AUTO_CONFIG, "");
 		return JerseyClientBuilder.createClient(config);
 	}
 

@@ -28,8 +28,23 @@ import com.holonplatform.json.gson.internal.jaxrs.GsonProviderFeature;
  */
 public class GsonFeature implements Feature {
 
+	/**
+	 * Property name to put in JAX-RS application configuration to disable Gson provider (message body reader and
+	 * writer) and context resolver auto-configuration.
+	 */
+	public static final String JAXRS_DISABLE_GSON_AUTO_CONFIG = "holon.gson.disable-autoconfig";
+
+	/**
+	 * Property name to put in JAX-RS application configuration to disable Gson context resolver auto-configuration only
+	 * (message body reader and writer will be auto-configured).
+	 */
+	public static final String JAXRS_DISABLE_GSON_CONTEXT_RESOLVER = "holon.gson.disable-resolver";
+
+	/**
+	 * Feature name
+	 */
 	public static final String FEATURE_NAME = GsonFeature.class.getName();
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see javax.ws.rs.core.Feature#configure(javax.ws.rs.core.FeatureContext)

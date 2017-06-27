@@ -20,8 +20,8 @@ import javax.ws.rs.core.FeatureContext;
 
 import com.holonplatform.core.internal.Logger;
 import com.holonplatform.core.property.PropertyBox;
-import com.holonplatform.json.jackson.JacksonConfiguration;
 import com.holonplatform.json.jackson.internal.JacksonLogger;
+import com.holonplatform.json.jackson.jaxrs.JacksonFeature;
 
 /**
  * {@link Feature} to configure Jackson object mapper with {@link PropertyBox} marshalling capabilities.
@@ -39,9 +39,9 @@ public class JacksonConfigurationFeature implements Feature {
 	@Override
 	public boolean configure(FeatureContext context) {
 		if (context.getConfiguration().getProperties()
-				.containsKey(JacksonConfiguration.JAXRS_DISABLE_JACKSON_CONTEXT_RESOLVER)) {
+				.containsKey(JacksonFeature.JAXRS_DISABLE_JACKSON_CONTEXT_RESOLVER)) {
 			LOGGER.debug(() -> "Skip JacksonContextResolver registration, ["
-					+ JacksonConfiguration.JAXRS_DISABLE_JACKSON_CONTEXT_RESOLVER + "] property detected");
+					+ JacksonFeature.JAXRS_DISABLE_JACKSON_CONTEXT_RESOLVER + "] property detected");
 			return false;
 		}
 		// register

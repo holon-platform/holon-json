@@ -28,6 +28,21 @@ import com.holonplatform.json.jackson.internal.jaxrs.JacksonProviderFeature;
  */
 public class JacksonFeature implements Feature {
 
+	/**
+	 * Property name to put in JAX-RS application configuration to disable Jackson provider (message body reader and
+	 * writer) and context resolver auto-configuration.
+	 */
+	public static final String JAXRS_DISABLE_JACKSON_AUTO_CONFIG = "holon.gson.disable-autoconfig";
+
+	/**
+	 * Property name to put in JAX-RS application configuration to disable Jackson context resolver auto-configuration
+	 * only (message body reader and writer will be auto-configured).
+	 */
+	public static final String JAXRS_DISABLE_JACKSON_CONTEXT_RESOLVER = "holon.jackson.disable-resolver";
+
+	/**
+	 * Feature name
+	 */
 	public static final String FEATURE_NAME = JacksonFeature.class.getName();
 
 	/*

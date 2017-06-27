@@ -47,6 +47,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.holonplatform.core.property.PropertyBox;
 import com.holonplatform.json.gson.GsonConfiguration;
+import com.holonplatform.json.gson.jaxrs.GsonFeature;
 import com.holonplatform.json.gson.jaxrs.test.TestJerseyIntegration.TestEndpoint;
 
 public class TestJerseyIntegrationCustomResolver extends JerseyTest {
@@ -73,7 +74,7 @@ public class TestJerseyIntegrationCustomResolver extends JerseyTest {
 	protected Application configure() {
 		return new ResourceConfig().register(LoggingFeature.class).register(TestEndpoint.class)
 				.register(TestEndpoint2.class).register(TestContextResolver.class)
-				.property(GsonConfiguration.JAXRS_DISABLE_GSON_CONTEXT_RESOLVER, "");
+				.property(GsonFeature.JAXRS_DISABLE_GSON_CONTEXT_RESOLVER, "");
 	}
 
 	// Avoid conflict with Resteasy in classpath
@@ -81,7 +82,7 @@ public class TestJerseyIntegrationCustomResolver extends JerseyTest {
 	protected Client getClient() {
 		ClientConfig config = new ClientConfig();
 		config = config.register(TestContextResolver.class)
-				.property(GsonConfiguration.JAXRS_DISABLE_GSON_CONTEXT_RESOLVER, "");
+				.property(GsonFeature.JAXRS_DISABLE_GSON_CONTEXT_RESOLVER, "");
 		return JerseyClientBuilder.createClient(config);
 	}
 

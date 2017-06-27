@@ -33,18 +33,6 @@ public final class GsonConfiguration implements Serializable {
 
 	private static final long serialVersionUID = -6305226379597151459L;
 
-	/**
-	 * Property name to put in JAX-RS application configuration to disable Gson provider (message body reader and
-	 * writer) and context resolver auto-configuration.
-	 */
-	public static final String JAXRS_DISABLE_GSON_AUTO_CONFIG = "holon.gson.disable-autoconfig";
-
-	/**
-	 * Property name to put in JAX-RS application configuration to disable Gson context resolver auto-configuration only
-	 * (message body reader and writer will be auto-configured).
-	 */
-	public static final String JAXRS_DISABLE_GSON_CONTEXT_RESOLVER = "holon.gson.disable-resolver";
-
 	private GsonConfiguration() {
 	}
 

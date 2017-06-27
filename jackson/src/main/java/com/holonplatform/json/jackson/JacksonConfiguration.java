@@ -34,18 +34,6 @@ public final class JacksonConfiguration implements Serializable {
 	private static final long serialVersionUID = -8451471610783164158L;
 
 	/**
-	 * Property name to put in JAX-RS application configuration to disable Jackson provider (message body reader and
-	 * writer) and context resolver auto-configuration.
-	 */
-	public static final String JAXRS_DISABLE_JACKSON_AUTO_CONFIG = "holon.gson.disable-autoconfig";
-
-	/**
-	 * Property name to put in JAX-RS application configuration to disable Jackson context resolver auto-configuration
-	 * only (message body reader and writer will be auto-configured).
-	 */
-	public static final String JAXRS_DISABLE_JACKSON_CONTEXT_RESOLVER = "holon.jackson.disable-resolver";
-
-	/**
 	 * Module with {@link PropertyBox} serialization and deserialization capability.
 	 */
 	private static final SimpleModule PROPERTY_BOX_MODULE = new SimpleModule();

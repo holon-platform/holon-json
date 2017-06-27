@@ -19,8 +19,8 @@ import javax.ws.rs.core.Feature;
 import javax.ws.rs.core.FeatureContext;
 
 import com.holonplatform.core.internal.Logger;
-import com.holonplatform.json.jackson.JacksonConfiguration;
 import com.holonplatform.json.jackson.internal.JacksonLogger;
+import com.holonplatform.json.jackson.jaxrs.JacksonFeature;
 
 /**
  * {@link Feature} to register Jackson JSON providers.
@@ -38,14 +38,14 @@ public class JacksonProviderFeature implements Feature {
 	@Override
 	public boolean configure(FeatureContext context) {
 		if (!context.getConfiguration().getProperties()
-				.containsKey(JacksonConfiguration.JAXRS_DISABLE_JACKSON_AUTO_CONFIG)) {
+				.containsKey(JacksonFeature.JAXRS_DISABLE_JACKSON_AUTO_CONFIG)) {
 			LOGGER.debug(() -> "<Runtime: " + context.getConfiguration().getRuntimeType() + "> Registering provider ["
 					+ JacksonJsonPropertyBoxProvider.class.getName() + "]");
 			context.register(JacksonJsonPropertyBoxProvider.class);
 			return true;
 		} else {
 			LOGGER.debug(() -> "Skip JacksonJsonProvider registration, ["
-					+ JacksonConfiguration.JAXRS_DISABLE_JACKSON_AUTO_CONFIG + "] property detected");
+					+ JacksonFeature.JAXRS_DISABLE_JACKSON_AUTO_CONFIG + "] property detected");
 			return false;
 		}
 
