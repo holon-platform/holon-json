@@ -1,2 +1,1 @@
-com.holonplatform.json.jackson.internal.jaxrs.JacksonJsonPropertyBoxProvider
-com.holonplatform.json.jackson.internal.jaxrs.JacksonContextResolver
+com.holonplatform.json.jackson.jaxrs.JacksonFeature

@@ -1,2 +1,1 @@
-com.holonplatform.json.gson.internal.jaxrs.GsonJsonProvider
-com.holonplatform.json.gson.internal.jaxrs.GsonContextResolver
+com.holonplatform.json.gson.jaxrs.GsonFeature

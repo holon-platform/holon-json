@@ -41,6 +41,12 @@ public class GsonFeature implements Feature {
 	public static final String JAXRS_DISABLE_GSON_CONTEXT_RESOLVER = "holon.gson.disable-resolver";
 
 	/**
+	 * Property name to put in JAX-RS application configuration to enable JSON <em>pretty print</em> for the JSON
+	 * message body writer.
+	 */
+	public static final String JAXRS_JSON_PRETTY_PRINT = "holon.jaxrs.json.pretty-print";
+
+	/**
 	 * Feature name
 	 */
 	public static final String FEATURE_NAME = GsonFeature.class.getName();

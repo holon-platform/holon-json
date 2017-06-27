@@ -45,6 +45,7 @@ import com.holonplatform.core.property.PropertyBox;
 import com.holonplatform.core.property.PropertySet;
 import com.holonplatform.core.property.PropertySetRef;
 import com.holonplatform.core.property.VirtualProperty;
+import com.holonplatform.json.gson.jaxrs.GsonFeature;
 
 public class TestJerseyIntegration extends JerseyTest {
 
@@ -90,7 +91,8 @@ public class TestJerseyIntegration extends JerseyTest {
 
 	@Override
 	protected Application configure() {
-		return new ResourceConfig().register(LoggingFeature.class).register(TestEndpoint.class);
+		return new ResourceConfig().register(LoggingFeature.class).register(TestEndpoint.class)
+				.property(GsonFeature.JAXRS_JSON_PRETTY_PRINT, true);
 	}
 
 	// Avoid conflict with Resteasy in classpath

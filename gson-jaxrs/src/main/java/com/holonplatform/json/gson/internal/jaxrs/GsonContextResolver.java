@@ -33,11 +33,27 @@ import com.holonplatform.json.gson.GsonConfiguration;
 @Produces(MediaType.APPLICATION_JSON)
 public class GsonContextResolver implements ContextResolver<Gson> {
 
-	private final GsonBuilder builder;
+	private final GsonBuilder _builder;
 
+	private Gson _gson;
+	
 	public GsonContextResolver() {
+		this(false);
+	}
+
+	public GsonContextResolver(boolean prettyPrint) {
 		super();
-		this.builder = GsonConfiguration.builder();
+		this._builder = GsonConfiguration.builder();
+		if (prettyPrint) {
+			_builder.setPrettyPrinting();
+		}
+	}
+
+	private Gson getGson() {
+		if (_gson == null) {
+			_gson = _builder.create();
+		}
+		return _gson;
 	}
 
 	/*
@@ -46,7 +62,7 @@ public class GsonContextResolver implements ContextResolver<Gson> {
 	 */
 	@Override
 	public Gson getContext(Class<?> type) {
-		return builder.create();
+		return getGson();
 	}
 
 }

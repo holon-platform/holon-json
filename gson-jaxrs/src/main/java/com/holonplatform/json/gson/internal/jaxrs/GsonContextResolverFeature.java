@@ -19,6 +19,7 @@ import javax.ws.rs.core.Feature;
 import javax.ws.rs.core.FeatureContext;
 
 import com.holonplatform.core.internal.Logger;
+import com.holonplatform.core.internal.utils.TypeUtils;
 import com.holonplatform.core.property.PropertyBox;
 import com.holonplatform.json.gson.internal.GsonLogger;
 import com.holonplatform.json.gson.jaxrs.GsonFeature;
@@ -49,10 +50,20 @@ public class GsonContextResolverFeature implements Feature {
 					+ GsonFeature.JAXRS_DISABLE_GSON_CONTEXT_RESOLVER + "] property detected");
 			return false;
 		}
+		// check pretty print
+		boolean prettyPrint = false;
+		if (context.getConfiguration().getProperties().containsKey(GsonFeature.JAXRS_JSON_PRETTY_PRINT)) {
+			Object pp = context.getConfiguration().getProperties().getOrDefault(GsonFeature.JAXRS_JSON_PRETTY_PRINT,
+					Boolean.FALSE);
+			if (TypeUtils.isBoolean(pp.getClass()) && (boolean) pp) {
+				prettyPrint = true;
+			}
+		}
+
 		// register
 		LOGGER.debug(() -> "<Runtime: " + context.getConfiguration().getRuntimeType()
 				+ "> Registering ContextResolver [" + GsonContextResolver.class.getName() + "]");
-		context.register(GsonContextResolver.class);
+		context.register(new GsonContextResolver(prettyPrint));
 		return true;
 	}
 
