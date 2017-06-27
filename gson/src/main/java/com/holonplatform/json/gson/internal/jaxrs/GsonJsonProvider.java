@@ -130,12 +130,13 @@ public class GsonJsonProvider implements MessageBodyWriter<Object>, MessageBodyR
 			throws IOException, WebApplicationException {
 
 		final Type jsonType = type.equals(genericType) ? type : genericType;
+
 		try (final Reader reader = new InputStreamReader(entityStream, CHARSET)) {
 
 			// check property set
 			PropertySet<?> propertySet = null;
-			if (!com.holonplatform.core.Context.get().resource(PropertySet.CONTEXT_KEY, PropertySet.class)
-					.isPresent()) {
+			if (isPropertyBoxType(jsonType) && !com.holonplatform.core.Context.get()
+					.resource(PropertySet.CONTEXT_KEY, PropertySet.class).isPresent()) {
 				PropertySetRef propertySetRef = PropertySetRefIntrospector.getPropertySetRef(annotations).orElse(null);
 				if (propertySetRef != null) {
 					try {
@@ -211,6 +212,23 @@ public class GsonJsonProvider implements MessageBodyWriter<Object>, MessageBodyR
 				throw new WebApplicationException(e.getMessage(), e, Status.BAD_REQUEST);
 			}
 		}
+	}
+
+	/**
+	 * Checks whether given <code>type</code> is a {@link PropertyBox} type.
+	 * @param type Type to check
+	 * @return <code>true</code> if given <code>type</code> is a {@link PropertyBox} type
+	 */
+	private static boolean isPropertyBoxType(Type type) {
+		if (type != null) {
+			if (PropertyBox.class == type) {
+				return true;
+			}
+			if (type instanceof Class && PropertyBox.class.isAssignableFrom((Class<?>) type)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }
