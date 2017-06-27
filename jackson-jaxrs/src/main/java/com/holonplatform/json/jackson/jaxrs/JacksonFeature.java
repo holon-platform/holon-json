@@ -18,11 +18,14 @@ package com.holonplatform.json.jackson.jaxrs;
 import javax.ws.rs.core.Feature;
 import javax.ws.rs.core.FeatureContext;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.holonplatform.core.property.PropertyBox;
 import com.holonplatform.json.jackson.internal.jaxrs.JacksonConfigurationFeature;
 import com.holonplatform.json.jackson.internal.jaxrs.JacksonProviderFeature;
 
 /**
- * JAX-RS {@link Feature} to register Jackson JSON providers and context resolver.
+ * JAX-RS {@link Feature} to register Jackson {@link PropertyBox} JSON serializers/deserializers and context resolver
+ * for properly configured {@link ObjectMapper}.
  * 
  * @since 5.0.0
  */
