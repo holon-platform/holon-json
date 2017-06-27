@@ -2,6 +2,8 @@
 
 A `JsonSerializer` and a `JsonDeserializer` are provided to configure link:holon-core.html#PropertyBox[PropertyBox] serialization to _JSON_ format and deserialization from _JSON_ format.
 
+=== Configuration and use
+
 _Maven coordinates_:
 [source, xml, subs="attributes+"]
 ----
@@ -9,8 +11,6 @@ _Maven coordinates_:
 <artifactId>holon-gson</artifactId>
 <version>{revnumber}</version>
 ----
-
-=== Configuration and use
 
 To enable `PropertyBox` handling in Gson, registering the suitable `JsonSerializer` and a `JsonDeserializer` pair, the link:{apidir}/com/holonplatform/json/gson/GsonConfiguration.html[GsonConfiguration^] utility class can be used:
 
@@ -44,6 +44,14 @@ In the example above, the `PropertyBox` instance will be serialized as a JSON ob
 ----
 
 === JAX-RS integration
+
+_Maven coordinates_:
+[source, xml, subs="attributes+"]
+----
+<groupId>com.holon-platform.json</groupId>
+<artifactId>holon-gson-jaxrs</artifactId>
+<version>{revnumber}</version>
+----
 
 A set of JAX-RS extension classes are provided to configure `PropertyBox` JSON support in JAX-RS using _Gson_, and in a more general sense, to configure _Gson_ as main serializer/deserializer in a JAX-RS server and/or client for the JSON media type.
 
