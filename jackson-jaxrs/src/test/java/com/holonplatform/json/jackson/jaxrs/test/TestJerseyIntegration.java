@@ -15,7 +15,7 @@
  */
 package com.holonplatform.json.jackson.jaxrs.test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static org.junit.Assert.assertNotNull;
 
 import javax.ws.rs.Consumes;
@@ -74,6 +74,7 @@ public class TestJerseyIntegration extends JerseyTest {
 			BeanData bd = new BeanData();
 			bd.setKey(777);
 			bd.setDescription("777d");
+			bd.setToIgnore("IGNORE");
 			return PropertyBox.builder(SET).set(NUM, num).set(DBL, 7.5).set(BEAN, bd).build();
 		}
 
@@ -123,6 +124,7 @@ public class TestJerseyIntegration extends JerseyTest {
 		assertNotNull(box.getValue(BEAN));
 		assertEquals(777, box.getValue(BEAN).getKey());
 		assertEquals("777d", box.getValue(BEAN).getDescription());
+		assertNull(box.getValue(BEAN).getToIgnore());
 
 		PropertyBox boxToSrlz = PropertyBox.builder(SET).set(NUM, 100).set(DBL, 77.7).build();
 

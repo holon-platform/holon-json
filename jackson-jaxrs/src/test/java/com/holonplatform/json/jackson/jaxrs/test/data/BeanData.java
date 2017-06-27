@@ -17,11 +17,16 @@ package com.holonplatform.json.jackson.jaxrs.test.data;
 
 import java.io.Serializable;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @SuppressWarnings("serial")
 public class BeanData implements Serializable {
 
 	private int key;
 	private String description;
+	
+	@JsonIgnore
+	private String toIgnore;
 
 	public int getKey() {
 		return key;
@@ -37,6 +42,14 @@ public class BeanData implements Serializable {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public String getToIgnore() {
+		return toIgnore;
+	}
+
+	public void setToIgnore(String toIgnore) {
+		this.toIgnore = toIgnore;
 	}
 
 }
