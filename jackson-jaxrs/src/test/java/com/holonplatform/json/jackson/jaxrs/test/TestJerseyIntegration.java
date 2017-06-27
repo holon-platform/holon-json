@@ -83,7 +83,7 @@ public class TestJerseyIntegration extends JerseyTest {
 		@PUT
 		@Path("srlz")
 		@Consumes(MediaType.APPLICATION_JSON)
-		public Response srlz(@PropertySetRef(TestJerseyIntegration.class) PropertyBox data) {
+		public Response srlz(@PropertySetRef(value = TestJerseyIntegration.class, field = "SET") PropertyBox data) {
 			data.getValue(NUM);
 			data.getValue(BEAN);
 			return Response.accepted().build();
