@@ -81,8 +81,8 @@ public class TestJerseyIntegrationCustomResolver extends JerseyTest {
 	@Override
 	protected Client getClient() {
 		ClientConfig config = new ClientConfig();
-		config = config.register(TestContextResolver.class)
-				.property(GsonFeature.JAXRS_DISABLE_GSON_CONTEXT_RESOLVER, "");
+		config = config.register(TestContextResolver.class).property(GsonFeature.JAXRS_DISABLE_GSON_CONTEXT_RESOLVER,
+				"");
 		return JerseyClientBuilder.createClient(config);
 	}
 

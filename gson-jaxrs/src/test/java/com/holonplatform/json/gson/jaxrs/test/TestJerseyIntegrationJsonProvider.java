@@ -72,7 +72,7 @@ public class TestJerseyIntegrationJsonProvider extends JerseyTest {
 		Object value = target("/test/data/{num}").resolveTemplate("num", 1).request().get(PropertyBox.class);
 		assertEquals("Test", value);
 	}
-	
+
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public static class TestJsonProvider implements MessageBodyWriter<Object>, MessageBodyReader<Object> {
@@ -82,8 +82,11 @@ public class TestJerseyIntegrationJsonProvider extends JerseyTest {
 			return true;
 		}
 
-		/* (non-Javadoc)
-		 * @see javax.ws.rs.ext.MessageBodyReader#readFrom(java.lang.Class, java.lang.reflect.Type, java.lang.annotation.Annotation[], javax.ws.rs.core.MediaType, javax.ws.rs.core.MultivaluedMap, java.io.InputStream)
+		/*
+		 * (non-Javadoc)
+		 * @see javax.ws.rs.ext.MessageBodyReader#readFrom(java.lang.Class, java.lang.reflect.Type,
+		 * java.lang.annotation.Annotation[], javax.ws.rs.core.MediaType, javax.ws.rs.core.MultivaluedMap,
+		 * java.io.InputStream)
 		 */
 		@Override
 		public Object readFrom(Class<Object> type, Type genericType, Annotation[] annotations, MediaType mediaType,
@@ -97,16 +100,21 @@ public class TestJerseyIntegrationJsonProvider extends JerseyTest {
 			return true;
 		}
 
-		/* (non-Javadoc)
-		 * @see javax.ws.rs.ext.MessageBodyWriter#getSize(java.lang.Object, java.lang.Class, java.lang.reflect.Type, java.lang.annotation.Annotation[], javax.ws.rs.core.MediaType)
+		/*
+		 * (non-Javadoc)
+		 * @see javax.ws.rs.ext.MessageBodyWriter#getSize(java.lang.Object, java.lang.Class, java.lang.reflect.Type,
+		 * java.lang.annotation.Annotation[], javax.ws.rs.core.MediaType)
 		 */
 		@Override
 		public long getSize(Object t, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
 			return -1;
 		}
 
-		/* (non-Javadoc)
-		 * @see javax.ws.rs.ext.MessageBodyWriter#writeTo(java.lang.Object, java.lang.Class, java.lang.reflect.Type, java.lang.annotation.Annotation[], javax.ws.rs.core.MediaType, javax.ws.rs.core.MultivaluedMap, java.io.OutputStream)
+		/*
+		 * (non-Javadoc)
+		 * @see javax.ws.rs.ext.MessageBodyWriter#writeTo(java.lang.Object, java.lang.Class, java.lang.reflect.Type,
+		 * java.lang.annotation.Annotation[], javax.ws.rs.core.MediaType, javax.ws.rs.core.MultivaluedMap,
+		 * java.io.OutputStream)
 		 */
 		@Override
 		public void writeTo(Object t, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType,
@@ -114,7 +122,7 @@ public class TestJerseyIntegrationJsonProvider extends JerseyTest {
 				throws IOException, WebApplicationException {
 			// noop
 		}
-		
+
 	}
 
 }

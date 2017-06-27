@@ -36,11 +36,11 @@ public class GsonContextResolver implements ContextResolver<Gson> {
 	private final GsonBuilder _builder;
 
 	private Gson _gson;
-	
-	public GsonContextResolver() {
-		this(false);
-	}
 
+	/**
+	 * Constructor
+	 * @param prettyPrint <code>true</code> to enable <em>pretty printing</em> for serialized JSON
+	 */
 	public GsonContextResolver(boolean prettyPrint) {
 		super();
 		this._builder = GsonConfiguration.builder();
@@ -49,6 +49,10 @@ public class GsonContextResolver implements ContextResolver<Gson> {
 		}
 	}
 
+	/**
+	 * Get the {@link Gson} instance to use.
+	 * @return The {@link Gson} instance to use
+	 */
 	private Gson getGson() {
 		if (_gson == null) {
 			_gson = _builder.create();

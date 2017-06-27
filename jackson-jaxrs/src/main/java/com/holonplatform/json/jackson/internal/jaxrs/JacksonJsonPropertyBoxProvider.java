@@ -77,6 +77,11 @@ public class JacksonJsonPropertyBoxProvider implements MessageBodyWriter<Propert
 
 	private PropertySetRefIntrospector propertySetRefIntrospector;
 
+	/**
+	 * Get the {@link ObjectMapper} to use.
+	 * @return The {@link ObjectMapper} obtained from a suitable {@link ContextResolver}, or a default one if not
+	 *         available
+	 */
 	private ObjectMapper getObjectMapper() {
 		if (_mapper == null) {
 			// init using a contextresolver, if available
@@ -94,6 +99,10 @@ public class JacksonJsonPropertyBoxProvider implements MessageBodyWriter<Propert
 		return _mapper;
 	}
 
+	/**
+	 * Get the object reader to use to deserialize a {@link PropertyBox}.
+	 * @return The object reader
+	 */
 	private ObjectReader getObjectReader() {
 		if (_reader == null) {
 			_reader = getObjectMapper().readerFor(PropertyBox.class);
@@ -101,6 +110,10 @@ public class JacksonJsonPropertyBoxProvider implements MessageBodyWriter<Propert
 		return _reader;
 	}
 
+	/**
+	 * Get the object writer to use to serialize a {@link PropertyBox}.
+	 * @return The object writer
+	 */
 	private ObjectWriter getObjectWriter() {
 		if (_writer == null) {
 			System.err.println("--------PP> " + getObjectMapper().isEnabled(SerializationFeature.INDENT_OUTPUT));

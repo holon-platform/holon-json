@@ -35,6 +35,10 @@ public class JacksonContextResolver implements ContextResolver<ObjectMapper> {
 
 	private final ObjectMapper mapper;
 
+	/**
+	 * Constructor
+	 * @param prettyPrint <code>true</code> to enable <em>pretty printing</em> of serialized JSON
+	 */
 	public JacksonContextResolver(boolean prettyPrint) {
 		super();
 		mapper = new ObjectMapper();

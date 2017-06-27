@@ -37,7 +37,7 @@ public final class SpringJacksonConfiguration implements Serializable {
 
 	private SpringJacksonConfiguration() {
 	}
-	
+
 	/**
 	 * Configure Spring RestTemplate, setting up serializers and deserializers for {@link PropertyBox} type handling in
 	 * Jackson HttpMessageConverters, if any. If no Jackson HttpMessageConverter is registered, a configured

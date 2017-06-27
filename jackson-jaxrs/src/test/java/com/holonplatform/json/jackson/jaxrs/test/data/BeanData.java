@@ -24,7 +24,7 @@ public class BeanData implements Serializable {
 
 	private int key;
 	private String description;
-	
+
 	@JsonIgnore
 	private String toIgnore;
 

@@ -25,8 +25,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Map.Entry;
+import java.util.Optional;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonParser;
@@ -41,9 +41,9 @@ import com.holonplatform.core.Path;
 import com.holonplatform.core.internal.utils.ConversionUtils;
 import com.holonplatform.core.internal.utils.TypeUtils;
 import com.holonplatform.core.property.Property;
+import com.holonplatform.core.property.Property.PropertyReadException;
 import com.holonplatform.core.property.PropertyBox;
 import com.holonplatform.core.property.PropertySet;
-import com.holonplatform.core.property.Property.PropertyReadException;
 
 /**
  * Jackson JSON deserializer to handle {@link PropertyBox} deserialization
@@ -131,12 +131,26 @@ public class JacksonPropertyBoxDeserializer extends JsonDeserializer<PropertyBox
 		}
 	}
 
+	/**
+	 * Get the type of the JSON field named <code>fieldName</code> which corresponds to a property in the set with the
+	 * same name.
+	 * @param set Property set
+	 * @param fieldName Field name
+	 * @return Field type
+	 */
 	@SuppressWarnings("rawtypes")
 	private static Class<?> getFieldType(PropertySet<?> set, String fieldName) {
 		return set.stream().filter(p -> Path.class.isAssignableFrom(p.getClass())).map(p -> (Path) p)
 				.filter(q -> fieldName.equals(q.getName())).map(qp -> qp.getType()).findFirst().orElse(Object.class);
 	}
 
+	/**
+	 * Checkup property value, applying conversions if required.
+	 * @param property Property
+	 * @param value Property value
+	 * @return Sanitized property value
+	 * @throws PropertyReadException Error reading property
+	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private static Object checkupPropertyValue(Property property, Object value) throws PropertyReadException {
 		if (value != null) {
