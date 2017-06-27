@@ -19,7 +19,7 @@ To enable `PropertyBox` handling in Jackson, registering the suitable `JsonSeria
 include::{examplesdir}/com/holonplatform/json/examples/ExampleJackson.java[tag=configuration,indent=0]
 ----
 <1> Get or create a Jackson `ObjectMapper`
-<3> Configure the `ObjectMapper` for `PropertyBox` support
+<2> Configure the `ObjectMapper` for `PropertyBox` support
 
 With a properly configured `ObjectMapper` instance, a `PropertyBox` can be serialized and deserialized just like any another object. As described in <<JsonPropertySet>>, you need to declare the `PropertySet` to use as a _Context_ resource at `PropertyBox` deserialization time.
 
