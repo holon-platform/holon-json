@@ -40,8 +40,8 @@ public class JacksonProviderFeature implements Feature {
 		if (!context.getConfiguration().getProperties()
 				.containsKey(JacksonConfiguration.JAXRS_DISABLE_JACKSON_AUTO_CONFIG)) {
 			LOGGER.debug(() -> "<Runtime: " + context.getConfiguration().getRuntimeType() + "> Registering provider ["
-					+ JacksonJsonProvider.class.getName() + "]");
-			context.register(JacksonJsonProvider.class);
+					+ JacksonJsonPropertyBoxProvider.class.getName() + "]");
+			context.register(JacksonJsonPropertyBoxProvider.class);
 			return true;
 		} else {
 			LOGGER.debug(() -> "Skip JacksonJsonProvider registration, ["

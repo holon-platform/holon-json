@@ -45,15 +45,17 @@ import com.holonplatform.core.property.PropertyBox;
 import com.holonplatform.core.property.PropertySet;
 import com.holonplatform.core.property.PropertySetRef;
 import com.holonplatform.core.property.VirtualProperty;
+import com.holonplatform.json.jackson.jaxrs.test.data.BeanData;
 
 public class TestJerseyIntegration extends JerseyTest {
 
 	public static final Property<Integer> NUM = PathProperty.create("num", Integer.class);
 	public static final Property<Double> DBL = PathProperty.create("dbl", Double.class);
+	public static final Property<BeanData> BEAN = PathProperty.create("bean", BeanData.class);
 	public static final Property<String> STR = VirtualProperty.create(String.class)
 			.valueProvider(b -> "Str_" + b.getValue(NUM));
 
-	public static final PropertySet<?> SET = PropertySet.of(NUM, DBL, STR);
+	public static final PropertySet<?> SET = PropertySet.of(NUM, DBL, STR, BEAN);
 
 	@Path("test")
 	public static class TestEndpoint {
@@ -69,7 +71,10 @@ public class TestJerseyIntegration extends JerseyTest {
 		@Path("data/{num}")
 		@Produces(MediaType.APPLICATION_JSON)
 		public PropertyBox getData(@PathParam("num") int num) {
-			return PropertyBox.builder(SET).set(NUM, num).set(DBL, 7.5).build();
+			BeanData bd = new BeanData();
+			bd.setKey(777);
+			bd.setDescription("777d");
+			return PropertyBox.builder(SET).set(NUM, num).set(DBL, 7.5).set(BEAN, bd).build();
 		}
 
 		@PUT
@@ -77,6 +82,7 @@ public class TestJerseyIntegration extends JerseyTest {
 		@Consumes(MediaType.APPLICATION_JSON)
 		public Response srlz(@PropertySetRef(TestJerseyIntegration.class) PropertyBox data) {
 			data.getValue(NUM);
+			data.getValue(BEAN);
 			return Response.accepted().build();
 		}
 
@@ -114,6 +120,9 @@ public class TestJerseyIntegration extends JerseyTest {
 		assertNotNull(box);
 		assertEquals(Integer.valueOf(2), box.getValue(NUM));
 		assertEquals("Str_2", box.getValue(STR));
+		assertNotNull(box.getValue(BEAN));
+		assertEquals(777, box.getValue(BEAN).getKey());
+		assertEquals("777d", box.getValue(BEAN).getDescription());
 
 		PropertyBox boxToSrlz = PropertyBox.builder(SET).set(NUM, 100).set(DBL, 77.7).build();
 
