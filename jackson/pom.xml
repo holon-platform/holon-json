@@ -16,21 +16,6 @@
 
 	<url>https://holon-platform.com</url>
 
-	<dependencyManagement>
-		<dependencies>
-
-			<!-- Holon core platform -->
-			<dependency>
-				<groupId>com.holon-platform.core</groupId>
-				<artifactId>holon-bom-platform</artifactId>
-				<version>${holon.core.version}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-
-		</dependencies>
-	</dependencyManagement>
-
 	<dependencies>
 
 		<!-- Holon core -->
@@ -119,6 +104,7 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>jul-to-slf4j</artifactId>
+			<version>1.7.25</version>
 			<scope>test</scope>
 		</dependency>
 
