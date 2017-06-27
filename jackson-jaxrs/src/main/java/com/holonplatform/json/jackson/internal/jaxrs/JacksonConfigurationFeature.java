@@ -19,6 +19,7 @@ import javax.ws.rs.core.Feature;
 import javax.ws.rs.core.FeatureContext;
 
 import com.holonplatform.core.internal.Logger;
+import com.holonplatform.core.internal.utils.TypeUtils;
 import com.holonplatform.core.property.PropertyBox;
 import com.holonplatform.json.jackson.internal.JacksonLogger;
 import com.holonplatform.json.jackson.jaxrs.JacksonFeature;
@@ -44,10 +45,21 @@ public class JacksonConfigurationFeature implements Feature {
 					+ JacksonFeature.JAXRS_DISABLE_JACKSON_CONTEXT_RESOLVER + "] property detected");
 			return false;
 		}
+
+		// check pretty print
+		boolean prettyPrint = false;
+		if (context.getConfiguration().getProperties().containsKey(JacksonFeature.JAXRS_JSON_PRETTY_PRINT)) {
+			Object pp = context.getConfiguration().getProperties().getOrDefault(JacksonFeature.JAXRS_JSON_PRETTY_PRINT,
+					Boolean.FALSE);
+			if (TypeUtils.isBoolean(pp.getClass()) && (boolean) pp) {
+				prettyPrint = true;
+			}
+		}
+
 		// register
 		LOGGER.debug(() -> "<Runtime: " + context.getConfiguration().getRuntimeType()
 				+ "> Registering ContextResolver [" + JacksonContextResolver.class.getName() + "]");
-		context.register(JacksonContextResolver.class);
+		context.register(new JacksonContextResolver(prettyPrint));
 		return true;
 	}
 

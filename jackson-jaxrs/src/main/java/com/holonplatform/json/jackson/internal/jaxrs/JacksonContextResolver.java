@@ -20,6 +20,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.ext.ContextResolver;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.holonplatform.core.property.PropertyBox;
 import com.holonplatform.json.jackson.JacksonConfiguration;
 
@@ -34,9 +35,12 @@ public class JacksonContextResolver implements ContextResolver<ObjectMapper> {
 
 	private final ObjectMapper mapper;
 
-	public JacksonContextResolver() {
+	public JacksonContextResolver(boolean prettyPrint) {
 		super();
 		mapper = new ObjectMapper();
+		if (prettyPrint) {
+			mapper.enable(SerializationFeature.INDENT_OUTPUT);
+		}
 		JacksonConfiguration.configure(mapper);
 	}
 

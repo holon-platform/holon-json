@@ -45,6 +45,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.holonplatform.core.internal.property.PropertySetRefIntrospector;
 import com.holonplatform.core.internal.property.PropertySetRefIntrospector.PropertySetIntrospectionException;
 import com.holonplatform.core.property.PropertyBox;
@@ -102,6 +103,7 @@ public class JacksonJsonPropertyBoxProvider implements MessageBodyWriter<Propert
 
 	private ObjectWriter getObjectWriter() {
 		if (_writer == null) {
+			System.err.println("--------PP> " + getObjectMapper().isEnabled(SerializationFeature.INDENT_OUTPUT));
 			_writer = getObjectMapper().writerFor(PropertyBox.class);
 		}
 		return _writer;

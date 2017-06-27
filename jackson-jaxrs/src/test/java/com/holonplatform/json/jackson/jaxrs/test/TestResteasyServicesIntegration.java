@@ -21,7 +21,9 @@ import static com.holonplatform.json.jackson.jaxrs.test.TestJerseyIntegration.ST
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import javax.ws.rs.client.Client;
@@ -35,6 +37,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.holonplatform.core.property.PropertyBox;
+import com.holonplatform.json.jackson.jaxrs.JacksonFeature;
 import com.holonplatform.json.jackson.jaxrs.test.TestJerseyIntegration.TestEndpoint;
 
 public class TestResteasyServicesIntegration {
@@ -42,6 +45,7 @@ public class TestResteasyServicesIntegration {
 	private static UndertowJaxrsServer server;
 
 	public static class Config extends Application {
+
 		@Override
 		public Set<Class<?>> getClasses() {
 			final HashSet<Class<?>> classes = new HashSet<>();
@@ -49,6 +53,12 @@ public class TestResteasyServicesIntegration {
 			classes.add(TestEndpoint.class);
 			return classes;
 		}
+
+		@Override
+		public Map<String, Object> getProperties() {
+			return Collections.singletonMap(JacksonFeature.JAXRS_JSON_PRETTY_PRINT, true);
+		}
+
 	}
 
 	@BeforeClass
@@ -70,7 +80,7 @@ public class TestResteasyServicesIntegration {
 	public void testGsonConfig() {
 
 		Client client = ResteasyClientBuilder.newClient(); // Avoid conflict with Jersey in classpath
-				// ClientBuilder.newClient()
+		// ClientBuilder.newClient()
 
 		String pong = client.target(TestPortProvider.generateURL("/test/ping")).request().get(String.class);
 		assertEquals("pong", pong);
