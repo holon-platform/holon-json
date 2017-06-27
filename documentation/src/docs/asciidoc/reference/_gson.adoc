@@ -77,10 +77,11 @@ include::{examplesdir}/com/holonplatform/json/examples/ExampleGson.java[tag=jaxr
 
 ==== JAX-RS integration configuration
 
-Two configuration properties are available to tune or disable the JAX-RS integration features for _Gson_ and `PropertyBox` support:
+The following configuration properties are available to tune or disable the JAX-RS integration features for _Gson_ and `PropertyBox` support:
 
 * `holon.gson.disable-resolver`: If this property is present in JAX-RS application properties, the Gson *ContextResolver* auto-configuration is disabled
 * `holon.gson.disable-autoconfig`: If this property is present in JAX-RS application properties, all the Gson and `PropertyBox` JSON serialization/deserialization features will be disabled
+* `holon.jaxrs.json.pretty-print`: If `true`, enables _pretty printing_ of serialized JSON
 
 === Spring integration
 
