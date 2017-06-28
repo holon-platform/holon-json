@@ -1,6 +1,6 @@
 # Holon platform JSON module
 
-This is the __JSON__ module of the [Holon Platform](https://holon-platform.com) and provides support for the [JSON](http://www.json.org) data-interchange format using the must popular serialization and deserialization libraries:
+This is the __JSON__ module of the [Holon Platform](https://holon-platform.com), which provides support for the [JSON](http://www.json.org) data-interchange format using the must popular serialization and deserialization libraries:
 
 * [Jackson](http://wiki.fasterxml.com/JacksonHome)
 * [Gson](https://github.com/google/gson)
