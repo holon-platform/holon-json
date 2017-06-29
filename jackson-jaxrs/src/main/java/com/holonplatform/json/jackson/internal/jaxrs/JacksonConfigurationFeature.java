@@ -45,21 +45,24 @@ public class JacksonConfigurationFeature implements Feature {
 					+ JacksonFeature.JAXRS_DISABLE_JACKSON_CONTEXT_RESOLVER + "] property detected");
 			return false;
 		}
+		
+		if (!context.getConfiguration().isRegistered(JacksonContextResolver.class)) {
 
-		// check pretty print
-		boolean prettyPrint = false;
-		if (context.getConfiguration().getProperties().containsKey(JacksonFeature.JAXRS_JSON_PRETTY_PRINT)) {
-			Object pp = context.getConfiguration().getProperties().getOrDefault(JacksonFeature.JAXRS_JSON_PRETTY_PRINT,
-					Boolean.FALSE);
-			if (TypeUtils.isBoolean(pp.getClass()) && (boolean) pp) {
-				prettyPrint = true;
+			// check pretty print
+			boolean prettyPrint = false;
+			if (context.getConfiguration().getProperties().containsKey(JacksonFeature.JAXRS_JSON_PRETTY_PRINT)) {
+				Object pp = context.getConfiguration().getProperties()
+						.getOrDefault(JacksonFeature.JAXRS_JSON_PRETTY_PRINT, Boolean.FALSE);
+				if (TypeUtils.isBoolean(pp.getClass()) && (boolean) pp) {
+					prettyPrint = true;
+				}
 			}
-		}
 
-		// register
-		LOGGER.debug(() -> "<Runtime: " + context.getConfiguration().getRuntimeType()
-				+ "> Registering ContextResolver [" + JacksonContextResolver.class.getName() + "]");
-		context.register(new JacksonContextResolver(prettyPrint));
+			// register
+			LOGGER.debug(() -> "<Runtime: " + context.getConfiguration().getRuntimeType()
+					+ "> Registering ContextResolver [" + JacksonContextResolver.class.getName() + "]");
+			context.register(new JacksonContextResolver(prettyPrint));
+		}
 		return true;
 	}
 

@@ -37,17 +37,17 @@ public class GsonProviderFeature implements Feature {
 	 */
 	@Override
 	public boolean configure(FeatureContext context) {
-		if (!context.getConfiguration().getProperties().containsKey(GsonFeature.JAXRS_DISABLE_GSON_AUTO_CONFIG)) {
-			LOGGER.debug(() -> "<Runtime: " + context.getConfiguration().getRuntimeType() + "> Registering provider ["
-					+ GsonJsonProvider.class.getName() + "]");
-			context.register(GsonJsonProvider.class);
-			return true;
-		} else {
+		if (context.getConfiguration().getProperties().containsKey(GsonFeature.JAXRS_DISABLE_GSON_AUTO_CONFIG)) {
 			LOGGER.debug(() -> "Skip GsonJsonProvider registration, [" + GsonFeature.JAXRS_DISABLE_GSON_AUTO_CONFIG
 					+ "] property detected");
 			return false;
 		}
-
+		if (!context.getConfiguration().isRegistered(GsonJsonProvider.class)) {
+			LOGGER.debug(() -> "<Runtime: " + context.getConfiguration().getRuntimeType() + "> Registering provider ["
+					+ GsonJsonProvider.class.getName() + "]");
+			context.register(GsonJsonProvider.class);
+		}
+		return true;
 	}
 
 }

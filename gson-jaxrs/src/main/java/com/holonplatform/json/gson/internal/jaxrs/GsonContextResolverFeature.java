@@ -50,20 +50,23 @@ public class GsonContextResolverFeature implements Feature {
 					+ GsonFeature.JAXRS_DISABLE_GSON_CONTEXT_RESOLVER + "] property detected");
 			return false;
 		}
-		// check pretty print
-		boolean prettyPrint = false;
-		if (context.getConfiguration().getProperties().containsKey(GsonFeature.JAXRS_JSON_PRETTY_PRINT)) {
-			Object pp = context.getConfiguration().getProperties().getOrDefault(GsonFeature.JAXRS_JSON_PRETTY_PRINT,
-					Boolean.FALSE);
-			if (TypeUtils.isBoolean(pp.getClass()) && (boolean) pp) {
-				prettyPrint = true;
-			}
-		}
+		if (!context.getConfiguration().isRegistered(GsonContextResolver.class)) {
 
-		// register
-		LOGGER.debug(() -> "<Runtime: " + context.getConfiguration().getRuntimeType()
-				+ "> Registering ContextResolver [" + GsonContextResolver.class.getName() + "]");
-		context.register(new GsonContextResolver(prettyPrint));
+			// check pretty print
+			boolean prettyPrint = false;
+			if (context.getConfiguration().getProperties().containsKey(GsonFeature.JAXRS_JSON_PRETTY_PRINT)) {
+				Object pp = context.getConfiguration().getProperties().getOrDefault(GsonFeature.JAXRS_JSON_PRETTY_PRINT,
+						Boolean.FALSE);
+				if (TypeUtils.isBoolean(pp.getClass()) && (boolean) pp) {
+					prettyPrint = true;
+				}
+			}
+
+			// register
+			LOGGER.debug(() -> "<Runtime: " + context.getConfiguration().getRuntimeType()
+					+ "> Registering ContextResolver [" + GsonContextResolver.class.getName() + "]");
+			context.register(new GsonContextResolver(prettyPrint));
+		}
 		return true;
 	}
 
