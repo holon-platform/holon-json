@@ -59,11 +59,11 @@ The JAX-RS _Gson_ extensions relies on standard `ContextResolver` type to provid
 
 To setup _Gson_ as provider for JSON message type handling, the link:{apidir}/com/holonplatform/json/gson/jaxrs/GsonFeature.html[GsonFeature^] JAX-RS `Feature` can be registered in the JAX-RS application.
 
-If you use link:https://github.com/jersey[Jersey^] or link:http://resteasy.jboss.org[Resteasy^] as JAX-RS implementation, there no need to explicitly register the `GsonFeature`, just ensure the `holon-gson` jar is in classpath and the _Gson_ support will be configured automatically, leveraging Jersey _AutoDiscoverable_ and Resteasy Java Service extensions features.
+If you use link:https://github.com/jersey[Jersey^] or link:http://resteasy.jboss.org[Resteasy^] as JAX-RS implementation, there is no need to explicitly register the `GsonFeature`, just ensure the `holon-gson` jar is in classpath and the _Gson_ support will be configured automatically, leveraging Jersey _AutoDiscoverable_ and Resteasy Java Service extensions features.
 
 ==== `PropertyBox` deserialization
 
-When a `PropertyBox` is used a JAX-RS resource method *parameter* (for methods which declare to consume  `application/json` media type), the JSON deserialization of the input into a `PropertyBox` instance needs to know the `PropertySet` to use to create the property box. For this purpose, the `@PropertySetRef` annotation cn be used at method parameter level to declare the `PropertySet` instance to use to deserialize the property box.
+When a `PropertyBox` is used as a JAX-RS resource method *parameter* (for methods which declare to consume  `application/json` media type), the JSON deserialization of the input into a `PropertyBox` instance needs to know the `PropertySet` to use in order to create the property box. For this purpose, the `@PropertySetRef` annotation can be used at method parameter level to declare the `PropertySet` instance to use to deserialize the property box.
 
 The link:../api/holon-core/com/holonplatform/core/property/PropertySetRef.html[PropertySetRef^] annotation allows to declare the `PropertySet` instance as the `public static` *field* of a given class, which must be specified in the `value()` annotation attribute. If more than one `public static` field of `PropertySet` type is present in declared class, the `field()` annotation attribute can be used to specify the right field name.
 
@@ -72,7 +72,7 @@ The link:../api/holon-core/com/holonplatform/core/property/PropertySetRef.html[P
 include::{examplesdir}/com/holonplatform/json/examples/ExampleGson.java[tag=jaxrs,indent=0]
 ----
 <1> Create a JAX-RS `Client`
-<2> Perform a `PUT` request providing a `PropertyBox` value as JSON. At endpoint resource level, the `PropertyBox` type input parameter of the `serialize` method is annotated with `@PropertySetRef` to declare the property set to use to deserialize the property box from JSON
+<2> Perform a `PUT` request providing a `PropertyBox` value as JSON. At the endpoint resource level, the `PropertyBox` type input parameter of the `serialize` method is annotated with `@PropertySetRef` in order  to declare the property set to use to deserialize the property box from JSON
 <3> Perform a `GET` request for a JSON serialized `PropertyBox` value, providing the `PropertySet` to use for deserialization as a `Context` thread-bound resource
 
 ==== JAX-RS integration configuration
