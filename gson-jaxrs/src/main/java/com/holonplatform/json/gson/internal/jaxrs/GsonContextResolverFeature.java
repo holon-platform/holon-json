@@ -21,8 +21,8 @@ import javax.ws.rs.core.FeatureContext;
 import com.holonplatform.core.internal.Logger;
 import com.holonplatform.core.internal.utils.TypeUtils;
 import com.holonplatform.core.property.PropertyBox;
-import com.holonplatform.json.gson.internal.GsonLogger;
 import com.holonplatform.json.gson.jaxrs.GsonFeature;
+import com.holonplatform.json.internal.JsonLogger;
 
 /**
  * {@link Feature} to configure Gson with {@link PropertyBox} marshalling capabilities.
@@ -31,7 +31,7 @@ import com.holonplatform.json.gson.jaxrs.GsonFeature;
  */
 public class GsonContextResolverFeature implements Feature {
 
-	private final static Logger LOGGER = GsonLogger.create();
+	private final static Logger LOGGER = JsonLogger.create();
 
 	/*
 	 * (non-Javadoc)
