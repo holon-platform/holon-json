@@ -15,8 +15,6 @@
  */
 package com.holonplatform.json.gson;
 
-import java.io.Serializable;
-
 import com.google.gson.GsonBuilder;
 import com.holonplatform.core.internal.property.DefaultPropertyBox;
 import com.holonplatform.core.internal.utils.ObjectUtils;
@@ -25,16 +23,11 @@ import com.holonplatform.json.gson.internal.GsonPropertyBoxDeserializer;
 import com.holonplatform.json.gson.internal.GsonPropertyBoxSerializer;
 
 /**
- * Utility class to handle Gson configuration.
+ * Utility interface to handle Gson configuration for {@link PropertyBox} serializers and deserializers registration.
  *
  * @since 5.0.0
  */
-public final class GsonConfiguration implements Serializable {
-
-	private static final long serialVersionUID = -6305226379597151459L;
-
-	private GsonConfiguration() {
-	}
+public interface GsonConfiguration {
 
 	/**
 	 * Create a {@link GsonBuilder}, registering serializers and deserializers for {@link PropertyBox} type handling.
