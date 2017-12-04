@@ -17,9 +17,8 @@ package com.holonplatform.json.jackson.internal;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.Temporal;
 import java.util.Calendar;
+import java.util.Date;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -38,7 +37,10 @@ import com.holonplatform.core.temporal.TemporalType;
  */
 public class JacksonPropertyBoxSerializer extends JsonSerializer<PropertyBox> {
 
-	private final static String ISO_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
+	private final static String ISO_DATETIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
+	private final static String ISO_DATE_FORMAT = "yyyy-MM-dd";
+	private final static String ISO_TIME_FORMAT = "HH:mm:ss";
+	
 
 	/*
 	 * (non-Javadoc)
@@ -56,25 +58,9 @@ public class JacksonPropertyBoxSerializer extends JsonSerializer<PropertyBox> {
 				Object value = box.getValue(property);
 				if (value != null) {
 					if (TypeUtils.isDate(property.getType())) {
-						gen.writeStringField(name, new SimpleDateFormat(ISO_DATE_FORMAT).format(value));
+						serializeDate(gen, property, name, (Date) value);
 					} else if (TypeUtils.isCalendar(property.getType())) {
-						gen.writeStringField(name,
-								new SimpleDateFormat(ISO_DATE_FORMAT).format(((Calendar) value).getTime()));
-					} else if (TypeUtils.isTemporal(property.getType())) {
-						Temporal temporal = (Temporal) value;
-						TemporalType temporalType = TemporalType.getTemporalType(temporal);
-						switch (temporalType) {
-						case DATE_TIME:
-							gen.writeStringField(name, DateTimeFormatter.ISO_DATE_TIME.format(temporal));
-							break;
-						case TIME:
-							gen.writeStringField(name, DateTimeFormatter.ISO_TIME.format(temporal));
-							break;
-						case DATE:
-						default:
-							gen.writeStringField(name, DateTimeFormatter.ISO_DATE.format(temporal));
-							break;
-						}
+						serializeDate(gen, property, name, ((Calendar) value).getTime());
 					} else {
 						gen.writeObjectField(name, value);
 					}
@@ -83,6 +69,36 @@ public class JacksonPropertyBoxSerializer extends JsonSerializer<PropertyBox> {
 		}
 
 		gen.writeEndObject();
+	}
+
+	/**
+	 * Serialize a {@link Date} value according to property {@link TemporalType}, if available.
+	 * @param gen JsonGenerator
+	 * @param property Property
+	 * @param name Field name
+	 * @param date Date value
+	 * @throws IOException If an error occurred
+	 */
+	private static final void serializeDate(JsonGenerator gen, Property<?> property, String name, Date date)
+			throws IOException {
+		if (date != null) {
+			// Check property configuration
+			final TemporalType temporalType = property.getConfiguration().getTemporalType()
+					.orElse(TemporalType.DATE_TIME);
+			switch (temporalType) {
+			case DATE:
+				gen.writeStringField(name, new SimpleDateFormat(ISO_DATE_FORMAT).format(date));
+				break;
+			case TIME:
+				gen.writeStringField(name, new SimpleDateFormat(ISO_TIME_FORMAT).format(date));
+				break;
+			case DATE_TIME:
+			default:
+				gen.writeStringField(name, new SimpleDateFormat(ISO_DATETIME_FORMAT).format(date));
+				break;
+
+			}
+		}
 	}
 
 }

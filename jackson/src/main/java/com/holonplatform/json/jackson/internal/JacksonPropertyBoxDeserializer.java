@@ -35,15 +35,16 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.deser.std.DateDeserializers;
 import com.holonplatform.core.Context;
 import com.holonplatform.core.Path;
+import com.holonplatform.core.internal.utils.CalendarUtils;
 import com.holonplatform.core.internal.utils.ConversionUtils;
 import com.holonplatform.core.internal.utils.TypeUtils;
 import com.holonplatform.core.property.Property;
 import com.holonplatform.core.property.Property.PropertyReadException;
 import com.holonplatform.core.property.PropertyBox;
 import com.holonplatform.core.property.PropertySet;
+import com.holonplatform.core.temporal.TemporalType;
 
 /**
  * Jackson JSON deserializer to handle {@link PropertyBox} deserialization
@@ -57,7 +58,7 @@ public class JacksonPropertyBoxDeserializer extends JsonDeserializer<PropertyBox
 	 * @see com.fasterxml.jackson.databind.JsonDeserializer#deserialize(com.fasterxml.jackson.core.JsonParser,
 	 * com.fasterxml.jackson.databind.DeserializationContext)
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public PropertyBox deserialize(JsonParser parser, DeserializationContext ctxt)
 			throws IOException, JsonProcessingException {
@@ -69,7 +70,7 @@ public class JacksonPropertyBoxDeserializer extends JsonDeserializer<PropertyBox
 								+ "A PropertySet instance must be available as context resource to perform PropertyBox deserialization."));
 
 		// map to store
-		Map<String, Object> propertyValues = new HashMap<>();
+		final Map<Property, Object> propertyValues = new HashMap<>();
 
 		// read tree
 		JsonNode node = parser.getCodec().readTree(parser);
@@ -78,52 +79,36 @@ public class JacksonPropertyBoxDeserializer extends JsonDeserializer<PropertyBox
 			// get fields
 			Iterator<Entry<String, JsonNode>> fi = node.fields();
 			while (fi.hasNext()) {
-				Entry<String, JsonNode> entry = fi.next();
-				String fieldName = entry.getKey();
-				JsonNode n = entry.getValue();
-
-				Object value = null;
+				final Entry<String, JsonNode> entry = fi.next();
+				final String fieldName = entry.getKey();
+				final JsonNode n = entry.getValue();
 
 				if (!n.isNull()) {
-					if (n.isValueNode()) {
-						if (n.isNumber()) {
-							value = n.numberValue();
-						} else if (n.isBoolean()) {
-							value = Boolean.valueOf(n.booleanValue());
-						} else if (n.isTextual()) {
-							value = n.textValue();
-							// check if it is a date/time value
-							Class<?> ft = getFieldType(propertySet, fieldName);
-							if (ft != Object.class) {
-								JsonDeserializer<?> dateTimeDeserializer = DateDeserializers.find(ft, ft.getName());
-								if (dateTimeDeserializer != null) {
-									try (JsonParser np = n.traverse(parser.getCodec())) {
-										np.nextToken();
-										value = dateTimeDeserializer.deserialize(np, ctxt);
-									}
-								}
+					Optional<Property> property = getProperty(propertySet, fieldName);
+					if (property.isPresent()) {
+						if (n.isValueNode()) {
+							// simple value
+							propertyValues.put(property.get(),
+									parser.getCodec().treeToValue(n, property.get().getType()));
+						} else {
+							// nested object
+							try (JsonParser np = n.traverse(parser.getCodec())) {
+								propertyValues.put(property.get(), np.readValueAs(property.get().getType()));
 							}
-						}
-					} else {
-						try (JsonParser np = n.traverse(parser.getCodec())) {
-							value = np.readValueAs(getFieldType(propertySet, fieldName));
 						}
 					}
 				}
-				propertyValues.put(fieldName, value);
 			}
 
 		}
 
 		try {
-			PropertyBox.Builder builder = PropertyBox.builder(propertySet).invalidAllowed(true);
+			final PropertyBox.Builder builder = PropertyBox.builder(propertySet).invalidAllowed(true);
 			propertySet.forEach(p -> {
-				getPathName(p).ifPresent(n -> {
-					final Object value = checkupPropertyValue(p, propertyValues.get(n));
-					if (value != null) {
-						builder.setIgnoreReadOnly(p, value);
-					}
-				});
+				final Object value = checkupPropertyValue(p, propertyValues.get(p));
+				if (value != null) {
+					builder.setIgnoreReadOnly(p, value);
+				}
 			});
 			return builder.build();
 		} catch (Exception e) {
@@ -132,16 +117,16 @@ public class JacksonPropertyBoxDeserializer extends JsonDeserializer<PropertyBox
 	}
 
 	/**
-	 * Get the type of the JSON field named <code>fieldName</code> which corresponds to a property in the set with the
-	 * same name.
+	 * Get the {@link Property} which corresponds to to the field named <code>fieldName</code> in given property set, if
+	 * available.
 	 * @param set Property set
 	 * @param fieldName Field name
-	 * @return Field type
+	 * @return Optional {@link Property}
 	 */
 	@SuppressWarnings("rawtypes")
-	private static Class<?> getFieldType(PropertySet<?> set, String fieldName) {
+	private static Optional<Property> getProperty(PropertySet<?> set, String fieldName) {
 		return set.stream().filter(p -> Path.class.isAssignableFrom(p.getClass())).map(p -> (Path) p)
-				.filter(q -> fieldName.equals(q.getName())).map(qp -> qp.getType()).findFirst().orElse(Object.class);
+				.filter(q -> fieldName.equals(q.getName())).map(qp -> (Property) qp).findFirst();
 	}
 
 	/**
@@ -217,20 +202,14 @@ public class JacksonPropertyBoxDeserializer extends JsonDeserializer<PropertyBox
 					throw new PropertyReadException(property, "Property conversion failed [" + property + "]", e);
 				}
 			}
+
+			if (TypeUtils.isDate(value.getClass()) && property.getConfiguration().getTemporalType()
+					.orElse(TemporalType.DATE_TIME) == TemporalType.DATE) {
+				// reset time
+				return CalendarUtils.floorTime((Date) value);
+			}
 		}
 		return value;
-	}
-
-	/**
-	 * If given property is a {@link Path}, returns the path name.
-	 * @param property Property (must be not null)
-	 * @return The path name if given property is a {@link Path}, an empty Optional otherwise.
-	 */
-	private static Optional<String> getPathName(Property<?> property) {
-		if (property instanceof Path) {
-			return Optional.ofNullable(((Path<?>) property).getName());
-		}
-		return Optional.empty();
 	}
 
 }
