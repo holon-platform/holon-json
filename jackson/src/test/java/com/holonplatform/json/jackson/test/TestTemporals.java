@@ -18,6 +18,7 @@ package com.holonplatform.json.jackson.test;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.Month;
 
 import org.junit.Assert;
@@ -26,39 +27,54 @@ import org.junit.Test;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.holonplatform.json.jackson.JacksonConfiguration;
 
-
 public class TestTemporals {
-	
+
 	@Test
 	public void testLocalDate() throws IOException {
-		
+
 		final ObjectMapper mapper = new ObjectMapper();
 		JacksonConfiguration.configure(mapper);
-		
+
 		final LocalDate date = LocalDate.of(1979, Month.MARCH, 9);
-		
+
 		String json = mapper.writeValueAsString(date);
 		Assert.assertEquals("\"1979-03-09\"", json);
-		
+
 		LocalDate deser = mapper.readValue(json, LocalDate.class);
 		Assert.assertEquals(date, deser);
-		
+
 	}
-	
+
 	@Test
 	public void testLocalDateTime() throws IOException {
-		
+
 		final ObjectMapper mapper = new ObjectMapper();
 		JacksonConfiguration.configure(mapper);
-		
+
 		final LocalDateTime date = LocalDateTime.of(1979, Month.MARCH, 9, 10, 30, 25);
-		
+
 		String json = mapper.writeValueAsString(date);
 		Assert.assertEquals("\"1979-03-09T10:30:25\"", json);
-		
+
 		LocalDateTime deser = mapper.readValue(json, LocalDateTime.class);
 		Assert.assertEquals(date, deser);
-		
+
 	}
-	
+
+	@Test
+	public void testLocalTime() throws IOException {
+
+		final ObjectMapper mapper = new ObjectMapper();
+		JacksonConfiguration.configure(mapper);
+
+		final LocalTime time = LocalTime.of(10, 30, 25);
+
+		String json = mapper.writeValueAsString(time);
+		Assert.assertEquals("\"10:30:25\"", json);
+
+		LocalTime deser = mapper.readValue(json, LocalTime.class);
+		Assert.assertEquals(time, deser);
+
+	}
+
 }

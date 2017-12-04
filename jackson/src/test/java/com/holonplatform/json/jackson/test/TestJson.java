@@ -13,26 +13,26 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.holonplatform.json.gson.test;
+package com.holonplatform.json.jackson.test;
 
-import static com.holonplatform.json.gson.test.DataTest.ARRAY_DATA;
-import static com.holonplatform.json.gson.test.DataTest.BOOL;
-import static com.holonplatform.json.gson.test.DataTest.DATE;
-import static com.holonplatform.json.gson.test.DataTest.DATE_VALUE;
-import static com.holonplatform.json.gson.test.DataTest.ENUM;
-import static com.holonplatform.json.gson.test.DataTest.KEY;
-import static com.holonplatform.json.gson.test.DataTest.LOCAL_DATE;
-import static com.holonplatform.json.gson.test.DataTest.LOCAL_DATETIME;
-import static com.holonplatform.json.gson.test.DataTest.NAME;
-import static com.holonplatform.json.gson.test.DataTest.NUMBER;
-import static com.holonplatform.json.gson.test.DataTest.NUMBOOL;
-import static com.holonplatform.json.gson.test.DataTest.OBJECT_DATA;
-import static com.holonplatform.json.gson.test.DataTest.PROPERTIES;
-import static com.holonplatform.json.gson.test.DataTest.TEST;
-import static com.holonplatform.json.gson.test.DataTest.TEST_DATA_VALUE;
+import static com.holonplatform.json.jackson.test.DataTest.ARRAY_DATA;
+import static com.holonplatform.json.jackson.test.DataTest.BOOL;
+import static com.holonplatform.json.jackson.test.DataTest.DATE;
+import static com.holonplatform.json.jackson.test.DataTest.DATE_VALUE;
+import static com.holonplatform.json.jackson.test.DataTest.ENUM;
+import static com.holonplatform.json.jackson.test.DataTest.KEY;
+import static com.holonplatform.json.jackson.test.DataTest.LOCAL_DATE;
+import static com.holonplatform.json.jackson.test.DataTest.LOCAL_DATETIME;
+import static com.holonplatform.json.jackson.test.DataTest.NAME;
+import static com.holonplatform.json.jackson.test.DataTest.NUMBER;
+import static com.holonplatform.json.jackson.test.DataTest.NUMBOOL;
+import static com.holonplatform.json.jackson.test.DataTest.OBJECT_DATA;
+import static com.holonplatform.json.jackson.test.DataTest.PROPERTIES;
+import static com.holonplatform.json.jackson.test.DataTest.TEST;
+import static com.holonplatform.json.jackson.test.DataTest.TEST_DATA_VALUE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
@@ -48,22 +48,22 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.google.gson.GsonBuilder;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.holonplatform.core.property.PropertyBox;
 import com.holonplatform.json.Json;
 import com.holonplatform.json.JsonReader;
-import com.holonplatform.json.gson.GsonJson;
-import com.holonplatform.json.gson.test.DataTest.TestEnum;
+import com.holonplatform.json.jackson.JacksonJson;
+import com.holonplatform.json.jackson.test.DataTest.TestEnum;
 
 public class TestJson {
 
 	@Test
 	public void testBuilder() {
 
-		Json json = GsonJson.create();
+		Json json = JacksonJson.create();
 		assertNotNull(json);
 
-		json = GsonJson.create(new GsonBuilder());
+		json = JacksonJson.create(new ObjectMapper());
 		assertNotNull(json);
 
 	}
@@ -71,7 +71,7 @@ public class TestJson {
 	@Test
 	public void testString() {
 
-		final Json json = GsonJson.create();
+		final Json json = JacksonJson.create();
 
 		PropertyBox box = PropertyBox.builder(PROPERTIES).set(KEY, 1L).set(NAME, "Test").set(NUMBER, 7.1d)
 				.set(BOOL, Boolean.TRUE).set(DATE, DATE_VALUE).set(OBJECT_DATA, TEST_DATA_VALUE).set(ENUM, TestEnum.ONE)
@@ -110,7 +110,7 @@ public class TestJson {
 	@Test
 	public void testReader() {
 
-		final Json json = GsonJson.create();
+		final Json json = JacksonJson.create();
 
 		PropertyBox box = PropertyBox.builder(PROPERTIES).set(KEY, 1L).set(NAME, "Test").set(NUMBER, 7.1d)
 				.set(BOOL, Boolean.TRUE).set(DATE, DATE_VALUE).set(OBJECT_DATA, TEST_DATA_VALUE).set(ENUM, TestEnum.ONE)
@@ -151,7 +151,7 @@ public class TestJson {
 	@Test
 	public void testBytes() {
 
-		final Json json = GsonJson.create();
+		final Json json = JacksonJson.create();
 
 		PropertyBox box = PropertyBox.builder(PROPERTIES).set(KEY, 1L).set(NAME, "Test").set(NUMBER, 7.1d)
 				.set(BOOL, Boolean.TRUE).set(DATE, DATE_VALUE).set(OBJECT_DATA, TEST_DATA_VALUE).set(ENUM, TestEnum.ONE)
@@ -184,7 +184,7 @@ public class TestJson {
 	@Test
 	public void testStreams() {
 
-		final Json json = GsonJson.create();
+		final Json json = JacksonJson.create();
 
 		PropertyBox box = PropertyBox.builder(PROPERTIES).set(KEY, 1L).set(NAME, "Test").set(NUMBER, 7.1d)
 				.set(BOOL, Boolean.TRUE).set(DATE, DATE_VALUE).set(OBJECT_DATA, TEST_DATA_VALUE).set(ENUM, TestEnum.ONE)
@@ -217,7 +217,7 @@ public class TestJson {
 	@Test
 	public void testPropertySet() {
 
-		final Json json = GsonJson.create();
+		final Json json = JacksonJson.create();
 
 		PropertyBox box = PropertyBox.builder(PROPERTIES).set(KEY, 1L).set(NAME, "Test").set(NUMBER, 7.1d)
 				.set(BOOL, Boolean.TRUE).set(DATE, DATE_VALUE).set(OBJECT_DATA, TEST_DATA_VALUE).set(ENUM, TestEnum.ONE)
@@ -283,7 +283,7 @@ public class TestJson {
 	@Test
 	public void testArray() {
 
-		final Json json = GsonJson.create();
+		final Json json = JacksonJson.create();
 
 		PropertyBox box1 = PropertyBox.builder(PROPERTIES).set(KEY, 1L).set(NAME, "Test").set(NUMBER, 7.1d)
 				.set(BOOL, Boolean.TRUE).set(DATE, DATE_VALUE).set(OBJECT_DATA, TEST_DATA_VALUE).set(ENUM, TestEnum.ONE)
@@ -337,33 +337,29 @@ public class TestJson {
 
 		assertNotNull(boxes);
 		assertEquals(2, boxes.size());
-		
+
 		boxes = json.fromJsonArray(jsonString, KEY, NAME);
 
 		assertNotNull(boxes);
 		assertEquals(2, boxes.size());
 
 	}
-	
+
 	@Test
 	public void testNulls() {
-		
-		final Json json = GsonJson.create();
-		
+
+		final Json json = JacksonJson.create();
+
 		String sv = json.toJson(null).asString();
 		assertEquals("null", sv);
-		
+
 		byte[] bv = json.toJson(null).asBytes();
 		assertEquals("null", new String(bv));
-		
+
 		StringBuffer sb = new StringBuffer();
 		json.toJson(null).write(sb);
 		assertEquals("null", sb.toString());
-		
-		ByteArrayOutputStream stream = new ByteArrayOutputStream();
-		json.toJson(null).write(stream);
-		assertEquals("null", new String(stream.toByteArray()));
-		
+
 	}
 
 }
