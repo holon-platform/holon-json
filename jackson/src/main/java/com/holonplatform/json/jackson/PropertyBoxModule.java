@@ -13,21 +13,23 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.holonplatform.json.jackson.internal;
+package com.holonplatform.json.jackson;
 
 import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.module.SimpleDeserializers;
 import com.fasterxml.jackson.databind.module.SimpleSerializers;
 import com.holonplatform.core.property.PropertyBox;
+import com.holonplatform.json.jackson.internal.JacksonPropertyBoxDeserializer;
+import com.holonplatform.json.jackson.internal.JacksonPropertyBoxSerializer;
 
 /**
- * Utility class to provide a Jackson module with {@link PropertyBox} serialization and deserialization capabilities.
+ * Jackson module with {@link PropertyBox} serialization and deserialization capabilities.
  * 
  * @since 5.1.0
  */
 public class PropertyBoxModule extends Module {
-	
+
 	private final SimpleSerializers _serializers = new SimpleSerializers();
 	private final SimpleDeserializers _deserializers = new SimpleDeserializers();
 
@@ -37,7 +39,8 @@ public class PropertyBoxModule extends Module {
 		_deserializers.addDeserializer(PropertyBox.class, new JacksonPropertyBoxDeserializer());
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
 	 * @see com.fasterxml.jackson.databind.Module#getModuleName()
 	 */
 	@Override
@@ -45,7 +48,8 @@ public class PropertyBoxModule extends Module {
 		return PropertyBoxModule.class.getName();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
 	 * @see com.fasterxml.jackson.databind.Module#version()
 	 */
 	@Override
@@ -53,7 +57,8 @@ public class PropertyBoxModule extends Module {
 		return new Version(5, 0, 0, null, null, null);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
 	 * @see com.fasterxml.jackson.databind.Module#setupModule(com.fasterxml.jackson.databind.Module.SetupContext)
 	 */
 	@Override
