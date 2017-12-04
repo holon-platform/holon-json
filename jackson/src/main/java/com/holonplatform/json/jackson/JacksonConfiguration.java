@@ -15,36 +15,17 @@
  */
 package com.holonplatform.json.jackson;
 
-import java.io.Serializable;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.holonplatform.core.internal.utils.ObjectUtils;
 import com.holonplatform.core.property.PropertyBox;
-import com.holonplatform.json.jackson.internal.JacksonPropertyBoxDeserializer;
-import com.holonplatform.json.jackson.internal.JacksonPropertyBoxSerializer;
+import com.holonplatform.json.jackson.internal.PropertyBoxModule;
 
 /**
- * Utility class to handle Jackson configuration.
+ * Utility interface to handle Jackson configuration.
  *
  * @since 5.0.0
  */
-public final class JacksonConfiguration implements Serializable {
-
-	private static final long serialVersionUID = -8451471610783164158L;
-
-	/**
-	 * Module with {@link PropertyBox} serialization and deserialization capability.
-	 */
-	private static final SimpleModule PROPERTY_BOX_MODULE = new SimpleModule();
-
-	static {
-		PROPERTY_BOX_MODULE.addSerializer(PropertyBox.class, new JacksonPropertyBoxSerializer());
-		PROPERTY_BOX_MODULE.addDeserializer(PropertyBox.class, new JacksonPropertyBoxDeserializer());
-	}
-
-	private JacksonConfiguration() {
-	}
+public interface JacksonConfiguration {
 
 	/**
 	 * Configure given Jackson {@link ObjectMapper}, registering serializers and deserializers for {@link PropertyBox}
@@ -52,8 +33,8 @@ public final class JacksonConfiguration implements Serializable {
 	 * @param objectMapper ObjectMapper (not null)
 	 */
 	public static void configure(ObjectMapper objectMapper) {
-		ObjectUtils.argumentNotNull(objectMapper, "Null ObjectMapper");
-		objectMapper.registerModule(PROPERTY_BOX_MODULE);
+		ObjectUtils.argumentNotNull(objectMapper, "ObjectMapper must be not null");
+		objectMapper.registerModule(new PropertyBoxModule());
 	}
 
 }
