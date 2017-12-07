@@ -28,13 +28,14 @@ import com.holonplatform.core.property.Property;
 import com.holonplatform.core.property.PropertySet;
 import com.holonplatform.core.property.PropertyValueConverter;
 import com.holonplatform.core.property.VirtualProperty;
+import com.holonplatform.core.temporal.TemporalType;
 
 public class DataTest {
 
 	public static final PathProperty<Long> KEY = create("key", long.class);
 	public static final PathProperty<String> NAME = create("name", String.class);
 	public static final PathProperty<Double> NUMBER = create("number", Double.class);
-	public static final PathProperty<Date> DATE = create("date", Date.class);
+	public static final PathProperty<Date> DATE = create("date", Date.class).temporalType(TemporalType.DATE);
 	public static final PathProperty<TestEnum> ENUM = create("enum", TestEnum.class);
 	public static final PathProperty<Boolean> BOOL = create("bool", boolean.class);
 	public static final PathProperty<TestData> OBJECT_DATA = create("objectData", TestData.class);
@@ -55,7 +56,7 @@ public class DataTest {
 
 	static {
 		Calendar c = Calendar.getInstance();
-		c.set(1979, 2, 9, 11, 30);
+		c.set(1979, 2, 9, 0, 0);
 		c.set(Calendar.SECOND, 0);
 		c.set(Calendar.MILLISECOND, 0);
 		DATE_VALUE = c.getTime();

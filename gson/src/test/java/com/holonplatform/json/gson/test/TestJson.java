@@ -79,7 +79,7 @@ public class TestJson {
 				.set(LOCAL_DATETIME, LocalDateTime.of(1979, Month.MARCH, 9, 11, 30)).set(NUMBOOL, Boolean.TRUE).build();
 
 		String jsonString = json.toJson(box).asString();
-
+		
 		assertNotNull(jsonString);
 
 		String jsonString2 = json.toJsonString(box);

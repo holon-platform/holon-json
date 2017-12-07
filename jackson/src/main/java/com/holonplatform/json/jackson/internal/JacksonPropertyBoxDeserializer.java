@@ -16,11 +16,6 @@
 package com.holonplatform.json.jackson.internal;
 
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.ZoneOffset;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -149,52 +144,7 @@ public class JacksonPropertyBoxDeserializer extends JsonDeserializer<PropertyBox
 					throw new PropertyReadException(property, "Property conversion failed [" + property + "]", e);
 				}
 			}
-			if (TypeUtils.isTemporal(type) && TypeUtils.isNumber(value.getClass())) {
-				try {
-					Long time = ConversionUtils.convertNumberToTargetClass((Number) value, long.class);
-					if (time == null) {
-						throw new PropertyReadException(property, "Property conversion failed [" + property
-								+ "]: Failed to convert numeric value " + value + " into a date time type");
-					}
-					if (LocalTime.class.isAssignableFrom(type)) {
-						return LocalTime.ofSecondOfDay(time.longValue());
-					}
-					if (LocalDateTime.class.isAssignableFrom(type)) {
-						return LocalDateTime.ofEpochSecond(time.longValue(), 0, ZoneOffset.UTC);
-					}
-					if (LocalDate.class.isAssignableFrom(type)) {
-						return LocalDate.ofEpochDay(time.longValue());
-					}
-				} catch (IllegalArgumentException e) {
-					throw new PropertyReadException(property, "Property conversion failed [" + property + "]", e);
-				}
-			}
-			if (TypeUtils.isDate(type) && TypeUtils.isNumber(value.getClass())) {
-				try {
-					Long time = ConversionUtils.convertNumberToTargetClass((Number) value, long.class);
-					if (time == null) {
-						throw new RuntimeException(
-								"Failed to convert numeric value " + value + " into a date time type");
-					}
-					return new Date(time.longValue());
-				} catch (IllegalArgumentException e) {
-					throw new PropertyReadException(property, "Property conversion failed [" + property + "]", e);
-				}
-			}
-			if (TypeUtils.isCalendar(type) && TypeUtils.isNumber(value.getClass())) {
-				try {
-					Long time = ConversionUtils.convertNumberToTargetClass((Number) value, long.class);
-					if (time == null) {
-						throw new RuntimeException(
-								"Failed to convert numeric value " + value + " into a date time type");
-					}
-					Calendar c = Calendar.getInstance();
-					c.setTimeInMillis(time.longValue());
-					return c;
-				} catch (IllegalArgumentException e) {
-					throw new PropertyReadException(property, "Property conversion failed [" + property + "]", e);
-				}
-			}
+
 			if (TypeUtils.isNumber(type) && TypeUtils.isNumber(value.getClass())) {
 				try {
 					return ConversionUtils.convertNumberToTargetClass((Number) value, (Class<Number>) type);

@@ -16,6 +16,7 @@
 package com.holonplatform.json.gson.internal;
 
 import java.lang.reflect.Type;
+import java.util.Optional;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -24,6 +25,8 @@ import com.google.gson.JsonSerializer;
 import com.holonplatform.core.Path;
 import com.holonplatform.core.property.Property;
 import com.holonplatform.core.property.PropertyBox;
+import com.holonplatform.core.temporal.TemporalType;
+import com.holonplatform.json.internal.datetime.ISO8601DateFormats;
 
 /**
  * Gson serializer to handle {@link PropertyBox} serialization.
@@ -48,7 +51,19 @@ public class GsonPropertyBoxSerializer implements JsonSerializer<PropertyBox> {
 				final Object value = src.getValue(property);
 				// do not serialize null values
 				if (value != null) {
-					obj.add(((Path<?>) property).getName(), context.serialize(value));
+					final String name = ((Path<?>) property).getName();
+					// check temporals
+					Optional<TemporalType> temporalType = property.getConfiguration().getTemporalType();
+					if (temporalType.isPresent()) {
+						try {
+							ISO8601DateFormats.setCurrentTemporalType(temporalType.get());
+							obj.add(name, context.serialize(value));
+						} finally {
+							ISO8601DateFormats.removeCurrentTemporalType();
+						}
+					} else {
+						obj.add(name, context.serialize(value));
+					}
 				}
 			}
 		}

@@ -28,6 +28,8 @@ import com.holonplatform.core.Path;
 import com.holonplatform.core.property.Property;
 import com.holonplatform.core.property.PropertyBox;
 import com.holonplatform.core.property.PropertySet;
+import com.holonplatform.core.temporal.TemporalType;
+import com.holonplatform.json.internal.datetime.ISO8601DateFormats;
 
 /**
  * Gson deserializer to handle {@link PropertyBox} deserialization.
@@ -58,13 +60,37 @@ public class GsonPropertyBoxDeserializer implements JsonDeserializer<PropertyBox
 		PropertyBox.Builder builder = PropertyBox.builder(propertySet).invalidAllowed(true);
 		propertySet.forEach(p -> {
 			getPathName(p).ifPresent(n -> {
-				final Object value = obj.get(n) != null ? context.deserialize(obj.get(n), p.getType()) : null;
+				final Object value = deserialize(context, p, obj.get(n));
 				if (value != null) {
 					builder.setIgnoreReadOnly(p, value);
 				}
 			});
 		});
 		return builder.build();
+	}
+
+	/**
+	 * Deserialize given JSON element using given property. If the property has a declared {@link TemporalType}, it is
+	 * used for date deserialization strategy.
+	 * @param context JsonDeserializationContext
+	 * @param property Property
+	 * @param json JSON element
+	 * @return Deserialized value, or <code>null</code> if JSON element was null
+	 */
+	private static Object deserialize(JsonDeserializationContext context, Property<?> property, JsonElement json) {
+		if (json == null) {
+			return null;
+		}
+		Optional<TemporalType> temporalType = property.getConfiguration().getTemporalType();
+		if (temporalType.isPresent()) {
+			try {
+				ISO8601DateFormats.setCurrentTemporalType(temporalType.get());
+				return context.deserialize(json, property.getType());
+			} finally {
+				ISO8601DateFormats.removeCurrentTemporalType();
+			}
+		}
+		return context.deserialize(json, property.getType());
 	}
 
 	/**

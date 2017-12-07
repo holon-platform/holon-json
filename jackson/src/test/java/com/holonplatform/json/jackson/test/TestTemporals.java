@@ -20,14 +20,62 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
+import java.util.Calendar;
+import java.util.Date;
 
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.holonplatform.core.internal.utils.CalendarUtils;
+import com.holonplatform.core.temporal.TemporalType;
+import com.holonplatform.json.internal.datetime.ISO8601DateFormats;
 import com.holonplatform.json.jackson.JacksonConfiguration;
 
 public class TestTemporals {
+	
+	@Test
+	public void testDate() throws IOException {
+
+		final ObjectMapper mapper = new ObjectMapper();
+		JacksonConfiguration.configure(mapper);
+
+		Calendar c = Calendar.getInstance();
+		c.set(1979, 2, 9, 10, 30);
+		c.set(Calendar.SECOND, 25);
+		c.set(Calendar.MILLISECOND, 0);
+		Date date = c.getTime();
+		
+		final int offset = (c.get(Calendar.ZONE_OFFSET) + c.get(Calendar.DST_OFFSET)) / (60 * 60 * 1000);
+		final String offsetZ = ((offset < 0) ? "-" : "+") + StringUtils.leftPad("" + Math.abs(offset), 2, '0') + "00";
+
+		String json = mapper.writeValueAsString(date);
+		Assert.assertEquals("\"1979-03-09T10:30:25" + offsetZ + "\"", json);
+
+		Date deser = mapper.readValue(json, Date.class);
+		Assert.assertEquals(date, deser);
+
+		c = Calendar.getInstance();
+		c.set(1979, 2, 9, 0, 0);
+		c.set(Calendar.SECOND, 0);
+		c.set(Calendar.MILLISECOND, 0);
+		final Date date2 = c.getTime();
+
+		try {
+			ISO8601DateFormats.setCurrentTemporalType(TemporalType.DATE);
+
+			json = mapper.writeValueAsString(date2);
+			Assert.assertEquals("\"1979-03-09\"", json);
+
+			deser = mapper.readValue(json, Date.class);
+			Assert.assertEquals(date2, CalendarUtils.floorTime(deser));
+
+		} finally {
+			ISO8601DateFormats.removeCurrentTemporalType();
+		}
+
+	}
 
 	@Test
 	public void testLocalDate() throws IOException {

@@ -40,6 +40,9 @@ public interface JacksonConfiguration {
 	public static void configure(ObjectMapper objectMapper) {
 		ObjectUtils.argumentNotNull(objectMapper, "ObjectMapper must be not null");
 		
+		// ISO-8601 Dates serialization
+		objectMapper.registerModule(new ISO8601DateModule());
+		
 		// PropertyBox type handling
 		objectMapper.registerModule(new PropertyBoxModule());
 		
@@ -47,6 +50,8 @@ public interface JacksonConfiguration {
 		objectMapper.registerModule(new JavaTimeModule());
 		
 		objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+		
+		objectMapper.getDeserializationContext();
 	}
 
 }
