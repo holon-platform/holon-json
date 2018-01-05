@@ -15,6 +15,12 @@
  */
 package com.holonplatform.json.examples;
 
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.Month;
+import java.util.Calendar;
+import java.util.Date;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
@@ -35,6 +41,8 @@ import com.holonplatform.core.property.PathProperty;
 import com.holonplatform.core.property.PropertyBox;
 import com.holonplatform.core.property.PropertySet;
 import com.holonplatform.core.property.PropertySetRef;
+import com.holonplatform.core.temporal.TemporalType;
+import com.holonplatform.json.datetime.CurrentSerializationTemporalType;
 import com.holonplatform.json.jackson.JacksonConfiguration;
 import com.holonplatform.json.jackson.spring.SpringJacksonConfiguration;
 
@@ -46,7 +54,38 @@ public class ExampleJackson {
 		ObjectMapper mapper = new ObjectMapper(); // <1>
 
 		JacksonConfiguration.configure(mapper); // <2>
+
+		mapper = JacksonConfiguration.mapper(); // <3>
 		// end::configuration[]
+	}
+
+	public void temporals() throws IOException {
+		// tag::temporals[]
+		ObjectMapper mapper = JacksonConfiguration.mapper(); // <1>
+
+		LocalDate date = LocalDate.of(2018, Month.JANUARY, 5);
+
+		String serialized = mapper.writeValueAsString(date); // <2>
+
+		LocalDate deserialized = mapper.readValue(serialized, LocalDate.class); // <3>
+		// end::temporals[]
+	}
+
+	public void ttype() throws IOException {
+		// tag::ttype[]
+		final ObjectMapper mapper = JacksonConfiguration.mapper(); // <1>
+
+		Calendar c = Calendar.getInstance();
+		c.set(2018, 0, 5);
+		final Date date = c.getTime();
+
+		try {
+			CurrentSerializationTemporalType.setCurrentTemporalType(TemporalType.DATE); // <2>
+			String json = mapper.writeValueAsString(date); // <3>
+		} finally {
+			CurrentSerializationTemporalType.removeCurrentTemporalType(); // <4>
+		}
+		// end::ttype[]
 	}
 
 	// tag::serdeser[]

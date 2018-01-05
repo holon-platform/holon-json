@@ -12,14 +12,15 @@ _Maven coordinates_:
 <version>{revnumber}</version>
 ----
 
-To enable `PropertyBox` handling in Jackson, registering the suitable `JsonSerializer` and a `JsonDeserializer` pair, the link:{apidir}/com/holonplatform/json/jackson/JacksonConfiguration.html[JacksonConfiguration^] utility class can be used:
+To enable `PropertyBox` handling in Jackson, registering the suitable `JsonSerializer` and a `JsonDeserializer` pair, the link:{apidir}/com/holonplatform/json/jackson/JacksonConfiguration.html[JacksonConfiguration^] interface can be used:
 
 [source, java]
 ----
 include::{examplesdir}/com/holonplatform/json/examples/ExampleJackson.java[tag=configuration,indent=0]
 ----
 <1> Get or create a Jackson `ObjectMapper`
-<2> Configure the `ObjectMapper` for `PropertyBox` support
+<2> Configure the `ObjectMapper` for `PropertyBox` and `java.time.*` data types support
+<3> Create and configure a new Jackson `ObjectMapper`
 
 With a properly configured `ObjectMapper` instance, a `PropertyBox` can be serialized and deserialized just like any another object. As described in <<JsonPropertySet>>, you need to declare the `PropertySet` to use as a _Context_ resource at `PropertyBox` deserialization time.
 
@@ -41,6 +42,57 @@ In the example above, the `PropertyBox` instance will be serialized as a JSON ob
   "description": "Test"
 }
 ----
+
+=== Jackson `java.time.*` data types support
+
+The Java 8 date and time API data types serialization and deserialization are supported out-of-the-box when using a Jackson `ObjectMapper` obtained or configured through the link:{apidir}/com/holonplatform/json/jackson/JacksonConfiguration.html[JacksonConfiguration^] methods.
+
+The `jackson-datatype-jsr310` dependency is included in the artifact dependencies and the default `com.fasterxml.jackson.datatype.jsr310.JavaTimeModule` Jackson module is registered to enable the `java.time.*` objects serialization support.
+
+By default the Jackson `ObjectMapper` is configured to not write dates as timestamps, to make the serialized JSON more readable and easy to understand for temporal types.
+
+This way, you can deal transparently with the `java.time.*` serialization and deserialization without the need for further configurations.
+
+Example of a `LocalDate` object serialization and deserialization:
+
+[source, java]
+----
+include::{examplesdir}/com/holonplatform/json/examples/ExampleJackson.java[tag=temporals,indent=0]
+----
+<1> Use a properly configured `ObjectMapper` instance
+<2> Serialize given `LocalDate` in JSON. This will result in `"2018-01-05"`
+<3> Deserialize back the JSON date into a `LocalDate`
+
+=== ISO-8601 `java.util.Date` serialization
+
+When using a Jackson `ObjectMapper` obtained or configured through the link:{apidir}/com/holonplatform/json/jackson/JacksonConfiguration.html[JacksonConfiguration^] methods, the Holon `ISO8601DateModule` Jackson module is registered by default.
+
+This module automatically enables the `java.util.Date` serialization in the *ISO-8601* format, to provide a standard and more readable way to represent date and time types in the serialized JSON output.
+
+So a `java.util.Date` type value is serialized with the following pattern:
+
+----
+2018-01-05T10:30:25
+----
+
+NOTE: The timezone offset is included if available.
+
+Since a `java.util.Date` always contains all the date and time parts, the value is serialized including the time part by default.
+
+If the `java.util.Date` value is serialized as a `Property` value within a `PropertyBox`, the `PropertyConfiguration` is checked to obtain the `TemporalType` of the property. If available, the `java.util.Date` value is serialized according to the property temporal type, i.e. as a `DATE` (only the date part), as a `TIME` (only the time part) or as a `DATE_TIME` (both the date and the time part).
+
+TIP: See the link:holon-core.html#PropertyConfiguration[PropertyConfiguration] documentation for further information.
+
+When the `java.util.Date` value is not bound to a `Property`, you can use a `ThreadLocal` variable to set the current `TemporalType` which has to be used to serialize the date/time value. The value serialization temporal type can be setted and cleared using the `setCurrentTemporalType(TemporalType temporalType)` and `removeCurrentTemporalType()` methods of the link:{apidir}/com/holonplatform/json/datetime/CurrentSerializationTemporalType.html[CurrentSerializationTemporalType^] class. 
+
+[source, java]
+----
+include::{examplesdir}/com/holonplatform/json/examples/ExampleJackson.java[tag=ttype,indent=0]
+----
+<1> Use a properly configured `ObjectMapper` instance
+<2> Set the current `TemporalType` to `DATE`
+<3> Only the date part will be serialized in JSON: `"2018-01-05"`
+<4> Clear the current `TemporalType`
 
 === JAX-RS integration
 

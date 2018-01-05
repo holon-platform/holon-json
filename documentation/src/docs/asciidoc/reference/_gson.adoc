@@ -12,7 +12,7 @@ _Maven coordinates_:
 <version>{revnumber}</version>
 ----
 
-To enable `PropertyBox` handling in Gson, registering the suitable `JsonSerializer` and a `JsonDeserializer` pair, the link:{apidir}/com/holonplatform/json/gson/GsonConfiguration.html[GsonConfiguration^] utility class can be used:
+To enable `PropertyBox` handling in Gson, registering the suitable `JsonSerializer` and a `JsonDeserializer` pair, the link:{apidir}/com/holonplatform/json/gson/GsonConfiguration.html[GsonConfiguration^] utility interface can be used:
 
 [source, java]
 ----
@@ -42,6 +42,53 @@ In the example above, the `PropertyBox` instance will be serialized as a JSON ob
   "description": "Test"
 }
 ----
+
+=== Gson `java.time.*` data types support
+
+The Java 8 date and time API data types serialization and deserialization are supported out-of-the-box when using a `GsonBuilder` obtained or configured through the link:{apidir}/com/holonplatform/json/gson/GsonConfiguration.html[GsonConfiguration^] interface methods.
+
+Supported `java.time.*` data types are: `LocalDate`, `LocalTime`, `LocalDateTime`, `OffsetTime`, `OffsetDateTime`, `ZonedDateTime` and `Instant`.
+
+This way, you can deal transparently with the `java.time.*` serialization and deserialization without the need for further configurations.
+
+Example of a `LocalDate` object serialization and deserialization:
+
+[source, java]
+----
+include::{examplesdir}/com/holonplatform/json/examples/ExampleGson.java[tag=temporals,indent=0]
+----
+<1> Use a properly configured `Gson` instance
+<2> Serialize given `LocalDate` in JSON. This will result in `"2018-01-05"`
+<3> Deserialize back the JSON date into a `LocalDate`
+
+=== ISO-8601 `java.util.Date` serialization
+
+When using a Gson `GsonBuilder` obtained or configured through the link:{apidir}/com/holonplatform/json/gson/GsonConfiguration.html[GsonConfiguration^] methods, the serialization of `java.util.Date` data types using the *ISO-8601* format is enabled by default, to provide a standard and more readable way to represent date and time types in the serialized JSON output.
+
+So a `java.util.Date` type value is serialized with the following pattern:
+
+----
+2018-01-05T10:30:25
+----
+
+NOTE: The timezone offset is included if available.
+
+Since a `java.util.Date` always contains all the date and time parts, the value is serialized including the time part by default.
+
+If the `java.util.Date` value is serialized as a `Property` value within a `PropertyBox`, the `PropertyConfiguration` is checked to obtain the `TemporalType` of the property. If available, the `java.util.Date` value is serialized according to the property temporal type, i.e. as a `DATE` (only the date part), as a `TIME` (only the time part) or as a `DATE_TIME` (both the date and the time part).
+
+TIP: See the link:holon-core.html#PropertyConfiguration[PropertyConfiguration] documentation for further information.
+
+When the `java.util.Date` value is not bound to a `Property`, you can use a `ThreadLocal` variable to set the current `TemporalType` which has to be used to serialize the date/time value. The value serialization temporal type can be setted and cleared using the `setCurrentTemporalType(TemporalType temporalType)` and `removeCurrentTemporalType()` methods of the link:{apidir}/com/holonplatform/json/datetime/CurrentSerializationTemporalType.html[CurrentSerializationTemporalType^] class. 
+
+[source, java]
+----
+include::{examplesdir}/com/holonplatform/json/examples/ExampleGson.java[tag=ttype,indent=0]
+----
+<1> Use a properly configured `Gson` instance
+<2> Set the current `TemporalType` to `DATE`
+<3> Only the date part will be serialized in JSON: `"2018-01-05"`
+<4> Clear the current `TemporalType`
 
 === JAX-RS integration
 

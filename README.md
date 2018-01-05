@@ -9,6 +9,8 @@ The module main features are:
 
 * __JSON__ serialization and deserialization support for the `PropertyBox` platform foundation data container class.
 * __JAX-RS__ configuration and auto-configuration support to enable [Gson](https://github.com/google/gson) as default JSON type messages serialization and deserialization engine with `PropertyBox` support and to enable  `PropertyBox` serialization and deserialization when using [Jackson](http://wiki.fasterxml.com/JacksonHome) as default provider.
+* Full support of the __Java 8 date and time API__: the `java.time.*` data types serialization and deserialization is supported and enabled out-of-the-box.
+* The __ISO-8601__ format is used by default to serialize the `java.util.Date` data types.
 * __Spring__ support to configure `PropertyBox` serialization and deserialization in `RestTemplate` JSON message converters.
 * __Spring Boot__ support to auto-configure `Gson` and `ObjectMapper` instances with `PropertyBox` serialization and deserialization capabilities.
 

@@ -22,6 +22,7 @@ The module faces the following integration concerns:
 
 * _Gson_ *GsonBuilder* configuration
 * _Jackson_ *ObjectMapper* configuration
+* Full support of the *Java 8 date and time API* for the `java.time.*` data types serialization and deserialization
 * *JAX-RS* integration and auto-configuration
 * _Spring_ *RestTemplate* configuration
 * *Spring boot* auto-configuration 
@@ -86,6 +87,21 @@ To bound a `PropertySet` instance to the default thread-scoped resource set of t
 
 See the next sections for further details and use-case examples.
 
+== Date and time data types
+
+=== `java.time.*` data types support
+
+The support for the Java 8 date and time API data types is enabled out-of-the-box, and allows to deal transparently with the temporal data types such as `LocalDate`, `LocalTime` and `LocalDateTime`.
+
+This includes any temporal date type used with a `Property` and accordingly any `java.time.*` data type serialized and deserialized within a `PropertyBox`.
+
+See the next sections for further details according to the specific available implementations.
+
+=== `java.util.Date` serialization and deserialization
+
+By default, the `java.util.Date` data types are serialized in JSON using the *ISO-8601* format, to provide a standard and more readable way to represent date and time types in the serialized JSON output.
+
+See the next sections for further details according to the specific available implementations.
 
 // Inclusions
 
