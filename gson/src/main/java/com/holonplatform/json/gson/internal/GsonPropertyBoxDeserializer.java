@@ -29,7 +29,7 @@ import com.holonplatform.core.property.Property;
 import com.holonplatform.core.property.PropertyBox;
 import com.holonplatform.core.property.PropertySet;
 import com.holonplatform.core.temporal.TemporalType;
-import com.holonplatform.json.internal.datetime.ISO8601DateFormats;
+import com.holonplatform.json.datetime.CurrentSerializationTemporalType;
 
 /**
  * Gson deserializer to handle {@link PropertyBox} deserialization.
@@ -84,10 +84,10 @@ public class GsonPropertyBoxDeserializer implements JsonDeserializer<PropertyBox
 		Optional<TemporalType> temporalType = property.getConfiguration().getTemporalType();
 		if (temporalType.isPresent()) {
 			try {
-				ISO8601DateFormats.setCurrentTemporalType(temporalType.get());
+				CurrentSerializationTemporalType.setCurrentTemporalType(temporalType.get());
 				return context.deserialize(json, property.getType());
 			} finally {
-				ISO8601DateFormats.removeCurrentTemporalType();
+				CurrentSerializationTemporalType.removeCurrentTemporalType();
 			}
 		}
 		return context.deserialize(json, property.getType());

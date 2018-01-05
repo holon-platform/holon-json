@@ -25,6 +25,7 @@ import org.junit.Test;
 
 import com.holonplatform.core.internal.utils.CalendarUtils;
 import com.holonplatform.core.temporal.TemporalType;
+import com.holonplatform.json.datetime.CurrentSerializationTemporalType;
 import com.holonplatform.json.internal.datetime.ISO8601DateFormats;
 
 public class TestISO8601Dates {
@@ -41,11 +42,11 @@ public class TestISO8601Dates {
 		Assert.assertEquals("1979-03-09", str);
 		
 		try {
-			ISO8601DateFormats.setCurrentTemporalType(TemporalType.DATE);
+			CurrentSerializationTemporalType.setCurrentTemporalType(TemporalType.DATE);
 			str = ISO8601DateFormats.format(c.getTime());
 			Assert.assertEquals("1979-03-09", str);
 		} finally {
-			ISO8601DateFormats.removeCurrentTemporalType();
+			CurrentSerializationTemporalType.removeCurrentTemporalType();
 		}
 		
 		final int offset = (c.get(Calendar.ZONE_OFFSET) + c.get(Calendar.DST_OFFSET)) / (60 * 60 * 1000);

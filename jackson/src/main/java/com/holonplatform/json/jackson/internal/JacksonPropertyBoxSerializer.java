@@ -26,7 +26,7 @@ import com.holonplatform.core.Path;
 import com.holonplatform.core.property.Property;
 import com.holonplatform.core.property.PropertyBox;
 import com.holonplatform.core.temporal.TemporalType;
-import com.holonplatform.json.internal.datetime.ISO8601DateFormats;
+import com.holonplatform.json.datetime.CurrentSerializationTemporalType;
 
 /**
  * Jackson JSON serializer to handle {@link PropertyBox} serialization
@@ -54,10 +54,10 @@ public class JacksonPropertyBoxSerializer extends JsonSerializer<PropertyBox> {
 					Optional<TemporalType> temporalType = property.getConfiguration().getTemporalType();
 					if (temporalType.isPresent()) {
 						try {
-							ISO8601DateFormats.setCurrentTemporalType(temporalType.get());
+							CurrentSerializationTemporalType.setCurrentTemporalType(temporalType.get());
 							gen.writeObjectField(name, value);
 						} finally {
-							ISO8601DateFormats.removeCurrentTemporalType();
+							CurrentSerializationTemporalType.removeCurrentTemporalType();
 						}
 					} else {
 						gen.writeObjectField(name, value);

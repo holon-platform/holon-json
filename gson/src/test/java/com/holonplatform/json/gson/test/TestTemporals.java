@@ -30,8 +30,8 @@ import com.google.gson.Gson;
 import com.holonplatform.core.property.PropertyBox;
 import com.holonplatform.core.property.PropertySet;
 import com.holonplatform.core.temporal.TemporalType;
+import com.holonplatform.json.datetime.CurrentSerializationTemporalType;
 import com.holonplatform.json.gson.GsonConfiguration;
-import com.holonplatform.json.internal.datetime.ISO8601DateFormats;
 
 public class TestTemporals {
 
@@ -62,7 +62,7 @@ public class TestTemporals {
 		final Date date2 = c.getTime();
 
 		try {
-			ISO8601DateFormats.setCurrentTemporalType(TemporalType.DATE);
+			CurrentSerializationTemporalType.setCurrentTemporalType(TemporalType.DATE);
 
 			json = gson.toJson(date2);
 			Assert.assertEquals("\"1979-03-09\"", json);
@@ -71,7 +71,7 @@ public class TestTemporals {
 			Assert.assertEquals(date2, deser);
 
 		} finally {
-			ISO8601DateFormats.removeCurrentTemporalType();
+			CurrentSerializationTemporalType.removeCurrentTemporalType();
 		}
 
 	}
@@ -129,7 +129,7 @@ public class TestTemporals {
 		final java.sql.Date date2 = new java.sql.Date(c.getTimeInMillis());
 
 		try {
-			ISO8601DateFormats.setCurrentTemporalType(TemporalType.DATE);
+			CurrentSerializationTemporalType.setCurrentTemporalType(TemporalType.DATE);
 
 			json = gson.toJson(date2);
 			Assert.assertEquals("\"1979-03-09\"", json);
@@ -138,7 +138,7 @@ public class TestTemporals {
 			Assert.assertEquals(date2, deser);
 
 		} finally {
-			ISO8601DateFormats.removeCurrentTemporalType();
+			CurrentSerializationTemporalType.removeCurrentTemporalType();
 		}
 
 	}

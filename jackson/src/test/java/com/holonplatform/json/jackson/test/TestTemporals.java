@@ -30,7 +30,7 @@ import org.junit.Test;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.holonplatform.core.internal.utils.CalendarUtils;
 import com.holonplatform.core.temporal.TemporalType;
-import com.holonplatform.json.internal.datetime.ISO8601DateFormats;
+import com.holonplatform.json.datetime.CurrentSerializationTemporalType;
 import com.holonplatform.json.jackson.JacksonConfiguration;
 
 public class TestTemporals {
@@ -63,7 +63,7 @@ public class TestTemporals {
 		final Date date2 = c.getTime();
 
 		try {
-			ISO8601DateFormats.setCurrentTemporalType(TemporalType.DATE);
+			CurrentSerializationTemporalType.setCurrentTemporalType(TemporalType.DATE);
 
 			json = mapper.writeValueAsString(date2);
 			Assert.assertEquals("\"1979-03-09\"", json);
@@ -72,7 +72,7 @@ public class TestTemporals {
 			Assert.assertEquals(date2, CalendarUtils.floorTime(deser));
 
 		} finally {
-			ISO8601DateFormats.removeCurrentTemporalType();
+			CurrentSerializationTemporalType.removeCurrentTemporalType();
 		}
 
 	}

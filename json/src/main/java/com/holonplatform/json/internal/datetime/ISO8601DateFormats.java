@@ -23,6 +23,7 @@ import org.apache.commons.lang3.time.FastDateFormat;
 
 import com.holonplatform.core.internal.utils.CalendarUtils;
 import com.holonplatform.core.temporal.TemporalType;
+import com.holonplatform.json.datetime.CurrentSerializationTemporalType;
 
 /**
  * ISO-8601 date formats used by JSON {@link Date} serializers and deserializers.
@@ -36,27 +37,7 @@ public final class ISO8601DateFormats {
 	final static String ISO_DATE_FORMAT = "yyyy-MM-dd";
 	final static String ISO_TIME_FORMAT = "HH:mm:ss";
 
-	/**
-	 * Current {@link TemporalType}
-	 */
-	private final static ThreadLocal<TemporalType> CURRENT_TEMPORAL_TYPE = new ThreadLocal<>();
-
 	private ISO8601DateFormats() {
-	}
-
-	/**
-	 * Set the current {@link TemporalType} to use for date format/parse
-	 * @param temporalType The {@link TemporalType} to set
-	 */
-	public static void setCurrentTemporalType(TemporalType temporalType) {
-		CURRENT_TEMPORAL_TYPE.set(temporalType);
-	}
-
-	/**
-	 * Remove the current {@link TemporalType} to use for date format/parse
-	 */
-	public static void removeCurrentTemporalType() {
-		CURRENT_TEMPORAL_TYPE.remove();
 	}
 
 	/**
@@ -178,7 +159,8 @@ public final class ISO8601DateFormats {
 	 * @return The temporal type
 	 */
 	private static TemporalType getTemporalType(TemporalType temporalType) {
-		TemporalType tt = (temporalType != null) ? temporalType : CURRENT_TEMPORAL_TYPE.get();
+		TemporalType tt = (temporalType != null) ? temporalType
+				: CurrentSerializationTemporalType.getCurrentTemporalType();
 		if (tt == null) {
 			tt = TemporalType.DATE_TIME;
 		}
