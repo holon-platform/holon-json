@@ -42,8 +42,10 @@ import com.holonplatform.core.property.PropertyBox;
 import com.holonplatform.core.property.PropertySet;
 import com.holonplatform.core.property.PropertySetRef;
 import com.holonplatform.core.temporal.TemporalType;
+import com.holonplatform.json.Json;
 import com.holonplatform.json.datetime.CurrentSerializationTemporalType;
 import com.holonplatform.json.jackson.JacksonConfiguration;
+import com.holonplatform.json.jackson.JacksonJson;
 import com.holonplatform.json.jackson.spring.SpringJacksonConfiguration;
 
 @SuppressWarnings("unused")
@@ -69,6 +71,14 @@ public class ExampleJackson {
 
 		LocalDate deserialized = mapper.readValue(serialized, LocalDate.class); // <3>
 		// end::temporals[]
+	}
+	
+	public void json() {
+		// tag::json[]
+		Json jsonApi = Json.require(); // <1>
+
+		jsonApi = JacksonJson.create(); // <2>
+		// end::json[]
 	}
 
 	public void ttype() throws IOException {

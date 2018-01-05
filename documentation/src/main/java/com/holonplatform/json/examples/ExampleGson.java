@@ -42,8 +42,10 @@ import com.holonplatform.core.property.PropertyBox;
 import com.holonplatform.core.property.PropertySet;
 import com.holonplatform.core.property.PropertySetRef;
 import com.holonplatform.core.temporal.TemporalType;
+import com.holonplatform.json.Json;
 import com.holonplatform.json.datetime.CurrentSerializationTemporalType;
 import com.holonplatform.json.gson.GsonConfiguration;
+import com.holonplatform.json.gson.GsonJson;
 import com.holonplatform.json.gson.spring.SpringGsonConfiguration;
 
 @SuppressWarnings("unused")
@@ -71,7 +73,15 @@ public class ExampleGson {
 		LocalDate deserialized = gson.fromJson(serialized, LocalDate.class); // <3>
 		// end::temporals[]
 	}
-	
+
+	public void json() {
+		// tag::json[]
+		Json jsonApi = Json.require(); // <1>
+
+		jsonApi = GsonJson.create(); // <2>
+		// end::json[]
+	}
+
 	public void ttype() throws IOException {
 		// tag::ttype[]
 		Gson gson = GsonConfiguration.builder().create(); // <1>

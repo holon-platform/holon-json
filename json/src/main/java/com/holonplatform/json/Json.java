@@ -31,7 +31,7 @@ import com.holonplatform.core.property.VirtualProperty;
 import com.holonplatform.json.internal.JsonProviders;
 
 /**
- * A simple API to serialize and deserialize Object to and from JSON.
+ * A simple API to serialize and deserialize Objects to and from JSON.
  * <p>
  * Any object supported by the concrete JSON parser implementation can be serialized and deserialized.
  * </p>

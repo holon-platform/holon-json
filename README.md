@@ -7,6 +7,7 @@ This is the __JSON__ module of the [Holon Platform](https://holon-platform.com),
 
 The module main features are:
 
+* A simple __JSON objects serialization and deserialization API__, to use concrete JSON parsers implementation in a easier and abstract way, providing also useful helper methods for Collections and `PropertyBox` types serialization and deserialization.
 * __JSON__ serialization and deserialization support for the `PropertyBox` platform foundation data container class.
 * __JAX-RS__ configuration and auto-configuration support to enable [Gson](https://github.com/google/gson) as default JSON type messages serialization and deserialization engine with `PropertyBox` support and to enable  `PropertyBox` serialization and deserialization when using [Jackson](http://wiki.fasterxml.com/JacksonHome) as default provider.
 * Full support of the __Java 8 date and time API__: the `java.time.*` data types serialization and deserialization is supported and enabled out-of-the-box.
@@ -111,6 +112,7 @@ Maven _group id_: `com.holon-platform.json`
 
 Artifact id | Description
 ----------- | -----------
+`holon-json` | Holon JSON objects serialization and deserialization core API
 `holon-gson` | Base [Gson](https://github.com/google/gson) configuration for `PropertyBox` serialization and deserialization support
 `holon-gson-jaxrs` | __JAX-RS__ configuration support to use [Gson](https://github.com/google/gson) as JSON type messages serializer/deserializer
 `holon-gson-spring` | Spring `RestTemplate` configuration and `Gson` Spring Boot auto-configuration

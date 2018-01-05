@@ -22,7 +22,7 @@ import java.nio.charset.StandardCharsets;
 import com.holonplatform.json.Json.JsonWriteException;
 
 /**
- * Represents a JSON serialization result, providing method to obtain the JSON data in different formats.
+ * Represents a JSON serialization result, providing methods to obtain the JSON data in different formats.
  * 
  * @since 5.1.0
  * 

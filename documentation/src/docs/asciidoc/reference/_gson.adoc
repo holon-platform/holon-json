@@ -130,6 +130,22 @@ The following configuration properties are available to tune or disable the JAX-
 * `holon.gson.disable-autoconfig`: If this property is present in JAX-RS application properties, all the Gson and `PropertyBox` JSON serialization/deserialization features will be disabled
 * `holon.jaxrs.json.pretty-print`: If `true`, enables _pretty printing_ of serialized JSON
 
+[[GsonJson]]
+=== Gson `Json` API implementation
+
+Gson can be used as <<JsonAPI>> implementation.
+
+When the `holon-gson` artifact is present in classpath, a suitable `JsonProvider` is automatically registered, and the `Json` API implementation can be obtained through the `Json.get()` and `Json.require()` methods.
+
+Otherwise, the Gson `Json` API implementation can be directly obtained using the link:{apidir}/com/holonplatform/json/gson/GsonJson.html[GsonJson^] interface, through one of the `create()` methods.
+
+[source, java]
+----
+include::{examplesdir}/com/holonplatform/json/examples/ExampleGson.java[tag=json,indent=0]
+----
+<1> Get the Gson `Json` API implementation using the registered provider
+<2> Obtain the Gson `Json` API implementation directly
+
 === Spring integration
 
 _Maven coordinates_:

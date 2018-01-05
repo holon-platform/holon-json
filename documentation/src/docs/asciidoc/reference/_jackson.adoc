@@ -134,6 +134,22 @@ The following configuration properties are available to tune or disable the JAX-
 * `holon.jackson.disable-autoconfig`: If this property is present in JAX-RS application properties, all the Jackson `ObjectMapper` and `PropertyBox` JSON serialization/deserialization features will be disabled
 * `holon.jaxrs.json.pretty-print`: If `true`, enables _pretty printing_ of serialized JSON
 
+[[JacksonJson]]
+=== Jackson `Json` API implementation
+
+Jackson can be used as <<JsonAPI>> implementation.
+
+When the `holon-jackson` artifact is present in classpath, a suitable `JsonProvider` is automatically registered, and the `Json` API implementation can be obtained through the `Json.get()` and `Json.require()` methods.
+
+Otherwise, the Jackson `Json` API implementation can be directly obtained using the link:{apidir}/com/holonplatform/json/jackson/JacksonJson.html[JacksonJson^] interface, through one of the `create()` methods.
+
+[source, java]
+----
+include::{examplesdir}/com/holonplatform/json/examples/ExampleJackson.java[tag=json,indent=0]
+----
+<1> Get the Jackson `Json` API implementation using the registered provider
+<2> Obtain the Jackson `Json` API implementation directly
+
 === Spring integration
 
 _Maven coordinates_:
