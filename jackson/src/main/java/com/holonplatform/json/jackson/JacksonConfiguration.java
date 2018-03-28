@@ -69,8 +69,6 @@ public interface JacksonConfiguration {
 		objectMapper.registerModule(new JavaTimeModule());
 
 		objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-
-		objectMapper.getDeserializationContext();
 	}
 
 }
