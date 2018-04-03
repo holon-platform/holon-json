@@ -25,6 +25,7 @@ import java.util.Date;
 
 import com.holonplatform.core.property.PathProperty;
 import com.holonplatform.core.property.Property;
+import com.holonplatform.core.property.PropertyBox;
 import com.holonplatform.core.property.PropertySet;
 import com.holonplatform.core.property.PropertyValueConverter;
 import com.holonplatform.core.property.VirtualProperty;
@@ -63,6 +64,19 @@ public class DataTest {
 	}
 
 	public static final TestData TEST_DATA_VALUE = new TestData(1, "One", TestEnum.TWO);
+
+	// ------ nested
+
+	public static final PathProperty<Long> N_CODE = create("code", long.class);
+	public static final PathProperty<String> N_VALUE = create("value", String.class);
+
+	public static final PropertySet<?> NESTED_PS = PropertySet.of(N_CODE, N_VALUE);
+
+	public static final PathProperty<PropertyBox> NESTED1 = create("nested1", PropertyBox.class)
+			.configuration(PropertySet.PROPERTY_CONFIGURATION_ATTRIBUTE, NESTED_PS);
+
+	public static final PropertySet<?> PROPERTIES_NESTED = PropertySet.of(KEY, NAME, NUMBER, DATE, ENUM, BOOL,
+			OBJECT_DATA, ARRAY_DATA, LOCAL_DATE, LOCAL_DATETIME, NUMBOOL, NESTED1, TEST);
 
 	public static enum TestEnum {
 

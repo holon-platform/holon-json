@@ -29,6 +29,7 @@ import com.google.gson.GsonBuilder;
 import com.holonplatform.core.internal.property.DefaultPropertyBox;
 import com.holonplatform.core.internal.utils.ObjectUtils;
 import com.holonplatform.core.property.PropertyBox;
+import com.holonplatform.json.config.PropertyBoxSerializationMode;
 import com.holonplatform.json.gson.internal.GsonPropertyBoxDeserializer;
 import com.holonplatform.json.gson.internal.GsonPropertyBoxSerializer;
 import com.holonplatform.json.gson.internal.datetime.GsonDateDeserializer;
@@ -45,27 +46,51 @@ import com.holonplatform.json.gson.internal.datetime.GsonTemporalSerializer;
 public interface GsonConfiguration {
 
 	/**
-	 * Create a {@link GsonBuilder}, registering serializers and deserializers for {@link PropertyBox} type handling.
-	 * @return GsonBuilder
+	 * Create a {@link GsonBuilder}, registering serializers and deserializers for {@link PropertyBox} type handling and
+	 * using the default {@link PropertyBox} serialization mode.
+	 * @return A new {@link GsonBuilder}
+	 * @see PropertyBoxSerializationMode#getDefault()
 	 */
 	public static GsonBuilder builder() {
+		return builder(PropertyBoxSerializationMode.getDefault());
+	}
+
+	/**
+	 * Create a {@link GsonBuilder}, registering serializers and deserializers for {@link PropertyBox} type handling.
+	 * @param serializationMode {@link PropertyBox} serialization mode
+	 * @return A new {@link GsonBuilder}
+	 * @see PropertyBoxSerializationMode
+	 */
+	public static GsonBuilder builder(PropertyBoxSerializationMode serializationMode) {
 		GsonBuilder builder = new GsonBuilder();
-		configure(builder);
+		configure(builder, serializationMode);
 		return builder;
+	}
+
+	/**
+	 * Configure given Gson {@link GsonBuilder}, registering serializers and deserializers for {@link PropertyBox} type
+	 * handling and using the default {@link PropertyBox} serialization mode.
+	 * @param builder GsonBuilder (not null)
+	 * @see PropertyBoxSerializationMode#getDefault()
+	 */
+	public static void configure(GsonBuilder builder) {
+		configure(builder, PropertyBoxSerializationMode.getDefault());
 	}
 
 	/**
 	 * Configure given Gson {@link GsonBuilder}, registering serializers and deserializers for {@link PropertyBox} type
 	 * handling.
 	 * @param builder GsonBuilder (not null)
+	 * @param serializationMode {@link PropertyBox} serialization mode
+	 * @see PropertyBoxSerializationMode
 	 */
-	public static void configure(GsonBuilder builder) {
+	public static void configure(GsonBuilder builder, PropertyBoxSerializationMode serializationMode) {
 		ObjectUtils.argumentNotNull(builder, "Null GsonBuilder");
 
 		// PropertyBox
-		builder.registerTypeAdapter(PropertyBox.class, new GsonPropertyBoxSerializer());
+		builder.registerTypeAdapter(PropertyBox.class, new GsonPropertyBoxSerializer(serializationMode));
 		builder.registerTypeAdapter(PropertyBox.class, new GsonPropertyBoxDeserializer());
-		builder.registerTypeAdapter(DefaultPropertyBox.class, new GsonPropertyBoxSerializer());
+		builder.registerTypeAdapter(DefaultPropertyBox.class, new GsonPropertyBoxSerializer(serializationMode));
 		builder.registerTypeAdapter(DefaultPropertyBox.class, new GsonPropertyBoxDeserializer());
 
 		// jdk8 java.time.* API using ISO-8601 format

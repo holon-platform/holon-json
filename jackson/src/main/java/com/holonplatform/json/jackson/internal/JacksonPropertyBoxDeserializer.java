@@ -16,11 +16,10 @@
 package com.holonplatform.json.jackson.internal;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Map.Entry;
+import java.util.List;
 import java.util.Optional;
 
 import com.fasterxml.jackson.core.JsonParseException;
@@ -32,14 +31,18 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.holonplatform.core.Context;
 import com.holonplatform.core.Path;
+import com.holonplatform.core.internal.Logger;
 import com.holonplatform.core.internal.utils.CalendarUtils;
 import com.holonplatform.core.internal.utils.ConversionUtils;
 import com.holonplatform.core.internal.utils.TypeUtils;
+import com.holonplatform.core.property.PathPropertySetAdapter;
 import com.holonplatform.core.property.Property;
-import com.holonplatform.core.property.Property.PropertyReadException;
 import com.holonplatform.core.property.PropertyBox;
+import com.holonplatform.core.property.PropertyConfiguration;
 import com.holonplatform.core.property.PropertySet;
 import com.holonplatform.core.temporal.TemporalType;
+import com.holonplatform.json.exceptions.JsonDeserializationException;
+import com.holonplatform.json.internal.JsonLogger;
 
 /**
  * Jackson JSON deserializer to handle {@link PropertyBox} deserialization
@@ -48,12 +51,16 @@ import com.holonplatform.core.temporal.TemporalType;
  */
 public class JacksonPropertyBoxDeserializer extends JsonDeserializer<PropertyBox> {
 
+	/**
+	 * Logger
+	 */
+	private static final Logger LOGGER = JsonLogger.create();
+
 	/*
 	 * (non-Javadoc)
 	 * @see com.fasterxml.jackson.databind.JsonDeserializer#deserialize(com.fasterxml.jackson.core.JsonParser,
 	 * com.fasterxml.jackson.databind.DeserializationContext)
 	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public PropertyBox deserialize(JsonParser parser, DeserializationContext ctxt)
 			throws IOException, JsonProcessingException {
@@ -63,100 +70,190 @@ public class JacksonPropertyBoxDeserializer extends JsonDeserializer<PropertyBox
 				.orElseThrow(
 						() -> new JsonParseException(parser, "Missing PropertySet instance to build a PropertyBox. "
 								+ "A PropertySet instance must be available as context resource to perform PropertyBox deserialization."));
-
-		// map to store
-		final Map<Property, Object> propertyValues = new HashMap<>();
-
 		// read tree
 		JsonNode node = parser.getCodec().readTree(parser);
 
-		if (node.isObject()) {
-			// get fields
-			Iterator<Entry<String, JsonNode>> fi = node.fields();
-			while (fi.hasNext()) {
-				final Entry<String, JsonNode> entry = fi.next();
-				final String fieldName = entry.getKey();
-				final JsonNode n = entry.getValue();
-
-				if (!n.isNull()) {
-					Optional<Property> property = getProperty(propertySet, fieldName);
-					if (property.isPresent()) {
-						if (n.isValueNode()) {
-							// simple value
-							propertyValues.put(property.get(),
-									parser.getCodec().treeToValue(n, property.get().getType()));
-						} else {
-							// nested object
-							try (JsonParser np = n.traverse(parser.getCodec())) {
-								propertyValues.put(property.get(), np.readValueAs(property.get().getType()));
-							}
-						}
-					}
-				}
-			}
-
+		if (node == null) {
+			return null;
 		}
 
 		try {
-			final PropertyBox.Builder builder = PropertyBox.builder(propertySet).invalidAllowed(true);
-			propertySet.forEach(p -> {
-				final Object value = checkupPropertyValue(p, propertyValues.get(p));
-				if (value != null) {
-					builder.setIgnoreReadOnly(p, value);
-				}
-			});
-			return builder.build();
-		} catch (Exception e) {
-			throw new JsonMappingException(parser, "Failed to deserialize properties into a PropertyBox", e);
+			// deserialize as PropertyBox
+			return deserializePropertyBox(parser, node, propertySet);
+		} catch (JsonDeserializationException e) {
+			throw new JsonMappingException(parser, "Failed to deserialize JSON node as a PropertyBox", e);
 		}
 	}
 
 	/**
-	 * Get the {@link Property} which corresponds to to the field named <code>fieldName</code> in given property set, if
-	 * available.
-	 * @param set Property set
-	 * @param fieldName Field name
-	 * @return Optional {@link Property}
+	 * Deserialize given JSON node into a {@link PropertyBox} instance.
+	 * @param parser JSON parser
+	 * @param node JSON node to deserialize
+	 * @param propertySet PropertySet to use
+	 * @return Deserialized {@link PropertyBox} instance
+	 * @throws JsonDeserializationException If an error occurred
 	 */
-	@SuppressWarnings("rawtypes")
-	private static Optional<Property> getProperty(PropertySet<?> set, String fieldName) {
-		return set.stream().filter(p -> Path.class.isAssignableFrom(p.getClass())).map(p -> (Path) p)
-				.filter(q -> fieldName.equals(q.getName())).map(qp -> (Property) qp).findFirst();
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	private static PropertyBox deserializePropertyBox(JsonParser parser, JsonNode node, PropertySet<?> propertySet)
+			throws JsonDeserializationException {
+
+		if (!node.isObject()) {
+			throw new JsonDeserializationException(
+					"Failed to deserialize JSON node [" + node.toString() + "]: node must be a JSON object");
+		}
+		try {
+			final PropertyBox.Builder builder = PropertyBox.builder(propertySet).invalidAllowed(true);
+			final PathPropertySetAdapter adapter = PathPropertySetAdapter.create(propertySet);
+			for (Property<?> property : propertySet) {
+				Optional<?> value = adapter.getPath(property)
+						.flatMap(path -> deserializePath(parser, node, property.getConfiguration(), path));
+				if (value.isPresent()) {
+					builder.setIgnoreReadOnly((Property) property, value.get());
+				} else {
+					LOGGER.debug(() -> "Property [" + property + "] value not found in JSON node [" + node
+							+ "] - skip PropertyBox value setting");
+				}
+			}
+			return builder.build();
+		} catch (JsonDeserializationException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new JsonDeserializationException(
+					"Failed to deserialize JSON node [" + node.toString() + "] as a PropertyBox", e);
+		}
 	}
 
 	/**
-	 * Checkup property value, applying conversions if required.
-	 * @param property Property
-	 * @param value Property value
-	 * @return Sanitized property value
-	 * @throws PropertyReadException Error reading property
+	 * Deserialize a path value from given JSON node.
+	 * @param <T> Path type
+	 * @param parser Parser
+	 * @param node Json none
+	 * @param config Property configuration which corresponds to given path
+	 * @param path Path to deserialize
+	 * @return Deserialized path value, if available
+	 * @throws JsonDeserializationException IF an error occurred
+	 */
+	private static <T> Optional<T> deserializePath(JsonParser parser, JsonNode node, PropertyConfiguration config,
+			Path<T> path) throws JsonDeserializationException {
+		// get the path name
+		final List<String> pathNames = getPathNameHierarchy(path);
+		if (!pathNames.isEmpty()) {
+			return getJsonNode(node, pathNames)
+					.flatMap(n -> deserializeField(parser, n, config, path, pathNames.get(pathNames.size() - 1)));
+		}
+		return Optional.empty();
+	}
+
+	/**
+	 * Get the Json node which corresponds to given path names hierarchy.
+	 * @param node Root node
+	 * @param pathNames Path names hierarchy
+	 * @return the Json node which corresponds to given path names hierarchy, if available
+	 */
+	private static Optional<JsonNode> getJsonNode(JsonNode node, List<String> pathNames) {
+		JsonNode currentNode = node;
+		for (String name : pathNames) {
+			if (currentNode == null) {
+				break;
+			}
+			currentNode = currentNode.get(name);
+		}
+		return Optional.ofNullable(currentNode);
+	}
+
+	/**
+	 * Deserialize the Json object field whith given name.
+	 * @param <T> Path type
+	 * @param parser Parser
+	 * @param node Json node from which to deserialize the field value
+	 * @param config Property configuration
+	 * @param path Path which corresponds to given field name
+	 * @param fieldName Field name to deserialize
+	 * @return Deserialized field value, if available
+	 * @throws JsonDeserializationException If an error occurred
+	 */
+	@SuppressWarnings("unchecked")
+	private static <T> Optional<T> deserializeField(JsonParser parser, JsonNode node, PropertyConfiguration config,
+			Path<T> path, String fieldName) throws JsonDeserializationException {
+		if (!node.isNull()) {
+			if (node.isValueNode()) {
+				try {
+					return Optional
+							.ofNullable(deserializeValue(path, parser.getCodec().treeToValue(node, path.getType())));
+				} catch (JsonProcessingException e) {
+					throw new JsonDeserializationException("Failed to deserialize path [" + path
+							+ "] using field name [" + fieldName + "] in JSON node [" + node + "]", e);
+				}
+			} else {
+				// nested object, check PropertyBox
+				if (PropertyBox.class.isAssignableFrom(path.getType())) {
+					return Optional.ofNullable((T) deserializePropertyBox(parser, node,
+							config.getParameter(PropertySet.PROPERTY_CONFIGURATION_ATTRIBUTE)
+									.orElseThrow(() -> new JsonDeserializationException(
+											"Failed to deserialize PropertyBox type path [" + path
+													+ "] for JSON field [" + fieldName
+													+ "]: missing PropertySet. Check property configuration attribute ["
+													+ PropertySet.PROPERTY_CONFIGURATION_ATTRIBUTE.getKey() + "]"))));
+				} else {
+					// traverse node using default deserializers
+					try (JsonParser np = node.traverse(parser.getCodec())) {
+						return Optional.ofNullable(np.readValueAs(path.getType()));
+					} catch (IOException e) {
+						throw new JsonDeserializationException("Failed to deserialize path [" + path
+								+ "] using field name [" + fieldName + "] in JSON node [" + node + "]", e);
+					}
+				}
+			}
+		}
+		return Optional.empty();
+	}
+
+	/**
+	 * Get the path names hierarchy from given path, ujsing any parent path and splitting the path name if a dot
+	 * notation is detected.
+	 * @param path Path
+	 * @return the path names hierarchy
+	 */
+	private static List<String> getPathNameHierarchy(Path<?> path) {
+		final String pathName = path.relativeName();
+		if (pathName == null) {
+			return Collections.emptyList();
+		}
+		if (pathName.indexOf('.') < 1) {
+			return Collections.singletonList(pathName);
+		}
+		return Arrays.asList(pathName.split("\\."));
+	}
+
+	/**
+	 * Deserialize the value associated to given path, performing any suitable conversion if required.
+	 * @param <T> Path type
+	 * @param path Path
+	 * @param value Path value
+	 * @return Deserialized path value
+	 * @throws JsonDeserializationException If an error occurred
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private static Object checkupPropertyValue(Property property, Object value) throws PropertyReadException {
+	private static <T> T deserializeValue(Path<T> path, T value) throws JsonDeserializationException {
 		if (value != null) {
+			final Class<? extends T> type = path.getType();
+			try {
+				if (TypeUtils.isEnum(type)) {
+					return (T) ConversionUtils.convertEnumValue((Class<Enum>) type, value);
 
-			final Class<?> type = property.getType();
-
-			if (TypeUtils.isEnum(type)) {
-				try {
-					return ConversionUtils.convertEnumValue((Class<Enum>) type, value);
-				} catch (IllegalArgumentException e) {
-					throw new PropertyReadException(property, "Property conversion failed [" + property + "]", e);
 				}
-			}
+				if (TypeUtils.isNumber(type) && TypeUtils.isNumber(value.getClass())) {
+					return (T) ConversionUtils.convertNumberToTargetClass((Number) value, (Class<Number>) type);
 
-			if (TypeUtils.isNumber(type) && TypeUtils.isNumber(value.getClass())) {
-				try {
-					return ConversionUtils.convertNumberToTargetClass((Number) value, (Class<Number>) type);
-				} catch (IllegalArgumentException e) {
-					throw new PropertyReadException(property, "Property conversion failed [" + property + "]", e);
 				}
-			}
-
-			if (TypeUtils.isDate(value.getClass()) && property.getConfiguration().getTemporalType()
-					.orElse(TemporalType.DATE_TIME) == TemporalType.DATE) {
-				// reset time
-				return CalendarUtils.floorTime((Date) value);
+				if (TypeUtils.isDate(value.getClass())
+						&& path.getTemporalType().orElse(TemporalType.DATE_TIME) == TemporalType.DATE) {
+					// reset time
+					return (T) CalendarUtils.floorTime((Date) value);
+				}
+			} catch (Exception e) {
+				throw new JsonDeserializationException(
+						"Failed to deserialize path [" + path + "] value [" + value + "]", e);
 			}
 		}
 		return value;
