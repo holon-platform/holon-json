@@ -29,6 +29,7 @@ import java.nio.charset.StandardCharsets;
 
 import javax.annotation.Priority;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.Priorities;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
@@ -58,7 +59,7 @@ import com.holonplatform.json.jackson.JacksonConfiguration;
  *
  * @since 5.0.0
  */
-@Priority(-100)
+@Priority(Priorities.ENTITY_CODER)
 @Provider
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)

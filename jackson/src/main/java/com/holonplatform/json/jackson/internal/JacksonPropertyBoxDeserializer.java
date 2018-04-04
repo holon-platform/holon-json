@@ -104,15 +104,18 @@ public class JacksonPropertyBoxDeserializer extends JsonDeserializer<PropertyBox
 		try {
 			final PropertyBox.Builder builder = PropertyBox.builder(propertySet).invalidAllowed(true);
 			final PathPropertySetAdapter adapter = PathPropertySetAdapter.create(propertySet);
-			for (Property<?> property : propertySet) {
-				Optional<?> value = adapter.getPath(property)
-						.flatMap(path -> deserializePath(parser, node, property.getConfiguration(), path));
-				if (value.isPresent()) {
-					builder.setIgnoreReadOnly((Property) property, value.get());
-				} else {
-					LOGGER.debug(() -> "Property [" + property + "] value not found in JSON node [" + node
-							+ "] - skip PropertyBox value setting");
-				}
+			for (Property property : propertySet) {
+				Optional<Path> propertyPath = adapter.getPath(property);
+				propertyPath.ifPresent(path -> {
+					Optional<?> value = deserializePath(parser, node, ((Property<?>) property).getConfiguration(),
+							path);
+					if (value.isPresent()) {
+						builder.setIgnoreReadOnly(property, value.get());
+					} else {
+						LOGGER.debug(() -> "Property [" + property + "] value not found in JSON node [" + node
+								+ "] - skip PropertyBox value setting");
+					}
+				});
 			}
 			return builder.build();
 		} catch (JsonDeserializationException e) {
