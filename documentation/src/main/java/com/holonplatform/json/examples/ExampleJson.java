@@ -27,8 +27,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
+import com.holonplatform.core.property.NumericProperty;
 import com.holonplatform.core.property.PathProperty;
 import com.holonplatform.core.property.PropertyBox;
+import com.holonplatform.core.property.PropertyBoxProperty;
 import com.holonplatform.core.property.PropertySet;
 import com.holonplatform.core.property.StringProperty;
 import com.holonplatform.core.property.VirtualProperty;
@@ -79,6 +81,35 @@ public class ExampleJson {
 
 		PropertyBox propertyBox = PropertyBox.builder(PROPERTY_SET).set(NAME, "test").build(); // <4>
 		// end::sconfig[]
+	}
+
+	public void serializeh1() {
+		// tag::serializeh1[]
+		final NumericProperty<Long> KEY = NumericProperty.longType("key");
+
+		final StringProperty NAME = StringProperty.create("name");
+		final StringProperty SURNAME = StringProperty.create("surname");
+
+		final PropertyBoxProperty NESTED = PropertyBoxProperty.create("nested", NAME, SURNAME); // <1>
+
+		final PropertySet<?> PROPERTY_SET = PropertySet.of(KEY, NESTED); // <2>
+
+		PropertyBox value = PropertyBox.builder(PROPERTY_SET).set(KEY, 1L)
+				.set(NESTED, PropertyBox.builder(NAME, SURNAME).set(NAME, "John").set(SURNAME, "Doe").build()).build(); // <3>
+		// end::serializeh1[]
+	}
+
+	public void serializeh2() {
+		// tag::serializeh2[]
+		final NumericProperty<Long> KEY = NumericProperty.longType("key");
+		final StringProperty NAME = StringProperty.create("nested.name"); // <1>
+		final StringProperty SURNAME = StringProperty.create("nested.surname"); // <2>
+
+		final PropertySet<?> PROPERTY_SET = PropertySet.of(KEY, NAME, SURNAME);
+
+		PropertyBox value = PropertyBox.builder(PROPERTY_SET).set(KEY, 1L).set(NAME, "John").set(SURNAME, "Doe")
+				.build(); // <3>
+		// end::serializeh2[]
 	}
 
 	public void serializepb() {

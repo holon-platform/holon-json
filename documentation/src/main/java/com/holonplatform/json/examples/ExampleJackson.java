@@ -37,12 +37,16 @@ import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import com.holonplatform.core.property.PathProperty;
 import com.holonplatform.core.property.PropertyBox;
 import com.holonplatform.core.property.PropertySet;
 import com.holonplatform.core.property.PropertySetRef;
+import com.holonplatform.core.property.TemporalProperty;
 import com.holonplatform.core.temporal.TemporalType;
 import com.holonplatform.json.Json;
+import com.holonplatform.json.config.JsonConfigProperties;
+import com.holonplatform.json.config.PropertyBoxSerializationMode;
 import com.holonplatform.json.datetime.CurrentSerializationTemporalType;
 import com.holonplatform.json.jackson.JacksonConfiguration;
 import com.holonplatform.json.jackson.JacksonJson;
@@ -72,7 +76,7 @@ public class ExampleJackson {
 		LocalDate deserialized = mapper.readValue(serialized, LocalDate.class); // <3>
 		// end::temporals[]
 	}
-	
+
 	public void json() {
 		// tag::json[]
 		Json jsonApi = Json.require(); // <1>
@@ -105,8 +109,7 @@ public class ExampleJackson {
 	final static PropertySet<?> PROPERTY_SET = PropertySet.of(ID, DESCRIPTION);
 
 	public void serializeAndDeserialize() throws JsonProcessingException {
-		ObjectMapper mapper = new ObjectMapper();
-		JacksonConfiguration.configure(mapper); // <1>
+		ObjectMapper mapper = JacksonConfiguration.mapper(); // <1>
 
 		PropertyBox box = PropertyBox.builder(PROPERTY_SET).set(ID, 1L).set(DESCRIPTION, "Test").build(); // <2>
 
@@ -116,6 +119,21 @@ public class ExampleJackson {
 		box = PROPERTY_SET.execute(() -> mapper.reader().forType(PropertyBox.class).readValue(json)); // <4>
 	}
 	// end::serdeser[]
+
+	public void pttype() throws IOException {
+		// tag::pttype[]
+		final ObjectMapper mapper = JacksonConfiguration.mapper();
+
+		final TemporalProperty<Date> DATE = TemporalProperty.date("date").temporalType(TemporalType.DATE); // <1>
+
+		Calendar c = Calendar.getInstance();
+		c.set(2018, 0, 5);
+
+		PropertyBox value = PropertyBox.builder(DATE).set(DATE, c.getTime()).build(); // <2>
+
+		String json = JacksonConfiguration.mapper().writeValueAsString(value); // <3>
+		// end::pttype[]
+	}
 
 	// tag::jaxrs[]
 	final static PathProperty<Integer> CODE = PathProperty.create("code", Integer.class);
@@ -130,7 +148,7 @@ public class ExampleJackson {
 		@PUT
 		@Path("serialize")
 		@Consumes(MediaType.APPLICATION_JSON)
-		public Response create(@PropertySetRef(value = ExampleJackson.class, field = "PROPERTYSET") PropertyBox data) {
+		public Response create(@PropertySetRef(value = ExampleJackson.class, field = "PROPERTYSET") PropertyBox data) { // <1>
 			return Response.accepted().build();
 		}
 
@@ -144,17 +162,27 @@ public class ExampleJackson {
 	}
 
 	public void jaxrs() {
-		Client client = ClientBuilder.newClient(); // <1>
+		Client client = ClientBuilder.newClient(); // <2>
 
 		PropertyBox box1 = PropertyBox.builder(PROPERTYSET).set(CODE, 1).set(NAME, "Test").build();
 
-		client.target("https://host/test/serialize").request().put(Entity.entity(box1, MediaType.APPLICATION_JSON)); // <2>
+		client.target("https://host/test/serialize").request().put(Entity.entity(box1, MediaType.APPLICATION_JSON)); // <3>
 
 		PropertyBox box2 = PROPERTYSET
-				.execute(() -> client.target("https://host/test/deserialize").request().get(PropertyBox.class)); // <3>
+				.execute(() -> client.target("https://host/test/deserialize").request().get(PropertyBox.class)); // <4>
 
 	}
 	// end::jaxrs[]
+
+	public void serializationMode() {
+		// tag::sermode[]
+		final ObjectMapper mapper = JacksonConfiguration.mapper();
+
+		final ObjectWriter writer = mapper.writer() // <1>
+				.withAttribute(JsonConfigProperties.PROPERTYBOX_SERIALIZATION_MODE_ATTRIBUTE_NAME,
+						PropertyBoxSerializationMode.ALL); // <2>
+		// end::sermode[]
+	}
 
 	// tag::spring[]
 	class Config {

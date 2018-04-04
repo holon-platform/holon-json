@@ -1,3 +1,4 @@
+[[Gson]]
 == Gson integration
 
 A `JsonSerializer` and a `JsonDeserializer` are provided to configure link:holon-core.html#PropertyBox[PropertyBox] serialization to _JSON_ format and deserialization from _JSON_ format.
@@ -43,6 +44,7 @@ In the example above, the `PropertyBox` instance will be serialized as a JSON ob
 }
 ----
 
+[[GsonDateTime]]
 === Gson `java.time.*` data types support
 
 The Java 8 date and time API data types serialization and deserialization are supported out-of-the-box when using a `GsonBuilder` obtained or configured through the link:{apidir}/com/holonplatform/json/gson/GsonConfiguration.html[GsonConfiguration^] interface methods.
@@ -61,6 +63,7 @@ include::{examplesdir}/com/holonplatform/json/examples/ExampleGson.java[tag=temp
 <2> Serialize given `LocalDate` in JSON. This will result in `"2018-01-05"`
 <3> Deserialize back the JSON date into a `LocalDate`
 
+[[GsonDate]]
 === ISO-8601 `java.util.Date` serialization
 
 When using a Gson `GsonBuilder` obtained or configured through the link:{apidir}/com/holonplatform/json/gson/GsonConfiguration.html[GsonConfiguration^] methods, the serialization of `java.util.Date` data types using the *ISO-8601* format is enabled by default, to provide a standard and more readable way to represent date and time types in the serialized JSON output.
