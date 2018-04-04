@@ -22,7 +22,7 @@ include::{examplesdir}/com/holonplatform/json/examples/ExampleJackson.java[tag=c
 <2> Configure the `ObjectMapper` for `PropertyBox` and `java.time.*` data types support
 <3> Create and configure a new Jackson `ObjectMapper`
 
-With a properly configured `ObjectMapper` instance, a `PropertyBox` can be serialized and deserialized just like any another object. As described in <<JsonPropertySet>>, you need to declare the `PropertySet` to use as a _Context_ resource at `PropertyBox` deserialization time.
+With a properly configured `ObjectMapper` instance, a `PropertyBox` can be serialized and deserialized just like any another object. As described in the <<PropertyBox>> section, you need to declare the `PropertySet` to use as a _Context_ resource at `PropertyBox` deserialization time.
 
 [source, java]
 ----

@@ -30,18 +30,22 @@ import java.util.Optional;
 import com.holonplatform.core.property.PathProperty;
 import com.holonplatform.core.property.PropertyBox;
 import com.holonplatform.core.property.PropertySet;
+import com.holonplatform.core.property.StringProperty;
+import com.holonplatform.core.property.VirtualProperty;
 import com.holonplatform.json.Json;
 import com.holonplatform.json.JsonReader;
 import com.holonplatform.json.JsonWriter;
+import com.holonplatform.json.config.JsonConfigProperties;
+import com.holonplatform.json.config.PropertyBoxSerializationMode;
 
 @SuppressWarnings("unused")
 public class ExampleJson {
 
 	public void get() {
 		// tag::get[]
-		Optional<Json> json1 = Json.get(); // <1>
+		Optional<Json> jsonAPI = Json.get(); // <1>
 
-		Json json2 = Json.require(); // <2>
+		Json jsonAPI_ = Json.require(); // <2>
 		// end::get[]
 	}
 
@@ -49,7 +53,7 @@ public class ExampleJson {
 		// tag::serialize[]
 		Json json = Json.require(); // <1>
 
-		Object myObject = getObject(); // build or obtain the object to serialize
+		Object myObject = getObject(); // the object to serialize
 
 		JsonWriter result = json.toJson(myObject); // <2>
 
@@ -61,6 +65,20 @@ public class ExampleJson {
 
 		asString = json.toJsonString(myObject); // <8>
 		// end::serialize[]
+	}
+
+	public void serializationConfig() {
+		// tag::sconfig[]
+		StringProperty NAME = StringProperty.create("name"); // <1>
+		VirtualProperty<String> VRT = VirtualProperty.create(String.class, pb -> "(" + pb.getValue(NAME) + ")")
+				.name("vrt"); // <2>
+
+		final PropertySet<?> PROPERTY_SET = PropertySet.builderOf(NAME, VRT)
+				.configuration(JsonConfigProperties.PROPERTYBOX_SERIALIZATION_MODE, PropertyBoxSerializationMode.ALL)
+				.build(); // <3>
+
+		PropertyBox propertyBox = PropertyBox.builder(PROPERTY_SET).set(NAME, "test").build(); // <4>
+		// end::sconfig[]
 	}
 
 	public void serializepb() {
@@ -124,7 +142,7 @@ public class ExampleJson {
 		final PathProperty<String> NAME = create("name", String.class);
 		final PropertySet<?> PROPERTIES = PropertySet.of(KEY, NAME);
 
-		PropertyBox box = PROPERTIES.execute(() -> deserializePropertyBox());
+		PropertyBox box = PROPERTIES.execute(() -> deserializePropertyBox()); // <1>
 		// end::pscontext[]
 	}
 
