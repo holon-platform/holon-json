@@ -34,6 +34,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ContextResolver;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -217,6 +218,7 @@ public class ExampleJackson {
 	}
 
 	// tag::spring[]
+	@Configuration
 	class Config {
 
 		@Bean

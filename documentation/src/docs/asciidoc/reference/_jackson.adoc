@@ -62,7 +62,7 @@ In the example above, the `PropertyBox` instance will be serialized as a JSON ob
 
 As described in the <<PropertyBoxSerializationStrategy>> section, the `PropertyBox` properties serialization strategy can be configured using the `PROPERTYBOX_SERIALIZATION_MODE` configuration property, available from the link:{apidir}/com/holonplatform/json/config/JsonConfigProperties.html[JsonConfigProperties^] interface.
 
-Besides using the `PropertySet` `Configuration` container to configure the `PropertyBox` properties serialization strategy, the serialization mode can be configured globally for a Jackon `ObjectMapper` using a Jackson Deserialization context attribute: `PROPERTYBOX_SERIALIZATION_MODE_ATTRIBUTE_NAME`. SInce it is a deserialization context attribute, it has to be configured at `ObjectWriter` level.
+Besides using the `PropertySet` `Configuration` container to configure the `PropertyBox` properties serialization strategy, the serialization mode can be configured globally for a Jackson `ObjectMapper` using a Jackson Deserialization context attribute: `PROPERTYBOX_SERIALIZATION_MODE_ATTRIBUTE_NAME`. SInce it is a deserialization context attribute, it has to be configured at `ObjectWriter` level.
 
 [source, java]
 ----
@@ -163,7 +163,7 @@ A set of JAX-RS extension features are provided to configure a JAX-RS context wh
 
 To setup the _Jackson_ JAX-RS extensions, the link:{apidir}/com/holonplatform/json/jackson/jaxrs/JacksonFeature.html[JacksonFeature^] feature has to be registered in the JAX-RS application.
 
-If you use link:https://github.com/jersey[Jersey^] or link:http://resteasy.jboss.org[Resteasy^] as JAX-RS implementation, there is no need to explicitly register the `JacksonFeature`, just ensure the `holon-jackson` jar is in classpath and the _Jackson_ support will be *configured automatically*, leveraging on  Jersey _AutoDiscoverable_ and Resteasy Java Service extensions features.
+If you use link:https://github.com/jersey[Jersey^] or link:http://resteasy.jboss.org[Resteasy^] as JAX-RS implementation, there is no need to explicitly register the `JacksonFeature`, just ensure the `holon-jackson-jaxrs` jar is in classpath and the _Jackson_ support will be *configured automatically*, leveraging on Jersey _AutoDiscoverable_ and Resteasy Java Service extensions features.
 
 When the feature is registered and enabled, the following extensions will be available:
 
@@ -189,7 +189,7 @@ include::{examplesdir}/com/holonplatform/json/examples/ExampleJackson.java[tag=j
 
 ==== Deal with the JAX-RS context `ObjectMapper` instance
 
-When using JAX-RS `JacksonFeature`, a default `javax.ws.rs.ext.ContextResolver` is registered to provide the Jackson `ObjectMapper` instance to be used for JSON mapping operations. The context resolver provides by default an `ObjectMapper` instance configured according the <<JacksonObjectMapperConfiguration>> of the Holon platform JSON module.
+When using the JAX-RS `JacksonFeature`, a default `javax.ws.rs.ext.ContextResolver` is registered to provide the Jackson `ObjectMapper` instance to be used for JSON mapping operations. The context resolver provides by default an `ObjectMapper` instance configured according to the <<JacksonObjectMapperConfiguration>> of the Holon platform JSON module.
 
 You can replace the default `ObjectMapper` instance of the JAX-RS context in the following ways:
 
@@ -205,12 +205,12 @@ CAUTION: To ensure `PropertyBox` type JSON serialization and deserialization con
 ----
 include::{examplesdir}/com/holonplatform/json/examples/ExampleJackson.java[tag=jaxrsor1,indent=0]
 ----
-<1> The JAX-RS `ContextResolver` instance has to be annotated so that to declare that is bound to `application/json` media type 
+<1> The JAX-RS `ContextResolver` instance has to be annotated so that to declare that is bound to the `application/json` media type 
 <2> The `JacksonConfiguration` can be used to configure the `ObjectMapper` instance to support the Holon platform JSON features, such as `PropertyBox` type mapping
 
 *2. Use the Holon platform `Context`:*
 
-The default `ObjectMapper` mapper context resolver looks up for a _context_ resource of `ObjectMapper` type using the `ObjectMapper` class name as resource key before returning the default `ObjectMapper` instance. 
+The default `ObjectMapper` context resolver looks up for a _context_ resource of `ObjectMapper` type using the `ObjectMapper` class name as resource key before returning the default `ObjectMapper` instance. 
 
 If the `ObjectMapper` type context resource is found, it is returned and used as JAX-RS `ObjectMapper` instance.
 
@@ -230,9 +230,9 @@ CAUTION: To ensure `PropertyBox` type JSON serialization and deserialization con
 
 The following JAX-RS application configuration properties are available to tune or disable the Jackson JAX-RS integration features:
 
-* `holon.jackson.disable-resolver`: If this property is present in JAX-RS application properties, the Jackson `ObjectMapper` context resolver auto-configuration is disabled
-* `holon.jackson.disable-autoconfig`: If this property is present in JAX-RS application properties, all the Holon platform Jackson JAX-RS extension features will be disabled
-* `holon.jaxrs.json.pretty-print`: If `true`, enables _pretty printing_ of serialized JSON
+* `holon.jackson.disable-resolver`: If this property is present in JAX-RS application properties, the Jackson `ObjectMapper` context resolver auto-configuration is disabled.
+* `holon.jackson.disable-autoconfig`: If this property is present in JAX-RS application properties, all the Holon platform Jackson JAX-RS extension features will be disabled.
+* `holon.jaxrs.json.pretty-print`: If `true`, enables _pretty printing_ of serialized JSON.
 
 [[JacksonSpring]]
 === Spring integration

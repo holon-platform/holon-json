@@ -1,9 +1,7 @@
 [[Gson]]
 == Gson integration
 
-A `JsonSerializer` and a `JsonDeserializer` are provided to configure link:holon-core.html#PropertyBox[PropertyBox] serialization to _JSON_ format and deserialization from _JSON_ format.
-
-=== Configuration and use
+The link:https://github.com/google/gson[Gson] library support is provided by the `holon-gson` artifact:
 
 _Maven coordinates_:
 [source, xml, subs="attributes+"]
@@ -12,18 +10,33 @@ _Maven coordinates_:
 <artifactId>holon-gson</artifactId>
 <version>{revnumber}</version>
 ----
+[[GsonBuilderConfiguration]]
+=== Gson `GsonBuilder` configuration
 
-To enable `PropertyBox` handling in Gson, registering the suitable `JsonSerializer` and a `JsonDeserializer` pair, the link:{apidir}/com/holonplatform/json/gson/GsonConfiguration.html[GsonConfiguration^] utility interface can be used:
+The link:{apidir}/com/holonplatform/json/gson/GsonConfiguration.html[GsonConfiguration^] interface can be used to configure a Gson `GsonBuilder` (or obtain an already configured one) and enable the Holon platform JSON support features, including:
+
+* The `PropertyBox` type support in JSON serialization and deserialization.
+* The `java.time.*` temporal types support.
+* The `java.util.Date` type handling using the ISO-8601 format
+
+The `GsonConfiguration` interface makes available methods to configure an existing `GsonBuilder` instance or to obtain an already configured one:
 
 [source, java]
 ----
 include::{examplesdir}/com/holonplatform/json/examples/ExampleGson.java[tag=configuration,indent=0]
 ----
-<1> Get a pre-configured `GsonBuilder` with `PropertyBox` support
-<2> Get a previously available `GsonBuilder`
-<3> Configure the builder for `PropertyBox` support
+<1> Get a new pre-configured `GsonBuilder`
+<2> Configure a `GsonBuilder` instance
 
-With a properly configured `Gson` instance, a `PropertyBox` can be serialized and deserialized just like any another object. As described in the <<PropertyBox>> section, you need to declare the `PropertySet` to use as a _Context_ resource at `PropertyBox` deserialization time.
+See the next sections for details about each feature.
+
+==== `PropertyBox` type support
+
+When the `GsonConfiguration` API is used to configure a `GsonBuilder`, serializers and deserializers for the `PropertyBox` type are registered and enabled.
+
+The `PropertyBox` serialization and deserialization strategy follows the rules described in the <<PropertyBox>> section.
+
+With a properly configured `GsonBuilder` instance, you can deal with `PropertyBox` type serialization and deserialization just like any another supported object type.
 
 [source, java]
 ----
@@ -44,10 +57,23 @@ In the example above, the `PropertyBox` instance will be serialized as a JSON ob
 }
 ----
 
+==== `PropertyBox` serialization configuration
+
+As described in the <<PropertyBoxSerializationStrategy>> section, the `PropertyBox` properties serialization strategy can be configured using the `PROPERTYBOX_SERIALIZATION_MODE` configuration property, available from the link:{apidir}/com/holonplatform/json/config/JsonConfigProperties.html[JsonConfigProperties^] interface.
+
+Besides using the `PropertySet` `Configuration` container to configure the `PropertyBox` properties serialization strategy, the serialization mode can be configured globally for a Gson `GsonBuilder` using the `GsonConfiguration` API.
+
+[source, java]
+----
+include::{examplesdir}/com/holonplatform/json/examples/ExampleGson.java[tag=sermode,indent=0]
+----
+<1> Get a new pre-configured `GsonBuilder` and set the serialization mode to  `PropertyBoxSerializationMode.ALL` to include all the properties of the `PropertyBox` property set when it is serialized to JSON
+<2> Configure a `GsonBuilder` instance and set the serialization mode to `PropertyBoxSerializationMode.ALL`
+
 [[GsonDateTime]]
 === Gson `java.time.*` data types support
 
-The Java 8 date and time API data types serialization and deserialization are supported out-of-the-box when using a `GsonBuilder` obtained or configured through the link:{apidir}/com/holonplatform/json/gson/GsonConfiguration.html[GsonConfiguration^] interface methods.
+The Java 8 date and time API data types serialization and deserialization are supported out-of-the-box when using a `GsonBuilder` obtained or configured through the link:{apidir}/com/holonplatform/json/gson/GsonConfiguration.html[GsonConfiguration^] API.
 
 Supported `java.time.*` data types are: `LocalDate`, `LocalTime`, `LocalDateTime`, `OffsetTime`, `OffsetDateTime`, `ZonedDateTime` and `Instant`.
 
@@ -66,7 +92,7 @@ include::{examplesdir}/com/holonplatform/json/examples/ExampleGson.java[tag=temp
 [[GsonDate]]
 === ISO-8601 `java.util.Date` serialization
 
-When using a Gson `GsonBuilder` obtained or configured through the link:{apidir}/com/holonplatform/json/gson/GsonConfiguration.html[GsonConfiguration^] methods, the serialization of `java.util.Date` data types using the *ISO-8601* format is enabled by default, to provide a standard and more readable way to represent date and time types in the serialized JSON output.
+When using a Gson `GsonBuilder` obtained or configured through the link:{apidir}/com/holonplatform/json/gson/GsonConfiguration.html[GsonConfiguration^] API, the serialization of the `java.util.Date` type is made using the *ISO-8601* format by default, to provide a standard and more readable way to represent date and time types in the serialized JSON output.
 
 So a `java.util.Date` type value is serialized with the following pattern:
 
@@ -93,6 +119,23 @@ include::{examplesdir}/com/holonplatform/json/examples/ExampleGson.java[tag=ttyp
 <3> Only the date part will be serialized in JSON: `"2018-01-05"`
 <4> Clear the current `TemporalType`
 
+[[GsonJson]]
+=== Gson `Json` API implementation
+
+Gson can be used as <<JsonAPI,Json API>> implementation.
+
+When the `holon-gson` artifact is present in classpath, a suitable `JsonProvider` is automatically registered, and the `Json` API implementation can be obtained through the `Json.get()` and `Json.require()` methods.
+
+Otherwise, the Gson `Json` API implementation can be directly obtained using the link:{apidir}/com/holonplatform/json/gson/GsonJson.html[GsonJson^] interface, through one of the `create()` methods.
+
+[source, java]
+----
+include::{examplesdir}/com/holonplatform/json/examples/ExampleGson.java[tag=json,indent=0]
+----
+<1> Get the Gson `Json` API implementation using the registered provider
+<2> Obtain the Gson `Json` API implementation directly
+
+[[GsonJAXRS]]
 === JAX-RS integration
 
 _Maven coordinates_:
@@ -103,15 +146,20 @@ _Maven coordinates_:
 <version>{revnumber}</version>
 ----
 
-A set of JAX-RS extension classes are provided to configure `PropertyBox` JSON support in JAX-RS using _Gson_, and in a more general sense, to configure _Gson_ as main serializer/deserializer in a JAX-RS server and/or client for the JSON media type.
+A set of JAX-RS extension features are provided to configure a JAX-RS context when using Gson as JSON provider, to enable all the features provided by the Holon platform JSON support module and to configure the Gson JAX-RS context `Gson` instance, obtained from a `GsonBuilder` configured as described in the <<GsonBuilderConfiguration>> section.
 
-The JAX-RS _Gson_ extensions relies on standard `ContextResolver` type to provide the `Gson` instance to use to perform JSON serialization and deserialization. This `Gson` instance must be configured with `PropertyBox` support as described above to handle `PropertyBox` types consistently.
+To setup the _Gson_ JAX-RS extensions, the link:{apidir}/com/holonplatform/json/gson/jaxrs/GsonFeature.html[GsonFeature^] feature has to be registered in the JAX-RS application.
 
-To setup _Gson_ as provider for JSON message type handling, the link:{apidir}/com/holonplatform/json/gson/jaxrs/GsonFeature.html[GsonFeature^] JAX-RS `Feature` can be registered in the JAX-RS application.
+If you use link:https://github.com/jersey[Jersey^] or link:http://resteasy.jboss.org[Resteasy^] as JAX-RS implementation, there is no need to explicitly register the `GsonFeature`, just ensure the `holon-gson-jaxrs` jar is in classpath and the _Gson_ support will be *configured automatically*, leveraging on Jersey _AutoDiscoverable_ and Resteasy Java Service extensions features.
 
-If you use link:https://github.com/jersey[Jersey^] or link:http://resteasy.jboss.org[Resteasy^] as JAX-RS implementation, there is no need to explicitly register the `GsonFeature`, just ensure the `holon-gson` jar is in classpath and the _Gson_ support will be configured automatically, leveraging Jersey _AutoDiscoverable_ and Resteasy Java Service extensions features.
+When the feature is registered and enabled, the following extensions will be available:
 
-==== `PropertyBox` deserialization
+* A JAX-RS `MessageBodyReader` and `MessageBodyWriter` for the `application/json` media type to handle the `PropertyBox` type and perform JSON serialization and deserialization, according to the default strategy as described in the <<PropertyBox>> section. See <<GsonJaxrsPropertyBoxDeserialization>> for details about the `PropertyBox` property set handling.
+
+* A JAX-RS `javax.ws.rs.ext.ContextResolver` to provide the `Gson` instance to be used for JSON mapping operations. By default, the provided `Gson` instance is obtained from a `GsonBuilder` configured as described in the <<GsonBuilderConfiguration>> section.
+
+[[GsonJaxrsPropertyBoxDeserialization]]
+==== `PropertyBox` type deserialization
 
 When a `PropertyBox` is used as a JAX-RS resource method *parameter* (for methods which declare to consume  `application/json` media type), the JSON deserialization of the input into a `PropertyBox` instance needs to know the `PropertySet` to use in order to create the property box. For this purpose, the `@PropertySetRef` annotation can be used at method parameter level to declare the `PropertySet` instance to use to deserialize the property box.
 
@@ -125,30 +173,54 @@ include::{examplesdir}/com/holonplatform/json/examples/ExampleGson.java[tag=jaxr
 <2> Perform a `PUT` request providing a `PropertyBox` value as JSON. At the endpoint resource level, the `PropertyBox` type input parameter of the `serialize` method is annotated with `@PropertySetRef` in order  to declare the property set to use to deserialize the property box from JSON
 <3> Perform a `GET` request for a JSON serialized `PropertyBox` value, providing the `PropertySet` to use for deserialization as a `Context` thread-bound resource
 
-==== JAX-RS integration configuration
+==== Deal with the JAX-RS context `Gson` instance
 
-The following configuration properties are available to tune or disable the JAX-RS integration features for _Gson_ and `PropertyBox` support:
+When using the JAX-RS `GsonFeature`, a default `javax.ws.rs.ext.ContextResolver` is registered to provide the `Gson` instance to be used for JSON mapping operations. The context resolver provides by default an `Gson` instance obtained using a `GsonBuilder` configured according to the <<GsonBuilderConfiguration>> of the Holon platform JSON module.
 
-* `holon.gson.disable-resolver`: If this property is present in JAX-RS application properties, the Gson *ContextResolver* auto-configuration is disabled
-* `holon.gson.disable-autoconfig`: If this property is present in JAX-RS application properties, all the Gson and `PropertyBox` JSON serialization/deserialization features will be disabled
-* `holon.jaxrs.json.pretty-print`: If `true`, enables _pretty printing_ of serialized JSON
+You can replace the default `Gson` instance of the JAX-RS context in the following ways:
 
-[[GsonJson]]
-=== Gson `Json` API implementation
+*1. Provide a custom `ContextResolver`:*
 
-Gson can be used as <<JsonAPI>> implementation.
+A custom `javax.ws.rs.ext.ContextResolver` for the `Gson` type can be provided and registered in the JAX-RS application.
 
-When the `holon-gson` artifact is present in classpath, a suitable `JsonProvider` is automatically registered, and the `Json` API implementation can be obtained through the `Json.get()` and `Json.require()` methods.
+To ensure the default `ContextResolver` will not be taken into account, you can use the JAX-RS application configuration property `holon.gson.disable-resolver`, setting it to `true` to disable the default context resolver.
 
-Otherwise, the Gson `Json` API implementation can be directly obtained using the link:{apidir}/com/holonplatform/json/gson/GsonJson.html[GsonJson^] interface, through one of the `create()` methods.
+CAUTION: To ensure `PropertyBox` type JSON serialization and deserialization consistency, the `GsonBuilder` from which the `Gson` instance is obtained should be configured using the   link:{apidir}/com/holonplatform/json/gson/GsonConfiguration.html[GsonConfiguration^] API.
 
 [source, java]
 ----
-include::{examplesdir}/com/holonplatform/json/examples/ExampleGson.java[tag=json,indent=0]
+include::{examplesdir}/com/holonplatform/json/examples/ExampleGson.java[tag=jaxrsor1,indent=0]
 ----
-<1> Get the Gson `Json` API implementation using the registered provider
-<2> Obtain the Gson `Json` API implementation directly
+<1> The JAX-RS `ContextResolver` instance has to be annotated so that to declare that is bound to the  `application/json` media type 
+<2> The `GsonConfiguration` can be used to configure the `GsonBuilder` instance to support the Holon platform JSON features, such as `PropertyBox` type mapping
 
+*2. Use the Holon platform `Context`:*
+
+The default `Gson` context resolver looks up for a _context_ resource of `Gson` type using the `Gson` class name as resource key before returning the default `Gson` instance. 
+
+If the `Gson` type context resource is found, it is returned and used as JAX-RS `Gson` instance.
+
+NOTE: See link:holon-core.html#Context[Context] for information about the Holon platform context and context resources handling.
+
+This way, you can provide your own `Gson` instance using the Holon platform `Context` API to register your `Gson` instance as a context resource with the appropriate resource key.
+
+[source, java]
+----
+include::{examplesdir}/com/holonplatform/json/examples/ExampleGson.java[tag=jaxrsor2,indent=0]
+----
+<1> The _classloader_ context scope is used to register a custom `Gson` instance using the `Gson` class name as resource key
+
+CAUTION: To ensure `PropertyBox` type JSON serialization and deserialization consistency, the `GsonBuilder` from which the `Gson` instance is obtained should be configured using the   link:{apidir}/com/holonplatform/json/gson/GsonConfiguration.html[GsonConfiguration^] API.
+
+==== JAX-RS integration configuration
+
+The following JAX-RS application configuration properties are available to tune or disable the Gson JAX-RS integration features:
+
+* `holon.gson.disable-resolver`: If this property is present in JAX-RS application properties, the Gson `Gson` context resolver auto-configuration is disabled.
+* `holon.gson.disable-autoconfig`: If this property is present in JAX-RS application propertiesall the Holon platform Gson JAX-RS extension features will be disabled.
+* `holon.jaxrs.json.pretty-print`: If `true`, enables _pretty printing_ of serialized JSON.
+
+[[GsonSpring]]
 === Spring integration
 
 _Maven coordinates_:
@@ -159,14 +231,15 @@ _Maven coordinates_:
 <version>{revnumber}</version>
 ----
 
-The link:{apidir}/com/holonplatform/json/gson/spring/SpringGsonConfiguration.html[SpringGsonConfiguration^] utility class can be used to configure a Spring `RestTemplate`, ensuring that a `GsonHttpMessageConverter` is registered and bound to a `Gson` instance correctly configured for `PropertyBox` JSON serialization/deserialization.
+The link:{apidir}/com/holonplatform/json/gson/spring/SpringGsonConfiguration.html[SpringGsonConfiguration^] utility interface can be used to configure a Spring `RestTemplate`, ensuring that a `GsonHttpMessageConverter` is registered and bound to a `Gson` instance correctly configured for Holon platform Gson extensions, as described in the <<GsonBuilderConfiguration>> section.
 
 [source, java]
 ----
 include::{examplesdir}/com/holonplatform/json/examples/ExampleGson.java[tag=spring,indent=0]
 ----
-<1> Configure the `RestTemplate`
+<1> Create a new `RestTemplate` instance and configure it with the Holon platform JSON support extensions
 
+[[GsonSpringBoot]]
 === Spring Boot integration
 
 _Maven coordinates_:
@@ -177,13 +250,13 @@ _Maven coordinates_:
 <version>{revnumber}</version>
 ----
 
-The `GsonAutoConfiguration` Spring Boot _auto-configuration_ class is provided to automatically configure a `Gson` instance *singleton bean*, correctly configured for `PropertyBox` JSON serialization/deserialization. 
+The link:{apidir}/com/holonplatform/json/gson/spring/boot/GsonAutoConfiguration.html[GsonAutoConfiguration^] Spring Boot _auto-configuration_ class is provided to automatically configure a `Gson` type *singleton bean*, with the Holon platform JSON support extensions, as described in the <<GsonBuilderConfiguration>> section.
 
-This way, the `RestTemplate` instances obtained through the `RestTemplateBuilder` Spring Boot builder will be automatically pre-configured with a `Gson` message converter with `PropertyBox` support.
+This way, the `RestTemplate` instances obtained through the `RestTemplateBuilder` Spring Boot builder will be automatically pre-configured pre-configured with the Holon platform Gson extensions.
 
-IMPORTANT: The `Gson` auto-configuration is triggered only if a `Gson` type bean is not already registered in Spring context.
+IMPORTANT: The `Gson` bean auto-configuration is triggered only if a `Gson` type bean is not already registered in the Spring context.
 
-To disable this auto-configuration feature the `GsonAutoConfiguration` class can be excluded:
+To disable this auto-configuration feature, the `GsonAutoConfiguration` class can be excluded:
 
 [source, java]
 ----
