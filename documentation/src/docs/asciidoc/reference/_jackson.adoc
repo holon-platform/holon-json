@@ -135,7 +135,7 @@ include::{examplesdir}/com/holonplatform/json/examples/ExampleJackson.java[tag=t
 [[JacksonJson]]
 === Jackson `Json` API implementation
 
-Jackson can be used as <<JsonAPI>> implementation.
+Jackson can be used as <<JsonAPI,Json API>> implementation.
 
 When the `holon-jackson` artifact is present in classpath, a suitable `JsonProvider` is automatically registered, and the `Json` API implementation can be obtained through the `Json.get()` and `Json.require()` methods.
 
