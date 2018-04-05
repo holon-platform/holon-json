@@ -31,6 +31,7 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.ext.ContextResolver;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.client.RestTemplate;
@@ -38,6 +39,7 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import com.holonplatform.core.Context;
 import com.holonplatform.core.property.PathProperty;
 import com.holonplatform.core.property.PropertyBox;
 import com.holonplatform.core.property.PropertySet;
@@ -57,11 +59,9 @@ public class ExampleJackson {
 
 	public void configuration() {
 		// tag::configuration[]
-		ObjectMapper mapper = new ObjectMapper(); // <1>
+		ObjectMapper mapper = JacksonConfiguration.configure(new ObjectMapper()); // <1>
 
-		JacksonConfiguration.configure(mapper); // <2>
-
-		mapper = JacksonConfiguration.mapper(); // <3>
+		mapper = JacksonConfiguration.mapper(); // <2>
 		// end::configuration[]
 	}
 
@@ -174,6 +174,38 @@ public class ExampleJackson {
 	}
 	// end::jaxrs[]
 
+	// tag::jaxrsor1[]
+	@Produces(MediaType.APPLICATION_JSON) // <1>
+	public static class MyObjectMapperResolver implements ContextResolver<ObjectMapper> {
+
+		private final ObjectMapper mapper;
+
+		public MyObjectMapperResolver() {
+			super();
+			mapper = JacksonConfiguration.mapper(); // <2>
+			// additional ObjectMapper configuration
+			// ...
+		}
+
+		@Override
+		public ObjectMapper getContext(Class<?> type) {
+			return mapper;
+		}
+
+	}
+	// end::jaxrsor1[]
+
+	public void objectMapperResource() {
+		// tag::jaxrsor2[]
+
+		final ObjectMapper mapper = JacksonConfiguration.mapper();
+		// additional ObjectMapper configuration
+		// ...
+
+		Context.get().classLoaderScope().map(s -> s.put(ObjectMapper.class.getName(), mapper)); // <1>
+		// end::jaxrsor2[]
+	}
+
 	public void serializationMode() {
 		// tag::sermode[]
 		final ObjectMapper mapper = JacksonConfiguration.mapper();
@@ -189,9 +221,7 @@ public class ExampleJackson {
 
 		@Bean
 		public RestTemplate restTemplate() {
-			RestTemplate rt = new RestTemplate();
-			SpringJacksonConfiguration.configure(rt); // <1>
-			return rt;
+			return SpringJacksonConfiguration.configure(new RestTemplate()); // <1>
 		}
 
 	}
