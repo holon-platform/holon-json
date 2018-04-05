@@ -15,27 +15,20 @@
  */
 package com.holonplatform.json.gson.spring;
 
-import java.io.Serializable;
-import java.util.Optional;
-
-import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.GsonHttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
+import com.holonplatform.core.internal.utils.ObjectUtils;
 import com.holonplatform.core.property.PropertyBox;
 import com.holonplatform.json.gson.GsonConfiguration;
+import com.holonplatform.json.gson.spring.internal.GsonRestTemplateUtils;
 
 /**
- * Utility class to handle Gson configuration for Spring framework.
+ * Utility interface to handle Gson configuration in Spring environment.
  *
  * @since 5.0.0
  */
-public final class SpringGsonConfiguration implements Serializable {
-
-	private static final long serialVersionUID = -6810800710779615921L;
-
-	private SpringGsonConfiguration() {
-	}
+public interface SpringGsonConfiguration {
 
 	/**
 	 * Configure Spring RestTemplate, setting up serializers and deserializers for {@link PropertyBox} type handling in
@@ -44,26 +37,14 @@ public final class SpringGsonConfiguration implements Serializable {
 	 * <p>
 	 * In order to this method to work, <code>spring-web</code> artifact must be present in classpath.
 	 * </p>
-	 * @param restTemplate RestTemplate to configure
+	 * @param restTemplate RestTemplate to configure (not null)
+	 * @return The configured RestTemplate instance
 	 */
-	public static void configure(RestTemplate restTemplate) {
-		getGsonConverter(restTemplate).orElse(new GsonHttpMessageConverter())
+	public static RestTemplate configure(RestTemplate restTemplate) {
+		ObjectUtils.argumentNotNull(restTemplate, "RestTemplate must be not null");
+		GsonRestTemplateUtils.getGsonConverter(restTemplate).orElse(new GsonHttpMessageConverter())
 				.setGson(GsonConfiguration.builder().create());
-
-	}
-
-	/**
-	 * Get a registered GsonHttpMessageConverter from RestTemplate
-	 * @param restTemplate RestTemplate
-	 * @return Optional GsonHttpMessageConverter, empty if not registered
-	 */
-	private static Optional<GsonHttpMessageConverter> getGsonConverter(RestTemplate restTemplate) {
-		for (HttpMessageConverter<?> converter : restTemplate.getMessageConverters()) {
-			if (GsonHttpMessageConverter.class.isAssignableFrom(converter.getClass())) {
-				return Optional.of((GsonHttpMessageConverter) converter);
-			}
-		}
-		return Optional.empty();
+		return restTemplate;
 	}
 
 }
