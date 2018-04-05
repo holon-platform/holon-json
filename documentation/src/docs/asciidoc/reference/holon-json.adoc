@@ -13,7 +13,7 @@ _Copies of this document may be made for your own use and for distribution to ot
 
 == Introduction
 
-The Holon Platform *JSON* module provides the support for the https://www.json.org[JSON^] data-interchange format, including configuration facilities, data abstraction, link:holon-core.html#PropertyBox[PropertyBox] type support and seamless integration with the most popular _JSON_ mapping and processing libraries: link:http://wiki.fasterxml.com/JacksonHome[Jackson] and link:https://github.com/google/gson[Gson].
+The Holon Platform *JSON* module provides the support for the https://www.json.org[JSON^] data-interchange format, including configuration facilities, data abstraction, link:holon-core.html#PropertyBox[PropertyBox] type support and seamless integration with the most popular _JSON_ mapping and processing libraries: link:https://github.com/FasterXML/jackson[Jackson^] and link:https://github.com/google/gson[Gson^].
 
 Through the <<JsonAPI,Json API>>, the JSON serialization and deserialization using Java object types can be handled in an abstract and implementation-independent way, easily dealing with common JSON mapping concerns such as _temporal_ types consistent support and generic collection types, besides a full support of the Holon platform link:holon-core.html#Property[Property model] out-of-the-box.
 
@@ -384,7 +384,7 @@ This method behaves in the same way as the `fromJson` method, but returns a `Lis
 [[SupportedJSONLibraries]]
 == Supported JSON libraries
 
-The Holon platform JSON module currently supports the link:http://wiki.fasterxml.com/JacksonHome[Jackson] and  link:https://github.com/google/gson[Gson] libraries out-of-the-box.
+The Holon platform JSON module currently supports the https://github.com/FasterXML/jackson[Jackson^] and  link:https://github.com/google/gson[Gson^] libraries out-of-the-box.
 
 See the next sections for details about each implementation.
 

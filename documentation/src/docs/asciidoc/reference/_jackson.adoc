@@ -1,7 +1,7 @@
 [[Jackson]]
 == Jackson integration
 
-The link:http://wiki.fasterxml.com/JacksonHome[Jackson] library support is provided by the `holon-jackson` artifact:
+The https://github.com/FasterXML/jackson[Jackson^] library support is provided by the `holon-jackson` artifact:
 
 _Maven coordinates_:
 [source, xml, subs="attributes+"]
