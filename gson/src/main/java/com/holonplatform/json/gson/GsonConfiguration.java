@@ -48,7 +48,7 @@ public interface GsonConfiguration {
 	/**
 	 * Create a {@link GsonBuilder}, registering serializers and deserializers for {@link PropertyBox} type handling and
 	 * using the default {@link PropertyBox} serialization mode.
-	 * @return A new {@link GsonBuilder}
+	 * @return A new configured {@link GsonBuilder}
 	 * @see PropertyBoxSerializationMode#getDefault()
 	 */
 	public static GsonBuilder builder() {
@@ -58,23 +58,22 @@ public interface GsonConfiguration {
 	/**
 	 * Create a {@link GsonBuilder}, registering serializers and deserializers for {@link PropertyBox} type handling.
 	 * @param serializationMode {@link PropertyBox} serialization mode
-	 * @return A new {@link GsonBuilder}
+	 * @return A new configured {@link GsonBuilder}
 	 * @see PropertyBoxSerializationMode
 	 */
 	public static GsonBuilder builder(PropertyBoxSerializationMode serializationMode) {
-		GsonBuilder builder = new GsonBuilder();
-		configure(builder, serializationMode);
-		return builder;
+		return configure(new GsonBuilder(), serializationMode);
 	}
 
 	/**
 	 * Configure given Gson {@link GsonBuilder}, registering serializers and deserializers for {@link PropertyBox} type
 	 * handling and using the default {@link PropertyBox} serialization mode.
 	 * @param builder GsonBuilder (not null)
+	 * @return The configured GsonBuilder
 	 * @see PropertyBoxSerializationMode#getDefault()
 	 */
-	public static void configure(GsonBuilder builder) {
-		configure(builder, PropertyBoxSerializationMode.getDefault());
+	public static GsonBuilder configure(GsonBuilder builder) {
+		return configure(builder, PropertyBoxSerializationMode.getDefault());
 	}
 
 	/**
@@ -82,10 +81,11 @@ public interface GsonConfiguration {
 	 * handling.
 	 * @param builder GsonBuilder (not null)
 	 * @param serializationMode {@link PropertyBox} serialization mode
+	 * @return The configured GsonBuilder
 	 * @see PropertyBoxSerializationMode
 	 */
-	public static void configure(GsonBuilder builder, PropertyBoxSerializationMode serializationMode) {
-		ObjectUtils.argumentNotNull(builder, "Null GsonBuilder");
+	public static GsonBuilder configure(GsonBuilder builder, PropertyBoxSerializationMode serializationMode) {
+		ObjectUtils.argumentNotNull(builder, "GsonBuilder must be not null");
 
 		// PropertyBox
 		builder.registerTypeAdapter(PropertyBox.class, new GsonPropertyBoxSerializer(serializationMode));
@@ -126,6 +126,7 @@ public interface GsonConfiguration {
 		builder.registerTypeAdapter(java.sql.Date.class, new GsonDateSerializer());
 		builder.registerTypeAdapter(java.sql.Date.class, new GsonSqlDateDeserializer());
 
+		return builder;
 	}
 
 }

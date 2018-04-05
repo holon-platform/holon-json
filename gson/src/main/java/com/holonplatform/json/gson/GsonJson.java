@@ -17,7 +17,6 @@ package com.holonplatform.json.gson;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.holonplatform.core.internal.utils.ObjectUtils;
 import com.holonplatform.json.Json;
 import com.holonplatform.json.gson.internal.DefaultGsonJson;
 
@@ -44,9 +43,7 @@ public interface GsonJson extends Json {
 	 * @return a new {@link Json} instance
 	 */
 	public static Json create(GsonBuilder builder) {
-		ObjectUtils.argumentNotNull(builder, "GsonBuilder must be not null");
-		GsonConfiguration.configure(builder);
-		return new DefaultGsonJson(builder.create());
+		return new DefaultGsonJson(GsonConfiguration.configure(builder).create());
 	}
 
 }
