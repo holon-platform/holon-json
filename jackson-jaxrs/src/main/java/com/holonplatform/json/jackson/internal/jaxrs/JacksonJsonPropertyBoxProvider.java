@@ -93,8 +93,7 @@ public class JacksonJsonPropertyBoxProvider implements MessageBodyWriter<Propert
 			}
 			if (_mapper == null) {
 				// use default
-				_mapper = new ObjectMapper();
-				JacksonConfiguration.configure(_mapper);
+				_mapper = JacksonConfiguration.mapper();
 			}
 		}
 		return _mapper;
@@ -197,7 +196,7 @@ public class JacksonJsonPropertyBoxProvider implements MessageBodyWriter<Propert
 		try {
 			return getObjectReader().readValue(reader);
 		} catch (JsonProcessingException e) {
-			throw new WebApplicationException(e.getOriginalMessage(), Response.status(Status.BAD_REQUEST)
+			throw new WebApplicationException(e.getOriginalMessage(), e, Response.status(Status.BAD_REQUEST)
 					.type(MediaType.TEXT_PLAIN).entity(e.getOriginalMessage()).build());
 		}
 	}
