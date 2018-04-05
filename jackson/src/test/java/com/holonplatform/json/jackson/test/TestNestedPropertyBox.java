@@ -54,8 +54,7 @@ public class TestNestedPropertyBox {
 
 	@BeforeClass
 	public static void init() {
-		mapper = new ObjectMapper();
-		JacksonConfiguration.configure(mapper);
+		mapper = JacksonConfiguration.mapper();
 	}
 
 	@Test

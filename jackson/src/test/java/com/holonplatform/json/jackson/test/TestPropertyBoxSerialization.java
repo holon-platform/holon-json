@@ -53,20 +53,20 @@ public class TestPropertyBoxSerialization {
 
 	@BeforeClass
 	public static void init() {
-		mapper = new ObjectMapper();
-		JacksonConfiguration.configure(mapper);
+		mapper = JacksonConfiguration.configure(new ObjectMapper());
 	}
-	
+
 	@Test
 	public void testConfig() {
-		ObjectMapper m1 = new ObjectMapper();
-		JacksonConfiguration.configure(m1);
-		
+		ObjectMapper m1 = JacksonConfiguration.configure(new ObjectMapper());
+
 		assertTrue(m1.canSerialize(PropertyBox.class));
-		
-		JacksonConfiguration.configure(m1);
+
+		m1 = JacksonConfiguration.mapper();
+
+		assertTrue(m1.canSerialize(PropertyBox.class));
 	}
-	
+
 	@Test
 	public void testAutoRegister() {
 		ObjectMapper mpr = new ObjectMapper();
@@ -81,9 +81,8 @@ public class TestPropertyBoxSerialization {
 
 		final ObjectWriter writer = mapper.writer();
 
-		PropertyBox box = PropertyBox.builder(PROPERTIES).set(KEY, 1L).set(NAME, "Test")
-				.set(NUMBER, 7.1d).set(BOOL, Boolean.TRUE).set(DATE, DATE_VALUE)
-				.set(OBJECT_DATA, TEST_DATA_VALUE).set(ENUM, TestEnum.ONE)
+		PropertyBox box = PropertyBox.builder(PROPERTIES).set(KEY, 1L).set(NAME, "Test").set(NUMBER, 7.1d)
+				.set(BOOL, Boolean.TRUE).set(DATE, DATE_VALUE).set(OBJECT_DATA, TEST_DATA_VALUE).set(ENUM, TestEnum.ONE)
 				.set(ARRAY_DATA, new int[] { 1, 2, 3 }).build();
 
 		String json = writer.writeValueAsString(box);
@@ -116,10 +115,10 @@ public class TestPropertyBoxSerialization {
 		final ObjectWriter writer = mapper.writer();
 
 		final Collection<PropertyBox> boxes = new LinkedList<>();
-		boxes.add(PropertyBox.builder(PROPERTIES).set(KEY, 1L).set(NAME, "Test")
-				.set(NUMBER, 7.1d).set(BOOL, Boolean.TRUE).build());
-		boxes.add(PropertyBox.builder(PROPERTIES).set(KEY, 2L).set(NAME, "Test2")
-				.set(NUMBER, 8.1d).set(BOOL, Boolean.FALSE).build());
+		boxes.add(PropertyBox.builder(PROPERTIES).set(KEY, 1L).set(NAME, "Test").set(NUMBER, 7.1d)
+				.set(BOOL, Boolean.TRUE).build());
+		boxes.add(PropertyBox.builder(PROPERTIES).set(KEY, 2L).set(NAME, "Test2").set(NUMBER, 8.1d)
+				.set(BOOL, Boolean.FALSE).build());
 
 		String json = writer.writeValueAsString(boxes);
 

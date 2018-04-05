@@ -34,19 +34,18 @@ import com.holonplatform.json.datetime.CurrentSerializationTemporalType;
 import com.holonplatform.json.jackson.JacksonConfiguration;
 
 public class TestTemporals {
-	
+
 	@Test
 	public void testDate() throws IOException {
 
-		final ObjectMapper mapper = new ObjectMapper();
-		JacksonConfiguration.configure(mapper);
+		final ObjectMapper mapper = JacksonConfiguration.mapper();
 
 		Calendar c = Calendar.getInstance();
 		c.set(1979, 2, 9, 10, 30);
 		c.set(Calendar.SECOND, 25);
 		c.set(Calendar.MILLISECOND, 0);
 		Date date = c.getTime();
-		
+
 		final int offset = (c.get(Calendar.ZONE_OFFSET) + c.get(Calendar.DST_OFFSET)) / (60 * 60 * 1000);
 		final String offsetZ = ((offset < 0) ? "-" : "+") + StringUtils.leftPad("" + Math.abs(offset), 2, '0') + "00";
 
@@ -80,8 +79,7 @@ public class TestTemporals {
 	@Test
 	public void testLocalDate() throws IOException {
 
-		final ObjectMapper mapper = new ObjectMapper();
-		JacksonConfiguration.configure(mapper);
+		final ObjectMapper mapper = JacksonConfiguration.mapper();
 
 		final LocalDate date = LocalDate.of(1979, Month.MARCH, 9);
 
@@ -96,8 +94,7 @@ public class TestTemporals {
 	@Test
 	public void testLocalDateTime() throws IOException {
 
-		final ObjectMapper mapper = new ObjectMapper();
-		JacksonConfiguration.configure(mapper);
+		final ObjectMapper mapper = JacksonConfiguration.mapper();
 
 		final LocalDateTime date = LocalDateTime.of(1979, Month.MARCH, 9, 10, 30, 25);
 
@@ -112,8 +109,7 @@ public class TestTemporals {
 	@Test
 	public void testLocalTime() throws IOException {
 
-		final ObjectMapper mapper = new ObjectMapper();
-		JacksonConfiguration.configure(mapper);
+		final ObjectMapper mapper = JacksonConfiguration.mapper();
 
 		final LocalTime time = LocalTime.of(10, 30, 25);
 

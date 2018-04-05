@@ -16,7 +16,6 @@
 package com.holonplatform.json.jackson;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.holonplatform.core.internal.utils.ObjectUtils;
 import com.holonplatform.json.Json;
 import com.holonplatform.json.jackson.internal.DefaultJacksonJson;
 
@@ -43,9 +42,7 @@ public interface JacksonJson extends Json {
 	 * @return a new {@link Json} instance
 	 */
 	public static Json create(ObjectMapper objectMapper) {
-		ObjectUtils.argumentNotNull(objectMapper, "ObjectMapper must be not null");
-		JacksonConfiguration.configure(objectMapper);
-		return new DefaultJacksonJson(objectMapper);
+		return new DefaultJacksonJson(JacksonConfiguration.configure(objectMapper));
 	}
 
 }

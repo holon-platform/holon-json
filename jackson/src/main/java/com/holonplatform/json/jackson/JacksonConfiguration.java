@@ -39,12 +39,10 @@ public interface JacksonConfiguration {
 	 * <li>The {@link ISO8601DateModule} is registered to serialize the java.util.Date types using the ISO-8601
 	 * format.</li>
 	 * </ul>
-	 * @return A new Jackson {@link ObjectMapper}
+	 * @return A new configured {@link ObjectMapper}
 	 */
 	public static ObjectMapper mapper() {
-		final ObjectMapper mapper = new ObjectMapper();
-		configure(mapper);
-		return mapper;
+		return configure(new ObjectMapper());
 	}
 
 	/**
@@ -55,8 +53,9 @@ public interface JacksonConfiguration {
 	 * <li>Sets the {@link SerializationFeature#WRITE_DATES_AS_TIMESTAMPS} to <code>false</code></li>
 	 * </ul>
 	 * @param objectMapper ObjectMapper to configure (not null)
+	 * @return The configured ObjectMapper instance
 	 */
-	public static void configure(ObjectMapper objectMapper) {
+	public static ObjectMapper configure(ObjectMapper objectMapper) {
 		ObjectUtils.argumentNotNull(objectMapper, "ObjectMapper must be not null");
 
 		// ISO-8601 Dates serialization
@@ -68,7 +67,10 @@ public interface JacksonConfiguration {
 		// Jdk8 temporals handling
 		objectMapper.registerModule(new JavaTimeModule());
 
+		// do not serialize dates as timestamps
 		objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+
+		return objectMapper;
 	}
 
 }
