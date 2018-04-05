@@ -1,4 +1,6 @@
-= Holon JSON support
+= Holon Platform JSON Module - Reference manual
+:description: Holon platform JSON module reference documentation. \
+It concerns the platform JSON support, including the Json API, PropertyBox JSON serialization and deserialization, date and time (temporal) types support, JAX-RS integration, Spring framework integration. Provides specific documentation about the Jackson and Gson libraries integration.
 :revnumber: {project-version}
 :apidir: ../api/holon-json
 :linkattrs:
