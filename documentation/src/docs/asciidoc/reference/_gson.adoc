@@ -1,5 +1,5 @@
 [[Gson]]
-== Gson integration
+== *Gson integration*
 
 The link:https://github.com/google/gson[Gson] library support is provided by the `holon-gson` artifact:
 

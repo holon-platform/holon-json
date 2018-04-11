@@ -1,5 +1,5 @@
 [[Jackson]]
-== Jackson integration
+== *Jackson integration*
 
 The https://github.com/FasterXML/jackson[Jackson^] library support is provided by the `holon-jackson` artifact:
 

@@ -25,10 +25,19 @@ Furthermore, the JSON module faces the following integration concerns:
 * _Jackson_ *ObjectMapper* configuration
 * Full support of the *Java 8 date and time API* for the `java.time.*` data types serialization and deserialization
 * Consistent `Date` data types handling using the *ISO-8601* format
-* Full `PropertyBox` type mapping support
 * *JAX-RS* integration and auto-configuration
-* _Spring_ *RestTemplate* configuration
 * *Spring boot* auto-configuration 
+
+=== Sources and contributions
+
+The Holon Platform *JSON* module source code is available from the GitHub repository link:https://github.com/holon-platform/holon-core[https://github.com/holon-platform/holon-json^].
+
+See the repository `README` file for information about:
+
+* The source code structure.
+* How to build the module artifacts from sources.
+* Where to find the code examples.
+* How to contribute to the module development.
 
 == Obtaining the artifacts
 
@@ -79,7 +88,7 @@ See link:index.html#obtain-the-platform-artifacts[Obtain the platform artifacts]
 * A more consistent and flexible `Property` set serialization and deserialization strategy when dealing with `PropertyBox` data types, with full support for nested `PropertyBox` data types and a for the property paths naming hierarchy. See <<PropertySetSerializationDeserialization>>.
 
 [[PropertyBox]]
-== `PropertyBox` data type handling
+== PropertyBox type handling
 
 The Holon platform link:holon-core.html#PropertyBox[PropertyBox] API is a versatile and general-purpose data container object, which uses the link:holon-core.html#Property[Property] model API to represent a data attribute and to manage the value associated to it.
 
@@ -204,7 +213,7 @@ This includes any temporal type `Property` serialized and deserialized within a 
 NOTE: See specific implementation documentation for details: <<JacksonDate,Jackson implementation>> and <<GsonDate,Gson implementation>>.
 
 [[JsonAPI]]
-== The Json API
+== The *Json API*
 
 The link:{apidir}/com/holonplatform/json/Json.html[Json^] interface represents a simple Java API to serialize and deserialize Objects to and from JSON, acting as an abstraction layer for a concrete JSON parser implementation.
 
