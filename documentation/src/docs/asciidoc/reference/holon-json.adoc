@@ -30,7 +30,7 @@ Furthermore, the JSON module faces the following integration concerns:
 
 === Sources and contributions
 
-The Holon Platform *JSON* module source code is available from the GitHub repository link:https://github.com/holon-platform/holon-core[https://github.com/holon-platform/holon-json^].
+The Holon Platform *JSON* module source code is available from the GitHub repository link:https://github.com/holon-platform/holon-json[https://github.com/holon-platform/holon-json^].
 
 See the repository `README` file for information about:
 
