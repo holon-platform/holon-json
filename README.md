@@ -1,5 +1,7 @@
 # Holon platform JSON module
 
+> Latest release: [5.1.0](#obtain-the-artifacts)
+
 This is the __JSON__ module of the [Holon Platform](https://holon-platform.com), which provides support for the [JSON](http://www.json.org) data-interchange format using the must popular serialization and deserialization libraries:
 
 * [Jackson](https://github.com/FasterXML/jackson)
