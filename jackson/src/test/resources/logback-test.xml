@@ -11,8 +11,10 @@
 		<appender-ref ref="stdout" />
 	</root>
 	
+	<!-- 
 	<logger name="com.holonplatform.json" level="DEBUG" additivity="false">
 		<appender-ref ref="stdout" />
 	</logger>
+	-->
 	
 </configuration>

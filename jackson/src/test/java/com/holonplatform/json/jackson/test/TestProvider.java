@@ -13,26 +13,22 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.holonplatform.json.jackson.internal;
+package com.holonplatform.json.jackson.test;
 
-import com.holonplatform.core.internal.Logger;
-import com.holonplatform.json.jackson.JacksonConfiguration;
+import static org.junit.Assert.assertTrue;
 
-/**
- * Jackson support {@link Logger}.
- *
- * @since 5.0.0
- */
-public interface JacksonLogger {
+import org.junit.Test;
 
-	final static String NAME = JacksonConfiguration.class.getPackage().getName();
+import com.holonplatform.json.Json;
+import com.holonplatform.json.jackson.JacksonJson;
 
-	/**
-	 * Get a {@link Logger} bound to {@link #NAME}.
-	 * @return Logger
-	 */
-	static Logger create() {
-		return Logger.create(NAME);
+public class TestProvider {
+
+	@Test
+	public void testJsonProvider() {
+		assertTrue(Json.get().isPresent());
+
+		assertTrue(JacksonJson.class.isAssignableFrom(Json.require().getClass()));
 	}
 
 }

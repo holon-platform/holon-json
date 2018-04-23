@@ -21,6 +21,7 @@ import javax.ws.rs.ext.ContextResolver;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.holonplatform.core.Context;
 import com.holonplatform.core.property.PropertyBox;
 import com.holonplatform.json.jackson.JacksonConfiguration;
 
@@ -33,19 +34,23 @@ import com.holonplatform.json.jackson.JacksonConfiguration;
 @Produces(MediaType.APPLICATION_JSON)
 public class JacksonContextResolver implements ContextResolver<ObjectMapper> {
 
-	private final ObjectMapper mapper;
+	/**
+	 * Default ObjectMapper instance
+	 */
+	private ObjectMapper mapper;
 
 	/**
-	 * Constructor
+	 * Pretty printing
+	 */
+	private final boolean prettyPrint;
+
+	/**
+	 * Constructor.
 	 * @param prettyPrint <code>true</code> to enable <em>pretty printing</em> of serialized JSON
 	 */
 	public JacksonContextResolver(boolean prettyPrint) {
 		super();
-		mapper = new ObjectMapper();
-		if (prettyPrint) {
-			mapper.enable(SerializationFeature.INDENT_OUTPUT);
-		}
-		JacksonConfiguration.configure(mapper);
+		this.prettyPrint = prettyPrint;
 	}
 
 	/*
@@ -54,6 +59,22 @@ public class JacksonContextResolver implements ContextResolver<ObjectMapper> {
 	 */
 	@Override
 	public ObjectMapper getContext(Class<?> type) {
+		return Context.get().resource(ObjectMapper.class.getName(), ObjectMapper.class)
+				.orElseGet(() -> getDefaultObjectMapper());
+	}
+
+	/**
+	 * Get an {@link ObjectMapper} instance configured according to {@link JacksonConfiguration} configuration strategy.
+	 * @param prettyPrint Whether to enable <em>pretty printing</em> of serialized JSON
+	 * @return A default {@link ObjectMapper} instance
+	 */
+	private ObjectMapper getDefaultObjectMapper() {
+		if (mapper == null) {
+			mapper = JacksonConfiguration.mapper();
+			if (prettyPrint) {
+				mapper.enable(SerializationFeature.INDENT_OUTPUT);
+			}
+		}
 		return mapper;
 	}
 

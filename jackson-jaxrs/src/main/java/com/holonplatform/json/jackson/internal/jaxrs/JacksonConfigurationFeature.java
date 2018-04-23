@@ -21,7 +21,7 @@ import javax.ws.rs.core.FeatureContext;
 import com.holonplatform.core.internal.Logger;
 import com.holonplatform.core.internal.utils.TypeUtils;
 import com.holonplatform.core.property.PropertyBox;
-import com.holonplatform.json.jackson.internal.JacksonLogger;
+import com.holonplatform.json.internal.JsonLogger;
 import com.holonplatform.json.jackson.jaxrs.JacksonFeature;
 
 /**
@@ -31,7 +31,7 @@ import com.holonplatform.json.jackson.jaxrs.JacksonFeature;
  */
 public class JacksonConfigurationFeature implements Feature {
 
-	private final static Logger LOGGER = JacksonLogger.create();
+	private final static Logger LOGGER = JsonLogger.create();
 
 	/*
 	 * (non-Javadoc)

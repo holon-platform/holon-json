@@ -15,45 +15,62 @@
  */
 package com.holonplatform.json.jackson;
 
-import java.io.Serializable;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.holonplatform.core.internal.utils.ObjectUtils;
 import com.holonplatform.core.property.PropertyBox;
-import com.holonplatform.json.jackson.internal.JacksonPropertyBoxDeserializer;
-import com.holonplatform.json.jackson.internal.JacksonPropertyBoxSerializer;
 
 /**
- * Utility class to handle Jackson configuration.
+ * Utility interface to handle Jackson configuration.
  *
  * @since 5.0.0
  */
-public final class JacksonConfiguration implements Serializable {
-
-	private static final long serialVersionUID = -8451471610783164158L;
+public interface JacksonConfiguration {
 
 	/**
-	 * Module with {@link PropertyBox} serialization and deserialization capability.
+	 * Create and configure a new Jackson {@link ObjectMapper}. The returned {@link ObjectMapper} is configured in the
+	 * following way:
+	 * <ul>
+	 * <li>{@link PropertyBox} type serializers and deserializers are registered, using the
+	 * {@link PropertyBoxModule}</li>
+	 * <li>The {@link JavaTimeModule} is registered to support the jdk8 java.time.* API data types</li>
+	 * <li>The {@link SerializationFeature#WRITE_DATES_AS_TIMESTAMPS} is setted to <code>false</code></li>
+	 * <li>The {@link ISO8601DateModule} is registered to serialize the java.util.Date types using the ISO-8601
+	 * format.</li>
+	 * </ul>
+	 * @return A new configured {@link ObjectMapper}
 	 */
-	private static final SimpleModule PROPERTY_BOX_MODULE = new SimpleModule();
-
-	static {
-		PROPERTY_BOX_MODULE.addSerializer(PropertyBox.class, new JacksonPropertyBoxSerializer());
-		PROPERTY_BOX_MODULE.addDeserializer(PropertyBox.class, new JacksonPropertyBoxDeserializer());
-	}
-
-	private JacksonConfiguration() {
+	public static ObjectMapper mapper() {
+		return configure(new ObjectMapper());
 	}
 
 	/**
-	 * Configure given Jackson {@link ObjectMapper}, registering serializers and deserializers for {@link PropertyBox}
-	 * type handling.
-	 * @param objectMapper ObjectMapper (not null)
+	 * Configures given Jackson {@link ObjectMapper} in the following way:
+	 * <ul>
+	 * <li>Registers {@link PropertyBox} type serializers and deserializers using the {@link PropertyBoxModule}</li>
+	 * <li>Adds the {@link JavaTimeModule} to support the jdk8 java.time.* API data types</li>
+	 * <li>Sets the {@link SerializationFeature#WRITE_DATES_AS_TIMESTAMPS} to <code>false</code></li>
+	 * </ul>
+	 * @param objectMapper ObjectMapper to configure (not null)
+	 * @return The configured ObjectMapper instance
 	 */
-	public static void configure(ObjectMapper objectMapper) {
-		ObjectUtils.argumentNotNull(objectMapper, "Null ObjectMapper");
-		objectMapper.registerModule(PROPERTY_BOX_MODULE);
+	public static ObjectMapper configure(ObjectMapper objectMapper) {
+		ObjectUtils.argumentNotNull(objectMapper, "ObjectMapper must be not null");
+
+		// ISO-8601 Dates serialization
+		objectMapper.registerModule(new ISO8601DateModule());
+
+		// PropertyBox type handling
+		objectMapper.registerModule(new PropertyBoxModule());
+
+		// Jdk8 temporals handling
+		objectMapper.registerModule(new JavaTimeModule());
+
+		// do not serialize dates as timestamps
+		objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+
+		return objectMapper;
 	}
 
 }

@@ -21,6 +21,7 @@ import javax.ws.rs.ext.ContextResolver;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.holonplatform.core.Context;
 import com.holonplatform.core.property.PropertyBox;
 import com.holonplatform.json.gson.GsonConfiguration;
 
@@ -33,8 +34,14 @@ import com.holonplatform.json.gson.GsonConfiguration;
 @Produces(MediaType.APPLICATION_JSON)
 public class GsonContextResolver implements ContextResolver<Gson> {
 
+	/**
+	 * Default GsonBuilder
+	 */
 	private final GsonBuilder _builder;
 
+	/**
+	 * Gson instance
+	 */
 	private Gson _gson;
 
 	/**
@@ -50,10 +57,10 @@ public class GsonContextResolver implements ContextResolver<Gson> {
 	}
 
 	/**
-	 * Get the {@link Gson} instance to use.
-	 * @return The {@link Gson} instance to use
+	 * Get the default {@link Gson} instance.
+	 * @return The {@link Gson} instance
 	 */
-	private Gson getGson() {
+	private Gson getDefaultGson() {
 		if (_gson == null) {
 			_gson = _builder.create();
 		}
@@ -66,7 +73,7 @@ public class GsonContextResolver implements ContextResolver<Gson> {
 	 */
 	@Override
 	public Gson getContext(Class<?> type) {
-		return getGson();
+		return Context.get().resource(Gson.class.getName(), Gson.class).orElseGet(() -> getDefaultGson());
 	}
 
 }

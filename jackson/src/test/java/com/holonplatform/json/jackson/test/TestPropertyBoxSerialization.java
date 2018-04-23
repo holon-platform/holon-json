@@ -15,17 +15,25 @@
  */
 package com.holonplatform.json.jackson.test;
 
-import static com.holonplatform.core.property.PathProperty.create;
+import static com.holonplatform.json.jackson.test.DataTest.ARRAY_DATA;
+import static com.holonplatform.json.jackson.test.DataTest.BOOL;
+import static com.holonplatform.json.jackson.test.DataTest.DATE;
+import static com.holonplatform.json.jackson.test.DataTest.DATE_VALUE;
+import static com.holonplatform.json.jackson.test.DataTest.ENUM;
+import static com.holonplatform.json.jackson.test.DataTest.KEY;
+import static com.holonplatform.json.jackson.test.DataTest.NAME;
+import static com.holonplatform.json.jackson.test.DataTest.NUMBER;
+import static com.holonplatform.json.jackson.test.DataTest.OBJECT_DATA;
+import static com.holonplatform.json.jackson.test.DataTest.PROPERTIES;
+import static com.holonplatform.json.jackson.test.DataTest.TEST;
+import static com.holonplatform.json.jackson.test.DataTest.TEST_DATA_VALUE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Collection;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -35,31 +43,35 @@ import org.junit.Test;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import com.holonplatform.core.property.PathProperty;
-import com.holonplatform.core.property.Property;
 import com.holonplatform.core.property.PropertyBox;
-import com.holonplatform.core.property.PropertySet;
-import com.holonplatform.core.property.VirtualProperty;
 import com.holonplatform.json.jackson.JacksonConfiguration;
+import com.holonplatform.json.jackson.test.DataTest.TestEnum;
 
 public class TestPropertyBoxSerialization {
 
 	private static ObjectMapper mapper;
 
-	private static Date DATE_VALUE;
-
-	private static final TestData TEST_DATA_VALUE = new TestData(1, "One", TestEnum.TWO);
-
 	@BeforeClass
 	public static void init() {
-		mapper = new ObjectMapper();
-		JacksonConfiguration.configure(mapper);
+		mapper = JacksonConfiguration.configure(new ObjectMapper());
+	}
 
-		Calendar c = Calendar.getInstance();
-		c.set(1979, 2, 9, 11, 30);
-		c.set(Calendar.SECOND, 0);
-		c.set(Calendar.MILLISECOND, 0);
-		DATE_VALUE = c.getTime();
+	@Test
+	public void testConfig() {
+		ObjectMapper m1 = JacksonConfiguration.configure(new ObjectMapper());
+
+		assertTrue(m1.canSerialize(PropertyBox.class));
+
+		m1 = JacksonConfiguration.mapper();
+
+		assertTrue(m1.canSerialize(PropertyBox.class));
+	}
+
+	@Test
+	public void testAutoRegister() {
+		ObjectMapper mpr = new ObjectMapper();
+		mpr.findAndRegisterModules();
+		assertTrue(mpr.canSerialize(PropertyBox.class));
 	}
 
 	@Test
@@ -69,10 +81,9 @@ public class TestPropertyBoxSerialization {
 
 		final ObjectWriter writer = mapper.writer();
 
-		PropertyBox box = PropertyBox.builder(PTest.PROPERTIES).set(PTest.KEY, 1L).set(PTest.NAME, "Test")
-				.set(PTest.NUMBER, 7.1d).set(PTest.BOOL, Boolean.TRUE).set(PTest.DATE, DATE_VALUE)
-				.set(PTest.OBJECT_DATA, TEST_DATA_VALUE).set(PTest.ENUM, TestEnum.ONE)
-				.set(PTest.ARRAY_DATA, new int[] { 1, 2, 3 }).build();
+		PropertyBox box = PropertyBox.builder(PROPERTIES).set(KEY, 1L).set(NAME, "Test").set(NUMBER, 7.1d)
+				.set(BOOL, Boolean.TRUE).set(DATE, DATE_VALUE).set(OBJECT_DATA, TEST_DATA_VALUE).set(ENUM, TestEnum.ONE)
+				.set(ARRAY_DATA, new int[] { 1, 2, 3 }).build();
 
 		String json = writer.writeValueAsString(box);
 
@@ -80,19 +91,19 @@ public class TestPropertyBoxSerialization {
 
 		final ObjectReader reader = mapper.reader();
 
-		PropertyBox readBox = PTest.PROPERTIES.execute(() -> reader.forType(PropertyBox.class).readValue(json));
+		PropertyBox readBox = PROPERTIES.execute(() -> reader.forType(PropertyBox.class).readValue(json));
 
 		assertNotNull(readBox);
 
-		assertEquals(new Long(1), readBox.getValue(PTest.KEY));
-		assertEquals("Test", readBox.getValue(PTest.NAME));
-		assertEquals(new Double(7.1), readBox.getValue(PTest.NUMBER));
-		assertEquals("Name is: Test", readBox.getValue(PTest.TEST));
-		assertEquals(Boolean.TRUE, readBox.getValue(PTest.BOOL));
-		assertEquals(DATE_VALUE, readBox.getValue(PTest.DATE));
-		assertEquals(TEST_DATA_VALUE, readBox.getValue(PTest.OBJECT_DATA));
-		assertEquals(TestEnum.ONE, readBox.getValue(PTest.ENUM));
-		assertTrue(Arrays.equals(new int[] { 1, 2, 3 }, readBox.getValue(PTest.ARRAY_DATA)));
+		assertEquals(new Long(1), readBox.getValue(KEY));
+		assertEquals("Test", readBox.getValue(NAME));
+		assertEquals(new Double(7.1), readBox.getValue(NUMBER));
+		assertEquals("Name is: Test", readBox.getValue(TEST));
+		assertEquals(Boolean.TRUE, readBox.getValue(BOOL));
+		assertEquals(DATE_VALUE, readBox.getValue(DATE));
+		assertEquals(TEST_DATA_VALUE, readBox.getValue(OBJECT_DATA));
+		assertEquals(TestEnum.ONE, readBox.getValue(ENUM));
+		assertTrue(Arrays.equals(new int[] { 1, 2, 3 }, readBox.getValue(ARRAY_DATA)));
 
 	}
 
@@ -104,10 +115,10 @@ public class TestPropertyBoxSerialization {
 		final ObjectWriter writer = mapper.writer();
 
 		final Collection<PropertyBox> boxes = new LinkedList<>();
-		boxes.add(PropertyBox.builder(PTest.PROPERTIES).set(PTest.KEY, 1L).set(PTest.NAME, "Test")
-				.set(PTest.NUMBER, 7.1d).set(PTest.BOOL, Boolean.TRUE).build());
-		boxes.add(PropertyBox.builder(PTest.PROPERTIES).set(PTest.KEY, 2L).set(PTest.NAME, "Test2")
-				.set(PTest.NUMBER, 8.1d).set(PTest.BOOL, Boolean.FALSE).build());
+		boxes.add(PropertyBox.builder(PROPERTIES).set(KEY, 1L).set(NAME, "Test").set(NUMBER, 7.1d)
+				.set(BOOL, Boolean.TRUE).build());
+		boxes.add(PropertyBox.builder(PROPERTIES).set(KEY, 2L).set(NAME, "Test2").set(NUMBER, 8.1d)
+				.set(BOOL, Boolean.FALSE).build());
 
 		String json = writer.writeValueAsString(boxes);
 
@@ -115,29 +126,29 @@ public class TestPropertyBoxSerialization {
 
 		final ObjectReader reader = mapper.reader();
 
-		PropertyBox[] read = PTest.PROPERTIES.execute(() -> reader.forType(PropertyBox[].class).readValue(json));
+		PropertyBox[] read = PROPERTIES.execute(() -> reader.forType(PropertyBox[].class).readValue(json));
 		assertNotNull(read);
 		assertEquals(2, read.length);
 
 		PropertyBox readBox = read[0];
 
 		assertNotNull(readBox);
-		assertEquals(new Long(1), readBox.getValue(PTest.KEY));
-		assertEquals("Test", readBox.getValue(PTest.NAME));
-		assertEquals(new Double(7.1), readBox.getValue(PTest.NUMBER));
-		assertEquals("Name is: Test", readBox.getValue(PTest.TEST));
-		assertEquals(Boolean.TRUE, readBox.getValue(PTest.BOOL));
+		assertEquals(new Long(1), readBox.getValue(KEY));
+		assertEquals("Test", readBox.getValue(NAME));
+		assertEquals(new Double(7.1), readBox.getValue(NUMBER));
+		assertEquals("Name is: Test", readBox.getValue(TEST));
+		assertEquals(Boolean.TRUE, readBox.getValue(BOOL));
 
 		readBox = read[1];
 
 		assertNotNull(readBox);
-		assertEquals(new Long(2), readBox.getValue(PTest.KEY));
-		assertEquals("Test2", readBox.getValue(PTest.NAME));
-		assertEquals(new Double(8.1), readBox.getValue(PTest.NUMBER));
-		assertEquals("Name is: Test2", readBox.getValue(PTest.TEST));
-		assertEquals(Boolean.FALSE, readBox.getValue(PTest.BOOL));
+		assertEquals(new Long(2), readBox.getValue(KEY));
+		assertEquals("Test2", readBox.getValue(NAME));
+		assertEquals(new Double(8.1), readBox.getValue(NUMBER));
+		assertEquals("Name is: Test2", readBox.getValue(TEST));
+		assertEquals(Boolean.FALSE, readBox.getValue(BOOL));
 
-		List<PropertyBox> lread = PTest.PROPERTIES.execute(
+		List<PropertyBox> lread = PROPERTIES.execute(
 				() -> reader.forType(mapper.getTypeFactory().constructCollectionType(List.class, PropertyBox.class))
 						.readValue(json));
 		assertNotNull(lread);
@@ -146,130 +157,20 @@ public class TestPropertyBoxSerialization {
 		readBox = lread.get(0);
 
 		assertNotNull(readBox);
-		assertEquals(new Long(1), readBox.getValue(PTest.KEY));
-		assertEquals("Test", readBox.getValue(PTest.NAME));
-		assertEquals(new Double(7.1), readBox.getValue(PTest.NUMBER));
-		assertEquals("Name is: Test", readBox.getValue(PTest.TEST));
-		assertEquals(Boolean.TRUE, readBox.getValue(PTest.BOOL));
+		assertEquals(new Long(1), readBox.getValue(KEY));
+		assertEquals("Test", readBox.getValue(NAME));
+		assertEquals(new Double(7.1), readBox.getValue(NUMBER));
+		assertEquals("Name is: Test", readBox.getValue(TEST));
+		assertEquals(Boolean.TRUE, readBox.getValue(BOOL));
 
 		readBox = lread.get(1);
 
 		assertNotNull(readBox);
-		assertEquals(new Long(2), readBox.getValue(PTest.KEY));
-		assertEquals("Test2", readBox.getValue(PTest.NAME));
-		assertEquals(new Double(8.1), readBox.getValue(PTest.NUMBER));
-		assertEquals("Name is: Test2", readBox.getValue(PTest.TEST));
-		assertEquals(Boolean.FALSE, readBox.getValue(PTest.BOOL));
-
-	}
-
-	// --------------------------
-
-	public static enum TestEnum {
-
-		ONE, TWO;
-
-	}
-
-	@SuppressWarnings("serial")
-	public static class TestData implements Serializable {
-
-		private int sequence;
-		private String description;
-		private TestEnum type;
-
-		public TestData() {
-			super();
-		}
-
-		public TestData(int sequence, String description, TestEnum type) {
-			super();
-			this.sequence = sequence;
-			this.description = description;
-			this.type = type;
-		}
-
-		public int getSequence() {
-			return sequence;
-		}
-
-		public void setSequence(int sequence) {
-			this.sequence = sequence;
-		}
-
-		public String getDescription() {
-			return description;
-		}
-
-		public void setDescription(String description) {
-			this.description = description;
-		}
-
-		public TestEnum getType() {
-			return type;
-		}
-
-		public void setType(TestEnum type) {
-			this.type = type;
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * @see java.lang.Object#hashCode()
-		 */
-		@Override
-		public int hashCode() {
-			final int prime = 31;
-			int result = 1;
-			result = prime * result + ((description == null) ? 0 : description.hashCode());
-			result = prime * result + sequence;
-			result = prime * result + ((type == null) ? 0 : type.hashCode());
-			return result;
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * @see java.lang.Object#equals(java.lang.Object)
-		 */
-		@Override
-		public boolean equals(Object obj) {
-			if (this == obj)
-				return true;
-			if (obj == null)
-				return false;
-			if (getClass() != obj.getClass())
-				return false;
-			TestData other = (TestData) obj;
-			if (description == null) {
-				if (other.description != null)
-					return false;
-			} else if (!description.equals(other.description))
-				return false;
-			if (sequence != other.sequence)
-				return false;
-			if (type != other.type)
-				return false;
-			return true;
-		}
-
-	}
-
-	public final static class PTest {
-
-		public static final PathProperty<Long> KEY = create("key", long.class);
-		public static final PathProperty<String> NAME = create("name", String.class);
-		public static final PathProperty<Double> NUMBER = create("number", Double.class);
-		public static final PathProperty<Date> DATE = create("date", Date.class);
-		public static final PathProperty<TestEnum> ENUM = create("enum", TestEnum.class);
-		public static final PathProperty<Boolean> BOOL = create("bool", boolean.class);
-		public static final PathProperty<TestData> OBJECT_DATA = create("objectData", TestData.class);
-		public static final PathProperty<int[]> ARRAY_DATA = create("arrayData", int[].class);
-
-		public static final Property<String> TEST = VirtualProperty.create(String.class)
-				.valueProvider(pb -> "Name is: " + pb.getValue(NAME));
-
-		public static final PropertySet<?> PROPERTIES = PropertySet.of(KEY, NAME, NUMBER, DATE, ENUM, BOOL, OBJECT_DATA,
-				ARRAY_DATA, TEST);
+		assertEquals(new Long(2), readBox.getValue(KEY));
+		assertEquals("Test2", readBox.getValue(NAME));
+		assertEquals(new Double(8.1), readBox.getValue(NUMBER));
+		assertEquals("Name is: Test2", readBox.getValue(TEST));
+		assertEquals(Boolean.FALSE, readBox.getValue(BOOL));
 
 	}
 

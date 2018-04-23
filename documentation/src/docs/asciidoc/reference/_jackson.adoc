@@ -1,8 +1,7 @@
-== Jackson integration
+[[Jackson]]
+== *Jackson integration*
 
-A `JsonSerializer` and a `JsonDeserializer` are provided to configure link:holon-core.html#PropertyBox[PropertyBox] serialization to _JSON_ format and deserialization from _JSON_ format for a Jackson `ObjectMapper`.
-
-=== Configuration and use
+The https://github.com/FasterXML/jackson[Jackson^] library support is provided by the `holon-jackson` artifact:
 
 _Maven coordinates_:
 [source, xml, subs="attributes+"]
@@ -12,25 +11,42 @@ _Maven coordinates_:
 <version>{revnumber}</version>
 ----
 
-To enable `PropertyBox` handling in Jackson, registering the suitable `JsonSerializer` and a `JsonDeserializer` pair, the link:{apidir}/com/holonplatform/json/jackson/JacksonConfiguration.html[JacksonConfiguration^] utility class can be used:
+[[JacksonObjectMapperConfiguration]]
+=== Jackson `ObjectMapper` configuration
+
+The link:{apidir}/com/holonplatform/json/jackson/JacksonConfiguration.html[JacksonConfiguration^] interface can be used to configure a Jackson `ObjectMapper` (or obtain an already configured one) and enable the Holon platform JSON support features, including:
+
+* The `PropertyBox` type support in JSON serialization and deserialization.
+* The `java.time.*` temporal types support.
+* The `java.util.Date` type handling using the ISO-8601 format
+
+The `JacksonConfiguration` interface makes available methods to configure an existing `ObjectMapper` instance or to obtain an already configured one:
 
 [source, java]
 ----
 include::{examplesdir}/com/holonplatform/json/examples/ExampleJackson.java[tag=configuration,indent=0]
 ----
-<1> Get or create a Jackson `ObjectMapper`
-<2> Configure the `ObjectMapper` for `PropertyBox` support
+<1> Configure an `ObjectMapper` instance
+<2> Create and configure a new `ObjectMapper` instance
 
-With a properly configured `ObjectMapper` instance, a `PropertyBox` can be serialized and deserialized just like any another object. As described in <<JsonPropertySet>>, you need to declare the `PropertySet` to use as a _Context_ resource at `PropertyBox` deserialization time.
+See the next sections for details about each feature.
+
+==== `PropertyBox` type support
+
+The link:{apidir}/com/holonplatform/json/jackson/PropertyBoxModule.html[PropertyBoxModule^] Jackson Module is provided to configure `PropertyBox` type mapping support for a Jackson `ObjectMapper`, providing a suitable `PropertyBox` type JSON serializer and deserializer. This module is automatically registered in an `ObjectMapper` configured through the `JacksonConfiguration` API, as described in <<JacksonObjectMapperConfiguration>>.
+
+The `PropertyBox` serialization and deserialization strategy follows the rules described in the <<PropertyBox>> section.
+
+With a properly configured `ObjectMapper` instance, you can deal with `PropertyBox` type serialization and deserialization just like any another supported object type.
 
 [source, java]
 ----
 include::{examplesdir}/com/holonplatform/json/examples/ExampleJackson.java[tag=serdeser,indent=0]
 ----
-<1> Use a properly configured `ObjectMapper` instance
+<1> Obtain a properly configured `ObjectMapper` instance
 <2> Build a `PropertyBox` using `PROPERTY_SET` as property set
 <3> Serialize the `PropertyBox` to JSON. 
-<4> Deserialize back the JSON definition to a `PropertyBox` instance using `PROPERTY_SET` as property set, declaring it as thread-bound _Context_ resource through the `execute(...)` method
+<4> Deserialize back the JSON value into a `PropertyBox` instance using `PROPERTY_SET` as property set, declaring it as thread-bound _Context_ resource through the `execute(...)` method
 
 In the example above, the `PropertyBox` instance will be serialized as a JSON object like this:
 
@@ -42,6 +58,97 @@ In the example above, the `PropertyBox` instance will be serialized as a JSON ob
 }
 ----
 
+==== `PropertyBox` serialization configuration
+
+As described in the <<PropertyBoxSerializationStrategy>> section, the `PropertyBox` properties serialization strategy can be configured using the `PROPERTYBOX_SERIALIZATION_MODE` configuration property, available from the link:{apidir}/com/holonplatform/json/config/JsonConfigProperties.html[JsonConfigProperties^] interface.
+
+Besides using the `PropertySet` `Configuration` container to configure the `PropertyBox` properties serialization strategy, the serialization mode can be configured globally for a Jackson `ObjectMapper` using a Jackson Deserialization context attribute: `PROPERTYBOX_SERIALIZATION_MODE_ATTRIBUTE_NAME`. SInce it is a deserialization context attribute, it has to be configured at `ObjectWriter` level.
+
+[source, java]
+----
+include::{examplesdir}/com/holonplatform/json/examples/ExampleJackson.java[tag=sermode,indent=0]
+----
+<1> Obtain an `ObjectWriter`
+<2> Set the `PROPERTYBOX_SERIALIZATION_MODE_ATTRIBUTE_NAME` attribute to `PropertyBoxSerializationMode.ALL` to include all the properties of the `PropertyBox` property set when it is serialized to JSON
+
+[[JacksonDateTime]]
+==== Jackson `java.time.*` data types support
+
+The Java 8 date and time API data types serialization and deserialization are supported out-of-the-box when using a Jackson `ObjectMapper` obtained or configured through the `JacksonConfiguration` API (see <<JacksonObjectMapperConfiguration>>).
+
+The `jackson-datatype-jsr310` dependency is included in the artifact dependencies and the default `com.fasterxml.jackson.datatype.jsr310.JavaTimeModule` Jackson module is registered to enable the `java.time.*` objects serialization support.
+
+By default the Jackson `ObjectMapper` is configured to *not write dates as timestamps*, to make the serialized JSON more readable and easy to understand for temporal types.
+
+This way, you can deal transparently with the `java.time.*` serialization and deserialization without the need for further configurations.
+
+Example of a `LocalDate` object serialization and deserialization:
+
+[source, java]
+----
+include::{examplesdir}/com/holonplatform/json/examples/ExampleJackson.java[tag=temporals,indent=0]
+----
+<1> Use a properly configured `ObjectMapper` instance
+<2> Serialize given `LocalDate` in JSON. This will result in `"2018-01-05"`
+<3> Deserialize back the JSON date into a `LocalDate`
+
+[[JacksonDate]]
+==== ISO-8601 `java.util.Date` serialization
+
+When using a Jackson `ObjectMapper` obtained or configured through the `JacksonConfiguration` API (see <<JacksonObjectMapperConfiguration>>), the  link:{apidir}/com/holonplatform/json/jackson/ISO8601DateModule.html[ISO8601DateModule^] module is registered by default.
+
+This module automatically enables the `java.util.Date` serialization in the *ISO-8601* format, to provide a standard and more readable way to represent date and time types in the serialized JSON output.
+
+So a `java.util.Date` type value is serialized with the following pattern:
+
+----
+2018-01-05T10:30:25
+----
+
+NOTE: The timezone offset is included if available.
+
+Since a `java.util.Date` always contains all the date and time parts, the value is serialized including the time part by default.
+
+If the `java.util.Date` value is serialized as a `Property` value within a `PropertyBox`, the `PropertyConfiguration` is checked to obtain the `TemporalType` of the property. If the property `TemporalType` is available, the `java.util.Date` value is serialized according to the property temporal type, i.e. as a `DATE` (only the date part), as a `TIME` (only the time part) or as a `DATE_TIME` (both the date and the time part).
+
+TIP: See the link:holon-core.html#PropertyConfiguration[PropertyConfiguration] documentation for further information.
+
+[source, java]
+----
+include::{examplesdir}/com/holonplatform/json/examples/ExampleJackson.java[tag=pttype,indent=0]
+----
+<1> Declare a `TemporalProperty` of `java.util.Date` type and set `DATE` as property temporal type
+<2> Use the property within a `PropertyBox`
+<3> The serialized JSON value will be: `{"date":"2018-01-05"}` not including the time part
+
+When the `java.util.Date` value is not bound to a `Property`, you can use a `ThreadLocal` variable to set the current `TemporalType` which has to be used to serialize the date/time value. The value serialization temporal type can be setted and cleared using the `setCurrentTemporalType(TemporalType temporalType)` and `removeCurrentTemporalType()` methods of the link:{apidir}/com/holonplatform/json/datetime/CurrentSerializationTemporalType.html[CurrentSerializationTemporalType^] class. 
+
+[source, java]
+----
+include::{examplesdir}/com/holonplatform/json/examples/ExampleJackson.java[tag=ttype,indent=0]
+----
+<1> Use a properly configured `ObjectMapper` instance
+<2> Set the current `TemporalType` to `DATE`
+<3> Only the date part will be serialized in JSON: `"2018-01-05"`
+<4> Clear the current `TemporalType`
+
+[[JacksonJson]]
+=== Jackson `Json` API implementation
+
+Jackson can be used as <<JsonAPI,Json API>> implementation.
+
+When the `holon-jackson` artifact is present in classpath, a suitable `JsonProvider` is automatically registered, and the `Json` API implementation can be obtained through the `Json.get()` and `Json.require()` methods.
+
+Otherwise, the Jackson `Json` API implementation can be directly obtained using the link:{apidir}/com/holonplatform/json/jackson/JacksonJson.html[JacksonJson^] interface, through one of the `create()` methods.
+
+[source, java]
+----
+include::{examplesdir}/com/holonplatform/json/examples/ExampleJackson.java[tag=json,indent=0]
+----
+<1> Get the Jackson `Json` API implementation using the registered provider
+<2> Obtain the Jackson `Json` API implementation directly
+
+[[JacksonJAXRS]]
 === JAX-RS integration
 
 _Maven coordinates_:
@@ -52,36 +159,82 @@ _Maven coordinates_:
 <version>{revnumber}</version>
 ----
 
-A set of JAX-RS extension classes are provided to configure `PropertyBox` JSON support in JAX-RS using _Jackson_.
+A set of JAX-RS extension features are provided to configure a JAX-RS context when using Jackson as JSON provider, to enable all the features provided by the Holon platform JSON support module and to configure the Jackson JAX-RS `ObjectMapper` as described in the <<JacksonObjectMapperConfiguration>> section.
 
-The JAX-RS _Jackson_ extensions relies on standard `ContextResolver` type to provide a properly configured `ObjectMapper` instance to use to perform JSON serialization and deserialization.
+To setup the _Jackson_ JAX-RS extensions, the link:{apidir}/com/holonplatform/json/jackson/jaxrs/JacksonFeature.html[JacksonFeature^] feature has to be registered in the JAX-RS application.
 
-To setup _Jackson_ for `PropertyBox` handling in JSON message type, the link:{apidir}/com/holonplatform/json/jackson/jaxrs/JacksonFeature.html[JacksonFeature^] JAX-RS `Feature` can be registered in the JAX-RS application.
+If you use link:https://github.com/jersey[Jersey^] or link:http://resteasy.jboss.org[Resteasy^] as JAX-RS implementation, there is no need to explicitly register the `JacksonFeature`, just ensure the `holon-jackson-jaxrs` jar is in classpath and the _Jackson_ support will be *configured automatically*, leveraging on Jersey _AutoDiscoverable_ and Resteasy Java Service extensions features.
 
-If you use link:https://github.com/jersey[Jersey^] or link:http://resteasy.jboss.org[Resteasy^] as JAX-RS implementation, there is no need to explicitly register the `JacksonFeature`, just ensure the `holon-jackson` jar is in classpath and the _Jackson_ support will be configured automatically, leveraging Jersey _AutoDiscoverable_ and Resteasy Java Service extensions features.
+When the feature is registered and enabled, the following extensions will be available:
 
-==== `PropertyBox` deserialization
+* A JAX-RS `MessageBodyReader` and `MessageBodyWriter` for the `application/json` media type to handle the `PropertyBox` type and perform JSON serialization and deserialization, according to the default strategy as described in the <<PropertyBox>> section. See <<JacksonJaxrsPropertyBoxDeserialization>> for details about the `PropertyBox` property set handling.
 
-When a `PropertyBox` is used as a JAX-RS resource method *parameter* (for methods which declare to consume  `application/json` media type), the JSON deserialization of the input into a `PropertyBox` instance needs to know the `PropertySet` to use in order to create the property box. For this purpose, the `@PropertySetRef` annotation can be used at method parameter level to declare the `PropertySet` instance to use to deserialize the property box.
+* A JAX-RS `javax.ws.rs.ext.ContextResolver` to provide the Jackson `ObjectMapper` instance to be used for JSON mapping operations. By default, the provided `ObjectMapper` is configured as described in the <<JacksonObjectMapperConfiguration>> section.
 
-The link:../api/holon-core/com/holonplatform/core/property/PropertySetRef.html[PropertySetRef^] annotation allows to declare the `PropertySet` instance as the `public static` *field* of a given class, which must be specified in the `value()` annotation attribute. If more than one `public static` field of `PropertySet` type is present in the declared class, the `field()` annotation attribute can be used to specify the right field name.
+[[JacksonJaxrsPropertyBoxDeserialization]]
+==== `PropertyBox` type deserialization
+
+When a `PropertyBox` is used as a JAX-RS resource method *parameter* (for methods which declare to consume  `application/json` media type), the deserialization of the JSON input value into a `PropertyBox` instance needs to know the `PropertySet` to use in order to create the `PropertyBox` instance. For this purpose, the link:../api/holon-core/com/holonplatform/core/property/PropertySetRef.html[PropertySetRef^] annotation can be used at method parameter level to declare the `PropertySet`.
+
+The `@PropertySetRef` annotation allows to declare the `PropertySet` instance as the `public static` *field* of a given class, which must be specified in the `value()` annotation attribute. If more than one `public static` field of `PropertySet` type is present in the declared class, the `field()` annotation attribute can be used to specify the field name to use.
 
 [source, java]
 ----
 include::{examplesdir}/com/holonplatform/json/examples/ExampleJackson.java[tag=jaxrs,indent=0]
 ----
-<1> Create a JAX-RS `Client`
-<2> Perform a `PUT` request providing a `PropertyBox` value as JSON. At the endpoint resource level, the `PropertyBox` type input parameter of the `serialize` method is annotated with `@PropertySetRef` in order to declare the property set to use to deserialize the property box from JSON
-<3> Perform a `GET` request for a JSON serialized `PropertyBox` value, providing the `PropertySet` to use for deserialization as a `Context` thread-bound resource
+<1> The `data` input parameter is annotated with `@PropertySetRef` to declare the `PropertyBox` deserialization property set
+<2> Create a JAX-RS `Client`
+<3> Perform a `PUT` request providing a `PropertyBox` value as JSON. At the endpoint resource level, the `PropertyBox` type input parameter of the `serialize` method is annotated with `@PropertySetRef` in order to declare the property set to use to deserialize the property box from JSON
+<4> Perform a `GET` request for a JSON serialized `PropertyBox` value, providing the `PropertySet` to use for deserialization as a `Context` thread-bound resource
+
+==== Deal with the JAX-RS context `ObjectMapper` instance
+
+When using the JAX-RS `JacksonFeature`, a default `javax.ws.rs.ext.ContextResolver` is registered to provide the Jackson `ObjectMapper` instance to be used for JSON mapping operations. The context resolver provides by default an `ObjectMapper` instance configured according to the <<JacksonObjectMapperConfiguration>> of the Holon platform JSON module.
+
+You can replace the default `ObjectMapper` instance of the JAX-RS context in the following ways:
+
+*1. Provide a custom `ContextResolver`:*
+
+A custom `javax.ws.rs.ext.ContextResolver` for the `ObjectMapper` type can be provided and registered in the JAX-RS application.
+
+To ensure the default `ContextResolver` will not be taken into account, you can use the JAX-RS application configuration property `holon.jackson.disable-resolver`, setting it to `true` to disable the default context resolver.
+
+CAUTION: To ensure `PropertyBox` type JSON serialization and deserialization consistency, the `ObjectMapper` instance should be configured registering the link:{apidir}/com/holonplatform/json/jackson/PropertyBoxModule.html[PropertyBoxModule^] Jackson module. The  link:{apidir}/com/holonplatform/json/jackson/JacksonConfiguration.html[JacksonConfiguration^] API can be used for this purpose.
+
+[source, java]
+----
+include::{examplesdir}/com/holonplatform/json/examples/ExampleJackson.java[tag=jaxrsor1,indent=0]
+----
+<1> The JAX-RS `ContextResolver` instance has to be annotated so that to declare that is bound to the `application/json` media type 
+<2> The `JacksonConfiguration` can be used to configure the `ObjectMapper` instance to support the Holon platform JSON features, such as `PropertyBox` type mapping
+
+*2. Use the Holon platform `Context`:*
+
+The default `ObjectMapper` context resolver looks up for a _context_ resource of `ObjectMapper` type using the `ObjectMapper` class name as resource key before returning the default `ObjectMapper` instance. 
+
+If the `ObjectMapper` type context resource is found, it is returned and used as JAX-RS `ObjectMapper` instance.
+
+NOTE: See link:holon-core.html#Context[Context] for information about the Holon platform context and context resources handling.
+
+This way, you can provide your own `ObjectMapper` instance using the Holon platform `Context` API to register your `ObjectMapper` instance as a context resource with the appropriate resource key.
+
+[source, java]
+----
+include::{examplesdir}/com/holonplatform/json/examples/ExampleJackson.java[tag=jaxrsor2,indent=0]
+----
+<1> The _classloader_ context scope is used to register a custom `ObjectMapper` instance using the `ObjectMapper` class name as resource key
+
+CAUTION: To ensure `PropertyBox` type JSON serialization and deserialization consistency, the `ObjectMapper` instance should be configured registering the link:{apidir}/com/holonplatform/json/jackson/PropertyBoxModule.html[PropertyBoxModule^] Jackson module. The  link:{apidir}/com/holonplatform/json/jackson/JacksonConfiguration.html[JacksonConfiguration^] API can be used for this purpose.
 
 ==== JAX-RS integration configuration
 
-The following configuration properties are available to tune or disable the JAX-RS integration features for _Jackson_  `PropertyBox` support:
+The following JAX-RS application configuration properties are available to tune or disable the Jackson JAX-RS integration features:
 
-* `holon.jackson.disable-resolver`: If this property is present in JAX-RS application properties, the Jackson  *ContextResolver* auto-configuration is disabled
-* `holon.jackson.disable-autoconfig`: If this property is present in JAX-RS application properties, all the Jackson `ObjectMapper` and `PropertyBox` JSON serialization/deserialization features will be disabled
-* `holon.jaxrs.json.pretty-print`: If `true`, enables _pretty printing_ of serialized JSON
+* `holon.jackson.disable-resolver`: If this property is present in JAX-RS application properties, the Jackson `ObjectMapper` context resolver auto-configuration is disabled.
+* `holon.jackson.disable-autoconfig`: If this property is present in JAX-RS application properties, all the Holon platform Jackson JAX-RS extension features will be disabled.
+* `holon.jaxrs.json.pretty-print`: If `true`, enables _pretty printing_ of serialized JSON.
 
+[[JacksonSpring]]
 === Spring integration
 
 _Maven coordinates_:
@@ -92,14 +245,15 @@ _Maven coordinates_:
 <version>{revnumber}</version>
 ----
 
-The link:{apidir}/com/holonplatform/json/jackson/SpringJacksonConfiguration.html[SpringJacksonConfiguration^] utility class can be used to configure a Spring `RestTemplate`, ensuring that a `MappingJackson2HttpMessageConverter` is registered and bound to a `ObjectMapper` instance correctly configured for `PropertyBox` JSON serialization/deserialization.
+The link:{apidir}/com/holonplatform/json/jackson/spring/SpringJacksonConfiguration.html[SpringJacksonConfiguration^] interface can be used to configure a Spring `RestTemplate`, ensuring that a `MappingJackson2HttpMessageConverter` is registered and bound to a `ObjectMapper` instance correctly configured for Holon platform Jackson extensions, as described in the <<JacksonObjectMapperConfiguration>> section.
 
 [source, java]
 ----
 include::{examplesdir}/com/holonplatform/json/examples/ExampleJackson.java[tag=spring,indent=0]
 ----
-<1> Configure the `RestTemplate`
+<1> Create a new `RestTemplate` instance and configure it with the Holon platform JSON support extensions
 
+[[JacksonSpringBoot]]
 === Spring Boot integration
 
 _Maven coordinates_:
@@ -110,11 +264,11 @@ _Maven coordinates_:
 <version>{revnumber}</version>
 ----
 
-The `JacksonAutoConfiguration` Spring Boot _auto-configuration_ class is provided to automatically configure an `ObjectMapper` for `PropertyBox` JSON serialization/deserialization. An `ObjectMapper` instance must be available as _bean_ in the Spring context. 
+The link:{apidir}/com/holonplatform/json/jackson/spring/boot/JacksonAutoConfiguration.html[JacksonAutoConfiguration^]  Spring Boot _auto-configuration_ class is provided to automatically configure an `ObjectMapper` _bean_, if available in the Spring context, with the Holon platform JSON support extensions, as described in the <<JacksonObjectMapperConfiguration>> section.
 
-This way, the `RestTemplate` instances obtained through the `RestTemplateBuilder` Spring Boot builder will be automatically pre-configured with a JSON message converter with `PropertyBox` support.
+This way, the `RestTemplate` instances obtained through the `RestTemplateBuilder` Spring Boot builder will be automatically pre-configured with the Holon platform Jackson extensions.
 
-To disable this auto-configuration feature the `JacksonAutoConfiguration` class can be excluded:
+To disable this auto-configuration feature, the `JacksonAutoConfiguration` class can be excluded:
 
 [source, java]
 ----

@@ -1,10 +1,11 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
 		<groupId>com.holon-platform.json</groupId>
 		<artifactId>holon-json-root</artifactId>
-		<version>5.0.5-SNAPSHOT</version>
+    <version>5.1.0-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>holon-jackson</artifactId>
@@ -17,11 +18,11 @@
 
 	<dependencies>
 
-		<!-- Holon core -->
+		<!-- Holon json core -->
 		<dependency>
-			<groupId>com.holon-platform.core</groupId>
-			<artifactId>holon-core</artifactId>
-			<version>${holon.core.version}</version>
+			<groupId>com.holon-platform.json</groupId>
+			<artifactId>holon-json</artifactId>
+			<version>${project.version}</version>
 		</dependency>
 
 		<!-- Jackson -->
@@ -47,6 +48,26 @@
 				<exclusion>
 					<groupId>com.fasterxml.jackson.core</groupId>
 					<artifactId>jackson-annotations</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<!-- JSR-310 (temporals) support -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.datatype</groupId>
+			<artifactId>jackson-datatype-jsr310</artifactId>
+			<version>${jackson.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>com.fasterxml.jackson.core</groupId>
+					<artifactId>jackson-core</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.fasterxml.jackson.core</groupId>
+					<artifactId>jackson-annotations</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.fasterxml.jackson.core</groupId>
+					<artifactId>jackson-databind</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>

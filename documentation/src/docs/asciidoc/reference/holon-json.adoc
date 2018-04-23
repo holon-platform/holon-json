@@ -1,4 +1,6 @@
-= Holon JSON support
+= Holon Platform JSON Module - Reference manual
+:description: Holon platform JSON module reference documentation. \
+It concerns the platform JSON support, including the Json API, PropertyBox JSON serialization and deserialization, date and time (temporal) types support, JAX-RS integration, Spring framework integration. Provides specific documentation about the Jackson and Gson libraries integration.
 :revnumber: {project-version}
 :apidir: ../api/holon-json
 :linkattrs:
@@ -7,24 +9,35 @@
 :toc: left
 :toclevels: 3
 
-Copyright © 2016-2017
+Copyright © 2016-2018
 
 _Copies of this document may be made for your own use and for distribution to others, provided that you do not charge any fee for such copies and further provided that each copy contains this Copyright Notice, whether distributed in print or electronically._
 
 == Introduction
 
-The Holon Platform *JSON* module provides integration support between the platform foundation link:holon-core.html#PropertyBox[PropertyBox] data structure and the most popular _JSON_ processing libraries:
+The Holon Platform *JSON* module provides the support for the https://www.json.org[JSON^] data-interchange format, including configuration facilities, data abstraction, link:holon-core.html#PropertyBox[PropertyBox] type support and seamless integration with the most popular _JSON_ mapping and processing libraries: link:https://github.com/FasterXML/jackson[Jackson^] and link:https://github.com/google/gson[Gson^].
 
-* link:https://github.com/google/gson[Gson]
-* link:http://wiki.fasterxml.com/JacksonHome[Jackson]
+Through the <<JsonAPI,Json API>>, the JSON serialization and deserialization using Java object types can be handled in an abstract and implementation-independent way, easily dealing with common JSON mapping concerns such as _temporal_ types consistent support and generic collection types, besides a full support of the Holon platform link:holon-core.html#Property[Property model] out-of-the-box.
 
-The module faces the following integration concerns:
+Furthermore, the JSON module faces the following integration concerns:
 
 * _Gson_ *GsonBuilder* configuration
 * _Jackson_ *ObjectMapper* configuration
+* Full support of the *Java 8 date and time API* for the `java.time.*` data types serialization and deserialization
+* Consistent `Date` data types handling using the *ISO-8601* format
 * *JAX-RS* integration and auto-configuration
-* _Spring_ *RestTemplate* configuration
 * *Spring boot* auto-configuration 
+
+=== Sources and contributions
+
+The Holon Platform *JSON* module source code is available from the GitHub repository link:https://github.com/holon-platform/holon-json[https://github.com/holon-platform/holon-json^].
+
+See the repository `README` file for information about:
+
+* The source code structure.
+* How to build the module artifacts from sources.
+* Where to find the code examples.
+* How to contribute to the module development.
 
 == Obtaining the artifacts
 
@@ -65,33 +78,332 @@ The Holon Platform provides an *overall Maven BOM (Bill of Materials)* to easily
 
 See link:index.html#obtain-the-platform-artifacts[Obtain the platform artifacts] for details.
 
-[[JsonPropertySet]]
-== Dealing with properties and `PropertySet`
+[[WhatsNew51x]]
+== What's new in version 5.1.x
 
-A link:holon-core.html#PropertyBox[PropertyBox] is a versatile and general-purpose data container object which uses link:holon-core.html#Property[Property] type keys as reference for the data it manages.
+* The new <<JsonAPI,Json API>> is now available to easily deal with JSON serialization and deserialization in a JSON mapper/parser independent way, with full `PropertyBox` data type support.
 
-The *Properties* to which data are bound, i.e. the `PropertySet` associated with the `PropertyBox`, are complex and extensible objects, highly customizable by the developer. For this reason, a `Property` is *never serialized in JSON* by this module. 
+* Improved support for _temporal_ (date and time) data types, including the `java.time.*` Date and Time API data types. See <<DateTimeTypes>>.
+
+* A more consistent and flexible `Property` set serialization and deserialization strategy when dealing with `PropertyBox` data types, with full support for nested `PropertyBox` data types and a for the property paths naming hierarchy. See <<PropertySetSerializationDeserialization>>.
+
+[[PropertyBox]]
+== PropertyBox type handling
+
+The Holon platform link:holon-core.html#PropertyBox[PropertyBox] API is a versatile and general-purpose data container object, which uses the link:holon-core.html#Property[Property] model API to represent a data attribute and to manage the value associated to it.
+
+The JSON module provides configuration facilities to transparently and consistently deal with the `PropertyBox` data type when using one of the <<SupportedJSONLibraries,currently supported JSON mapper implementations>>.
+
+From a general point of view, the `PropertyBox` data type handling is implemented according to the following strategies:
 
 === Serialization
 
-Only `Path` properties are serialized into _JSON_, using the path *name* as property name of the produced _JSON object_ and _JSON_ data type consistent with the property type.
+A `PropertyBox` instance is serialized as a https://www.json.org[JSON object^]. Each `Property` of the `PropertyBox` property set is serialized as a JSON object _field_, using the property *name* as JSON field name and the property *value* provided by the `PropertyBox` instance as JSON field value.
 
-This way, the _JSON_ definitions produced by the serialization of a `PropertyBox` are fully analogous to a standard _JSON_ *object*, composed by a list of property _names_ associated to a _value_ of a suitable type, which can be eventually deserialized in a generic data object (with a consistent internal structure) even a language different from Java.  
+TIP: See the link:holon-core.html#Property[Property] documentation section for information about the Holon platform `Property` model and `PropertyBox` API.
+
+The property value is serialized according to its *type*, following the serialization strategies of the concrete JSON mapper that is used. Nested `PropertyBox` data types are fully supported and the standard _dot_ (`.`) notation can be used, besides the more formal property path hierarchy definition, to define the JSON object internal structure with nested objects support. See <<PropertySetSerializationDeserialization>> for details.
+
+Using standard JSON objects favors portability, allowing to parse and map `PropertyBox` representations in a language independent way.
+
+[[PropertyBoxSerializationStrategy]]
+==== `PropertyBox` properties serialization strategy
+
+By default, only the `Path` type properties of the `PropertyBox` property set are taken into account for `PropertyBox` JSON serialization, and the `Path` name is used as the property serialization *name*.
+
+TIP: See the link:holon-core.html#PathProperty[PathProperty] documentation section for details about `Path` type properties.
+
+This behaviour can be changed to include any `Property` of the `PropertyBox` property set in JSON serialization, using one of the serialization strategies listed in the  link:{apidir}/com/holonplatform/json/config/PropertyBoxSerializationMode.html[PropertyBoxSerializationMode^] enumeration, through the `PROPERTYBOX_SERIALIZATION_MODE` configuration property, available from the link:{apidir}/com/holonplatform/json/config/JsonConfigProperties.html[JsonConfigProperties^] interface.
+
+The `PROPERTYBOX_SERIALIZATION_MODE` configuration property value can be provided either using the `PropertyBox` property set _configuration_ attributes container or as a concrete JSON mapper implementation configuration attribute. See the <<SupportedJSONLibraries,currently supported JSON mapper implementations>> documentation to learn about this second configuration option.
+
+[source, java]
+----
+include::{examplesdir}/com/holonplatform/json/examples/ExampleJson.java[tag=sconfig,indent=0]
+----
+<1> Declare a standard `String` type `PathProperty`
+<2> Declare a `VirtualProperty` which provides the `NAME` property value within brackets, setting `vrt` as property name
+<3> Configure the `PropertyBox` serialization mode using the `PropertySet` configuration to include *all* the property set properties (not only the `Path` type ones according to the default behaviour)
+<4> When the `PropertyBox` is serialized into JSON, also the `VRT` property will be included in the JSON object, using `vrt` as serialization name
 
 === Deserialization
 
-To deserialize a _JSON object_ into a `PropertyBox` instance, the `PropertySet` to use for the `PropertyBox` is required and must be available as a link:holon-core.html#Context[Context] resource (typically thread-bound).
+A `PropertyBox` instance is deserialized as a https://www.json.org[JSON object^]. Each JSON object _field_ is deserialized as a `Property` of the `PropertyBox` property set, matching its name with the property name, and setting the property value in the `PropertyBox` instance with the deserialized JSON object _field_ value.
 
-To bound a `PropertySet` instance to the default thread-scoped resource set of the Holon Platform _Context_, the `execute(Callable operation)` method can be used.
+TIP: See the link:holon-core.html#Property[Property] documentation section for information about the Holon platform `Property` model and `PropertyBox` API.
 
-See the next sections for further details and use-case examples.
+The property value is deserialized according to its *type*, following the deserialization strategies of the concrete JSON mapper that is used. Nested `PropertyBox` data types are fully supported and the standard _dot_ (`.`) notation can be used, besides the more formal property path hierarchy definition, to parse the JSON object internal structure and map it to the `PropertyBox` property set. See <<PropertySetSerializationDeserialization>> for details.
 
+Since a `PropertyBox` type structure is defined through a *property set*, which declares the properties managed by the `PropertyBox` instance, the property set with which to deserialize the JSON object must be provided at JSON deserialization time.
+
+This can be done using the Holon platform link:holon-core.html#Context[Context] architecture, providing the deserialization property set as a *context resource* (typically thread-bound). To bind a `PropertySet` instance to the default thread-scoped context resource set, the `execute(Callable operation)` method can be used.
+
+[source, java]
+----
+include::{examplesdir}/com/holonplatform/json/examples/ExampleJson.java[tag=pscontext,indent=0]
+----
+<1> The `deserializePropertyBox()` method, which performs `PropertyBox` JSON deserialization, is executed after binding the `PROPERTIES` as a thread-scoped context resource
+
+NOTE: When using the <<JsonAPI,Json API>>, the deserialization _property set_ is directly provided to the `Json` API deserialization methods, without the need to use a context resource reference.
+
+[[PropertySetSerializationDeserialization]]
+=== `Property` set serialization and deserialization strategies
+
+When a `PropertyBox` is serialized into JSON and deserialized from JSON, its property set is used to determine the mapping between the JSON object structure and the property set properties, according to the following strategy:
+
+*Serialization:*:
+. Any `PropertyBox` type `Property` is serialized as a nested JSON object (using the property name as the field name of the parent JSON object).
+. If a `Path` type property declares a *parent* paths hierarchy, it is serialized in a corresponding JSON object hierarchy, using the parent paths to reproduce a consistent nested JSON objects hierarchy. 
+. If the _dot_ (`.`) notation is used in `Property` name, the property name is turned into a paths hierarchy using the `.` character as hierarchy separator. Then the `Property` is serialized according to the previous point.
+
+[source, java]
+.Example of nested PropertyBox serialization
+----
+include::{examplesdir}/com/holonplatform/json/examples/ExampleJson.java[tag=serializeh1,indent=0]
+----
+<1> `PropertyBox` type property: the property set (`NAME`, `SURNAME`) is declared at creation time
+<2> The actual property set is composed of the `KEY` and the `NESTED` properties
+<3> The result of the serialized `PropertyBox` value will be: `{"key":1,"nested":{"name":"John","surname":"Doe"}}`
+
+[source, java]
+.Example of nested Property path serialization
+----
+include::{examplesdir}/com/holonplatform/json/examples/ExampleJson.java[tag=serializeh2,indent=0]
+----
+<1> The `NAME` property path is defined as a path hierarchy using the _dot_ notation: `nested.name`
+<2> The `SURNAME` property path is defined as a path hierarchy using the _dot_ notation: `nested.surname`
+<3> The result of the serialized `PropertyBox` value will be: `{"key":1,"nested":{"name":"John","surname":"Doe"}}`
+
+*Deserialization:*:
+. A nested JSON object is deserialized as a `PropertyBox` type `Property`, if it is available in the `PropertyBox` property set with a matching name and path hierarchy. 
+. A nested JSON object field is deserialized in a `Property` with a matching name and path hierarchy, if it is available in the `PropertyBox` property set.
+
+So, for example, the JSON value used in the previous examples:
+
+[source, json]
+----
+{
+  "key":1,
+  "nested":{
+    "name":"John",
+    "surname":"Doe"
+  }
+}
+----
+
+Can be deserialized as a `PropertyBox` indifferently using any of the two property sets shown in the previous examples.
+
+[[DateTimeTypes]]
+== Date and time data types
+
+=== `java.time.*` data types support
+
+The support for the Java 8 date and time API data types is enabled out-of-the-box, and allows to deal transparently with the temporal data types such as `LocalDate`, `LocalTime` and `LocalDateTime`.
+
+This includes any temporal type `Property` serialized and deserialized within a `PropertyBox`.
+
+NOTE: See specific implementation documentation for details: <<JacksonDateTime,Jackson implementation>> and <<GsonDateTime,Gson implementation>>.
+
+=== `java.util.Date` serialization and deserialization
+
+By default, the `java.util.Date` data types are serialized in JSON using the *ISO-8601* format, to provide a standard and more readable way to represent date and time types in the serialized JSON output.
+
+This includes any temporal type `Property` serialized and deserialized within a `PropertyBox`.
+
+NOTE: See specific implementation documentation for details: <<JacksonDate,Jackson implementation>> and <<GsonDate,Gson implementation>>.
+
+[[JsonAPI]]
+== The *Json API*
+
+The link:{apidir}/com/holonplatform/json/Json.html[Json^] interface represents a simple Java API to serialize and deserialize Objects to and from JSON, acting as an abstraction layer for a concrete JSON parser implementation.
+
+The `Json` API provides methods to serialize an Object to a JSON representation and to deserialize back an Object from a JSON representation, easily dealing with generic and collection types.
+
+=== Obtain an implementation
+
+_Maven coordinates_:
+[source, xml, subs="attributes+"]
+----
+<groupId>com.holon-platform.json</groupId>
+<artifactId>holon-json</artifactId>
+<version>{revnumber}</version>
+----
+
+The link:{apidir}/com/holonplatform/json/JsonProvider.html[JsonProvider^] interface is used to provide a concrete `Json` API implementation.
+
+A new `JsonProvider` can be registered using the default Java `ServiceLoader` extension, providing a `com.holonplatform.json.JsonProvider` file under the `META-INF/services` classpath folder. The `javax.annotation.Priority` annotation (where less priority value means higher priority order) can be used to order the Json providers when more than one is available.
+
+Thanks to the Java `ServiceLoader` API, each implementation is automatically registered when the corresponding artifact is available in classpath (`holon-jackson` for the *Jackson* implementation and `holon-gson` for the *Gson* one).
+
+To obtain the currently available `Json` implementation, the `get()` or `require()` methods of the `Json` API interface can be used. These methods adopt the following strategy to obtain the current `Json` API implementation:
+
+* If a `Json` implementation is available as a Holon `Context` resource using the `com.holonplatform.json.Json` resource name, this one is returned (See link:holon-core.html#Context[Context] documentation for information about context scopes and resources).
+* Otherwise, if a `JsonProvider` is registered using the Java `ServiceLoader` API, it is invoked to obtain the corresponding `Json` implementation. When more than one `JsonProvider` is available, the one with the higher priority is used.
+
+[source, java]
+----
+include::{examplesdir}/com/holonplatform/json/examples/ExampleJson.java[tag=get,indent=0]
+----
+<1> Try to obtain the current `Json` API implementation
+<2> Obtain the current `Json` API implementation, throwing an exception if none available
+
+[[AvailableImplementations]]
+==== Currently available implementations
+
+The Holon platform currentlty makes available two `Json` API implementations out-of-the-box:
+
+* A https://github.com/FasterXML/jackson[Jackson^] implementation: see <<JacksonJson>>.
+* A https://github.com/google/gson[Gson^] implementation: see <<GsonJson>>.
+
+=== Serialization
+
+To serialize an Object in JSON, the `toJson` method is provided:
+
+[source, java]
+----
+JsonWriter toJson(Object value);
+----
+
+This method returns a link:{apidir}/com/holonplatform/json/JsonWriter.html[JsonWriter^] instance, which represents the JSON serialization result and makes available methods to obtain the JSON data in different formats.
+
+You can use the `JsonWriter` API to obtain the JSON result in the following ways:
+
+* Obtain it as a String
+* Obtain it as an array of bytes
+* Write it into an `Appendable` writer
+* Write it into an `OutputStream` writer, specifying the _charset_ or using the default `UTF-8` charset
+
+TIP: The `toJsonString` convenience method can be used to serialize the Object and directly obtain the JSON result as a String.
+
+[source, java]
+----
+include::{examplesdir}/com/holonplatform/json/examples/ExampleJson.java[tag=serialize,indent=0]
+----
+<1> Obtain a `Json` implementation
+<2> Serialize an Object
+<3> Get the JSON result as a String
+<4> Get the JSON result as an array of bytes
+<5> Write the JSON result into a StringWriter
+<6> Write the JSON result into a ByteArrayOutputStream
+<7> Write the JSON result into a ByteArrayOutputStream using the ISO LATIN-1 charset
+<8> Serialize the Object and obtain the JSON result as a String
+
+NOTE: The supported data types and their serialization strategies depends on the concrete JSON mapper implementation, including any custom serializer or serialization configuration attribute. The `Json` API simply delegates to the concrete backing implementation the actual JSON serialization operations, seamlessy inheriting its serialization strategy and data types support. 
+
+When the `Json` API is obtained using a `JsonProvider`, a default configuration of the backing implementation is provided by the `JsonProvider` implementation itself. To have more control on the concrete implementation configuration and to fine tune the JSON provider setup, you can either create your own `JsonProvider` implementation or directly obtain the `Json` API from the concrete providers implementations. See each  <<AvailableImplementations,available implementation documentation>> for details.
+
+==== `PropertyBox` serialization
+
+The Holon platform `PropertyBox` type serialization is fully supported out-of-the-box. The `PropertyBox` serialization strategy is described in the <<PropertyBox>> section.
+
+[source, java]
+----
+include::{examplesdir}/com/holonplatform/json/examples/ExampleJson.java[tag=serializepb,indent=0]
+----
+<1> Obtain the `Json` implementation
+<2> Build a `PropertyBox` with given `PROPERTIES` property set and set the property values
+<3> Serialize the `PropertyBox` instance and write the JSON result into a `StringBuilder`
+
+==== Generic Collections serialization
+
+The `Json` API provides some helpful methods to deal with _generic_ `Collection` of values, in order to serialize the collection of values into a JSON array.
+
+To serialize a collection of values into a JSON array, the `toJsonArray` method can be used:
+
+[source, java]
+----
+<T> JsonWriter toJsonArray(Class<T> type, Collection<T> values);
+----
+
+The concrete value type has to be provided besides the actual `Collection` value.
+
+TIP: The `Json` API provides some overloaded and convenience methods to use an array of values instead of a `Collection` and to directly obtain the JSON result as a String.
+
+[source, java]
+----
+include::{examplesdir}/com/holonplatform/json/examples/ExampleJson.java[tag=serializec,indent=0]
+----
+<1> Obtain the `Json` implementation
+<2> Serialize the collection of `Integer` values
+<3> Serialize the collection of `Integer` values and obtain the JSON result as a String
+<4> Serialize an array of `Integer` values
+
+NOTE: The `PropertyBox` type is fully supported also when serializing to a JSON array. For example, to serialize two `PropertyBox` instances named `box1` and `box2`, simply call the `toJsonArray` method providing the `PropertyBox.class` value type: `json.toJsonArray(PropertyBox.class, box1, box2)`.
+
+=== Deserialization
+
+To serialize an Object from JSON, the `fromJson` method is provided:
+
+[source, java]
+----
+<T> T fromJson(JsonReader reader, Class<T> type);
+----
+
+The deserialization method, besides the JSON source, requires the Object `type` into which to deserialize the JSON value, and returns the deserialized instance of the specified type.
+
+The JSON source is provided using the link:{apidir}/com/holonplatform/json/JsonReader.html[JsonReader^] API, which makes available a set of methods to obtain the JSON data from different sources:
+
+* From a generic `java.io.Reader`
+* From a `String`
+* From an array of bytes
+* From an `InputStream`, optionally specifying the encoding charset or assuming `UTF-8` by default
+
+[source, java]
+----
+include::{examplesdir}/com/holonplatform/json/examples/ExampleJson.java[tag=deserialize,indent=0]
+----
+<1> Obtain the `Json` implementation
+<2> Deserialize an object of type `MyObject` using a String as JSON data source
+<3> Convenience method to provide directly a String as JSON data source
+<4> Deserialize an object of type `MyObject` using an array of bytes as JSON data source
+<5> Deserialize an object of type `MyObject` using a `Reader` as JSON data source
+<6> Deserialize an object of type `MyObject` using a `InputStream` as JSON data source
+
+NOTE: The supported data types and their deserialization strategies depends on the concrete JSON mapper implementation, including any custom deserializer or deserialization configuration attribute. The `Json` API simply delegates to the concrete backing implementation the actual JSON deserialization operations, seamlessy inheriting its deserialization strategy and data types support. 
+
+When the `Json` API is obtained using a `JsonProvider`, a default configuration of the backing implementation is provided by the `JsonProvider` implementation itself. To have more control on the concrete implementation configuration and to fine tune the JSON provider setup, you can either create your own `JsonProvider` implementation or directly obtain the `Json` API from the concrete providers implementations. See each  <<AvailableImplementations,available implementation documentation>> for details.
+
+==== `PropertyBox` deserialization
+
+The Holon platform `PropertyBox` type deserialization is fully supported out-of-the-box. The `PropertyBox` serialization strategy is described in the <<PropertyBox>> section.
+
+The `Json` API provides a set of convenience methods to deserialize a `PropertyBox` or a collection of `PropertyBox`. These methods require the deserialization *property set* to be provided. Overloaded methods versions are available to provide, for example, the property set as an `Iterable` (which includes the `PropertySet` interface) or as an array of `Property`.
+
+Some examples:
+
+[source, java]
+----
+include::{examplesdir}/com/holonplatform/json/examples/ExampleJson.java[tag=deserializepb,indent=0]
+----
+<1> Obtain the `Json` implementation
+<2> Deserialize a `PropertyBox` instance from a JSON String, using `PROPERTIES` as property set
+<3> Deserialize a `PropertyBox` instance from a JSON String, using `PROPERTIES` as property set
+<4> Deserialize a `PropertyBox` instance from a JSON String, using `KEY` and `NAME` properties as property set
+<5> Deserialize a `List` of `PropertyBox` from a JSON array, using `PROPERTIES` as property set
+
+==== JSON arrays deserialization
+
+The `Json` API provides a set of convenience methods to deserialize a collection of objects from a JSON array. For this purpose, the `fromJsonArray` method can be used:
+
+[source, java]
+----
+<T> List<T> fromJsonArray(JsonReader reader, Class<T> type);
+----
+
+This method behaves in the same way as the `fromJson` method, but returns a `List` of the serialized objects.
+
+[[SupportedJSONLibraries]]
+== Supported JSON libraries
+
+The Holon platform JSON module currently supports the https://github.com/FasterXML/jackson[Jackson^] and  link:https://github.com/google/gson[Gson^] libraries out-of-the-box.
+
+See the next sections for details about each implementation.
 
 // Inclusions
 
-include::_gson.adoc[]
-
 include::_jackson.adoc[]
+
+include::_gson.adoc[]
 
 == Loggers
 

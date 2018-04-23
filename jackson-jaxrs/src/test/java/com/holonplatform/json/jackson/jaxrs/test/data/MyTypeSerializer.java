@@ -13,26 +13,21 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.holonplatform.json.gson.internal;
+package com.holonplatform.json.jackson.jaxrs.test.data;
 
-import com.holonplatform.core.internal.Logger;
-import com.holonplatform.json.gson.GsonConfiguration;
+import java.io.IOException;
 
-/**
- * Gson support {@link Logger}.
- *
- * @since 5.0.0
- */
-public interface GsonLogger {
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
 
-	final static String NAME = GsonConfiguration.class.getPackage().getName();
+public class MyTypeSerializer extends JsonSerializer<MyType> {
 
-	/**
-	 * Get a {@link Logger} bound to {@link #NAME}.
-	 * @return Logger
-	 */
-	static Logger create() {
-		return Logger.create(NAME);
+	@Override
+	public void serialize(MyType value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
+		gen.writeStartObject();
+		gen.writeObjectField("mytype", value.getValue());
+		gen.writeEndObject();
 	}
 
 }
