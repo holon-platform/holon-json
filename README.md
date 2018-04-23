@@ -2,7 +2,7 @@
 
 This is the __JSON__ module of the [Holon Platform](https://holon-platform.com), which provides support for the [JSON](http://www.json.org) data-interchange format using the must popular serialization and deserialization libraries:
 
-* [Jackson](http://wiki.fasterxml.com/JacksonHome)
+* [Jackson](https://github.com/FasterXML/jackson)
 * [Gson](https://github.com/google/gson)
 
 The module main features are:
