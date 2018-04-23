@@ -35,6 +35,10 @@ The Holon Platform is built using __Java 8__, so you need a JRE/JDK version 8 or
 
 See [releases](https://github.com/holon-platform/holon-json/releases) for the available releases. Each release tag provides a link to the closed issues.
 
+#### 5.1.x release notes
+
+See [What's new in version 5.1.x](https://docs.holon-platform.com/current/reference/holon-json.html#WhatsNew51x) to learn about the new features and API operations of the 5.1 minor release.
+
 ### Obtain the artifacts
 
 The [Holon Platform](https://holon-platform.com) is open source and licensed under the [Apache 2.0 license](LICENSE.md). All the artifacts (including binaries, sources and javadocs) are available from the [Maven Central](https://mvnrepository.com/repos/central) repository.
@@ -47,7 +51,7 @@ _Maven BOM:_
     <dependency>
         <groupId>com.holon-platform.json</groupId>
         <artifactId>holon-json-bom</artifactId>
-        <version>5.0.4</version>
+        <version>5.1.0</version>
         <type>pom</type>
         <scope>import</scope>
     </dependency>
@@ -120,4 +124,5 @@ Artifact id | Description
 `holon-jackson-jaxrs` | __JAX-RS__ configuration support for [Jackson](http://wiki.fasterxml.com/JacksonHome) to enable `PropertyBox` serialization and deserialization in JSON format
 `holon-jackson-spring` | Spring `RestTemplate` configuration and `ObjectMapper` Spring Boot auto-configuration
 `holon-json-bom` | Bill Of Materials
+`holon-json-bom-platform` | Bill Of Materials with external dependencies
 `documentation-json` | Documentation
