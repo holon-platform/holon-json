@@ -20,8 +20,8 @@ import javax.ws.rs.core.FeatureContext;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.holonplatform.core.property.PropertyBox;
-import com.holonplatform.json.jackson.internal.jaxrs.JacksonConfigurationFeature;
-import com.holonplatform.json.jackson.internal.jaxrs.JacksonProviderFeature;
+import com.holonplatform.json.jackson.jaxrs.internal.JacksonConfigurationFeature;
+import com.holonplatform.json.jackson.jaxrs.internal.JacksonProviderFeature;
 
 /**
  * JAX-RS {@link Feature} to register Jackson {@link PropertyBox} JSON serializers/deserializers and context resolver

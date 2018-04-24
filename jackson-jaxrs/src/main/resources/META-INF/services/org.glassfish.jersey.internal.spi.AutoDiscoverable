@@ -1,1 +1,1 @@
-com.holonplatform.json.jackson.internal.jaxrs.jersey.JacksonConfigurationAutoDiscoverable
+com.holonplatform.json.jackson.jaxrs.internal.jersey.JacksonConfigurationAutoDiscoverable
