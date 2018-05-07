@@ -16,17 +16,12 @@
 package com.holonplatform.json.gson.internal;
 
 import java.lang.reflect.Type;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Optional;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
-import com.holonplatform.core.Path;
 import com.holonplatform.core.property.Property;
 import com.holonplatform.core.property.PropertyBox;
 import com.holonplatform.core.temporal.TemporalType;
@@ -34,8 +29,9 @@ import com.holonplatform.json.config.JsonConfigProperties;
 import com.holonplatform.json.config.PropertyBoxSerializationMode;
 import com.holonplatform.json.datetime.CurrentSerializationTemporalType;
 import com.holonplatform.json.exceptions.JsonSerializationException;
-import com.holonplatform.json.internal.support.DefaultPropertyBoxSerializationNode;
-import com.holonplatform.json.internal.support.PropertyBoxSerializationNode;
+import com.holonplatform.json.model.JsonPropertySetSerializationTreeResolver;
+import com.holonplatform.json.model.PropertySetSerializationNode;
+import com.holonplatform.json.model.PropertySetSerializationTree;
 
 /**
  * Gson serializer to handle {@link PropertyBox} serialization.
@@ -78,6 +74,17 @@ public class GsonPropertyBoxSerializer implements JsonSerializer<PropertyBox> {
 
 		return obj;
 	}
+	
+	/**
+	 * Build the PropertySet serialization tree for given PropertyBox.
+	 * @param propertyBox PropertyBox to serialize
+	 * @param serializationMode Serialization mode
+	 * @return the PropertyBox serialization tree
+	 */
+	private static PropertySetSerializationTree getSerializationTree(PropertyBox propertyBox,
+			PropertyBoxSerializationMode serializationMode) {
+		return JsonPropertySetSerializationTreeResolver.getDefault().resolve(propertyBox, serializationMode);
+	}
 
 	/**
 	 * Get the {@link PropertyBoxSerializationMode} to use. Check {@link PropertyBox} configuration attributes using
@@ -96,7 +103,7 @@ public class GsonPropertyBoxSerializer implements JsonSerializer<PropertyBox> {
 	}
 
 	/**
-	 * Serialize a PropertyBox as a {@link PropertyBoxSerializationNode} tree.
+	 * Serialize a PropertyBox as a {@link PropertySetSerializationNode} tree.
 	 * @param context Serialization context
 	 * @param obj Json object to use
 	 * @param propertyBox PropertyBox to serialize
@@ -104,8 +111,8 @@ public class GsonPropertyBoxSerializer implements JsonSerializer<PropertyBox> {
 	 * @throws JsonSerializationException If an error occurred
 	 */
 	private static void serializePropertyBoxNodes(JsonSerializationContext context, JsonObject obj,
-			PropertyBox propertyBox, List<PropertyBoxSerializationNode> nodes) throws JsonSerializationException {
-		for (PropertyBoxSerializationNode node : nodes) {
+			PropertyBox propertyBox, Iterable<PropertySetSerializationNode> nodes) throws JsonSerializationException {
+		for (PropertySetSerializationNode node : nodes) {
 			serializePropertyBoxNode(context, obj, propertyBox, node);
 		}
 	}
@@ -119,7 +126,7 @@ public class GsonPropertyBoxSerializer implements JsonSerializer<PropertyBox> {
 	 * @throws JsonSerializationException If an error occurred
 	 */
 	private static void serializePropertyBoxNode(JsonSerializationContext context, JsonObject obj,
-			PropertyBox propertyBox, PropertyBoxSerializationNode node) throws JsonSerializationException {
+			PropertyBox propertyBox, PropertySetSerializationNode node) throws JsonSerializationException {
 		if (node.getProperty().isPresent()) {
 			serializePropertyBoxProperty(context, obj, propertyBox, node.getProperty().get(), node.getName());
 		} else {
@@ -176,162 +183,6 @@ public class GsonPropertyBoxSerializer implements JsonSerializer<PropertyBox> {
 			throw new JsonSerializationException(
 					"Failed to serialize Property [" + property + "] using field name [" + name + "]", e);
 		}
-	}
-
-	/**
-	 * Build the PropertyBox serialization tree.
-	 * @param propertyBox PropertyBox to serialize
-	 * @param serializationMode Serialization mode
-	 * @return the PropertyBox serialization tree
-	 */
-	private static List<PropertyBoxSerializationNode> getSerializationTree(PropertyBox propertyBox,
-			PropertyBoxSerializationMode serializationMode) {
-		List<PropertyBoxSerializationNode> tree = new LinkedList<>();
-
-		List<Property<?>> properties = new LinkedList<>();
-		propertyBox.forEach(p -> properties.add(p));
-
-		for (Property<?> property : propertyBox) {
-			getSerializationNode(properties, property, serializationMode).ifPresent(n -> {
-				tree.add(n);
-			});
-		}
-		return tree;
-	}
-
-	/**
-	 * Get the {@link PropertyBoxSerializationNode} for given property.
-	 * @param properties Available properties
-	 * @param property Property to parse
-	 * @param serializationMode Serialization mode
-	 * @return The optional {@link PropertyBoxSerializationNode} which corresponds to given property
-	 */
-	private static Optional<PropertyBoxSerializationNode> getSerializationNode(List<Property<?>> properties,
-			Property<?> property, PropertyBoxSerializationMode serializationMode) {
-		final List<String> pathNames = getPropertySerializationHierarchy(property, serializationMode);
-		if (!pathNames.isEmpty()) {
-			if (pathNames.size() == 1) {
-				properties.remove(property);
-				return Optional.of(new DefaultPropertyBoxSerializationNode(pathNames.get(0), property));
-			} else {
-				return getSerializationNode(properties, Collections.singletonList(pathNames.get(0)), serializationMode);
-			}
-		}
-		return Optional.empty();
-	}
-
-	/**
-	 * Get the {@link PropertyBoxSerializationNode} which corresponds to given parent path names hierarchy.
-	 * @param properties Available properties
-	 * @param parentPathNames Parent path names hierarchy
-	 * @param serializationMode Serialization mode
-	 * @return Optional {@link PropertyBoxSerializationNode} which corresponds to given parent path names hierarchy
-	 */
-	private static Optional<PropertyBoxSerializationNode> getSerializationNode(List<Property<?>> properties,
-			List<String> parentPathNames, PropertyBoxSerializationMode serializationMode) {
-		// check valid path names
-		if (parentPathNames == null || parentPathNames.isEmpty()) {
-			return Optional.empty();
-		}
-		// build node
-		DefaultPropertyBoxSerializationNode node = new DefaultPropertyBoxSerializationNode(
-				parentPathNames.get(parentPathNames.size() - 1));
-		for (Property<?> property : properties) {
-			final List<String> pathNames = getPropertySerializationHierarchy(property, serializationMode);
-			if (pathNames.size() > parentPathNames.size()
-					&& pathNamesEquals(pathNames.subList(0, parentPathNames.size()), parentPathNames)) {
-				// check hierarchy
-				if (pathNames.size() == parentPathNames.size() + 1) {
-					getSerializationPropertyName(property).ifPresent(name -> {
-						node.addChild(new DefaultPropertyBoxSerializationNode(name, property));
-					});
-				} else {
-					List<String> parents = new LinkedList<>();
-					parents.addAll(parentPathNames);
-					parents.add(pathNames.get(parentPathNames.size()));
-					// check sub hierarchy
-					getSerializationNode(properties, parents, serializationMode).ifPresent(n -> {
-						node.addChild(n);
-					});
-				}
-			}
-		}
-		if (!node.getChildren().isEmpty()) {
-			// remove processed properties
-			node.getChildren().forEach(c -> c.getProperty().ifPresent(p -> properties.remove(p)));
-			return Optional.of(node);
-		}
-		return Optional.empty();
-	}
-
-	/**
-	 * CHecks if given path names hierarchies are equal.
-	 * @param p1 First path name hierarchy
-	 * @param p2 Second path name hierarchy
-	 * @return <code>true</code> if given path names hierarchies are equal
-	 */
-	private static boolean pathNamesEquals(List<String> p1, List<String> p2) {
-		if (p1 == null || p2 == null) {
-			return false;
-		}
-		for (int i = 0; i < p1.size(); i++) {
-			if (p1.get(i) == null || !p1.get(i).equals(p2.get(i))) {
-				return false;
-			}
-		}
-		return true;
-	}
-
-	/**
-	 * Get the property serialization name, only if the property must be included in serialization according to given
-	 * {@link PropertyBoxSerializationMode}.
-	 * @param property The property for which to obtain the serialization name
-	 * @param serializationMode Serialization mode
-	 * @return the property serialization name, if available and if the property must be included in serialization
-	 *         according to given serialization mode
-	 */
-	private static List<String> getPropertySerializationHierarchy(Property<?> property,
-			PropertyBoxSerializationMode serializationMode) {
-		final boolean isPath = Path.class.isAssignableFrom(property.getClass());
-		if (serializationMode == PropertyBoxSerializationMode.PATH && !isPath) {
-			return Collections.emptyList();
-		}
-
-		if (isPath) {
-			return getPathNameHierarchy((Path<?>) property);
-		}
-		if (property.getName() != null) {
-			return Collections.singletonList(property.getName());
-		}
-
-		return Collections.emptyList();
-	}
-
-	/**
-	 * Get the path names hierarchy from given path, ujsing any parent path and splitting the path name if a dot
-	 * notation is detected.
-	 * @param path Path
-	 * @return the path names hierarchy
-	 */
-	private static List<String> getPathNameHierarchy(Path<?> path) {
-		final String pathName = path.relativeName();
-		if (pathName == null) {
-			return Collections.emptyList();
-		}
-		if (pathName.indexOf('.') < 1) {
-			return Collections.singletonList(pathName);
-		}
-		return Arrays.asList(pathName.split("\\."));
-	}
-
-	private static Optional<String> getSerializationPropertyName(Property<?> property) {
-		List<String> names = (Path.class.isAssignableFrom(property.getClass()))
-				? getPathNameHierarchy((Path<?>) property)
-				: Collections.singletonList(property.getName());
-		if (!names.isEmpty()) {
-			return Optional.ofNullable(names.get(names.size() - 1));
-		}
-		return Optional.empty();
 	}
 
 }
