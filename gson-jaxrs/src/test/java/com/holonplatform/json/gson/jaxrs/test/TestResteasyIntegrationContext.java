@@ -104,10 +104,11 @@ public class TestResteasyIntegrationContext {
 
 		PropertyBox boxToSrlz = PropertyBox.builder(SET).set(NUM, 100).set(DBL, 77.7).build();
 
-		Response response = client.target(TestPortProvider.generateURL("/test/srlz")).request()
-				.put(Entity.entity(boxToSrlz, MediaType.APPLICATION_JSON));
-		assertNotNull(response);
-		assertEquals(Status.ACCEPTED.getStatusCode(), response.getStatus());
+		try (Response response = client.target(TestPortProvider.generateURL("/test/srlz")).request()
+				.put(Entity.entity(boxToSrlz, MediaType.APPLICATION_JSON))) {
+			assertNotNull(response);
+			assertEquals(Status.ACCEPTED.getStatusCode(), response.getStatus());
+		}
 
 	}
 

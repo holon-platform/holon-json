@@ -120,9 +120,11 @@ public class TestJerseyIntegration extends JerseyTest {
 
 		PropertyBox boxToSrlz = PropertyBox.builder(SET).set(NUM, 100).set(DBL, 77.7).build();
 
-		Response response = target("/test/srlz").request().put(Entity.entity(boxToSrlz, MediaType.APPLICATION_JSON));
-		assertNotNull(response);
-		assertEquals(Status.ACCEPTED.getStatusCode(), response.getStatus());
+		try (Response response = target("/test/srlz").request()
+				.put(Entity.entity(boxToSrlz, MediaType.APPLICATION_JSON))) {
+			assertNotNull(response);
+			assertEquals(Status.ACCEPTED.getStatusCode(), response.getStatus());
+		}
 
 	}
 
