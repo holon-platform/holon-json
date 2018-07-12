@@ -63,6 +63,13 @@
 		</dependency>
 
 		<dependency>
+			<groupId>com.holon-platform.core</groupId>
+			<artifactId>holon-spring</artifactId>
+			<version>${holon.core.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
@@ -91,6 +98,7 @@
 		<dependency>
 			<groupId>javax.validation</groupId>
 			<artifactId>validation-api</artifactId>
+			<scope>test</scope>
 		</dependency>
 
 	</dependencies>
