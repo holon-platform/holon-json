@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.holonplatform.json.jackson.internal.jaxrs;
+package com.holonplatform.json.jackson.jaxrs.internal;
 
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;

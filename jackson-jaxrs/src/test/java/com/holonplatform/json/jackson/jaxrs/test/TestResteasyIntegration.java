@@ -94,14 +94,14 @@ public class TestResteasyIntegration {
 		assertNotNull(box);
 		assertEquals(Integer.valueOf(2), box.getValue(NUM));
 		assertEquals("Str_2", box.getValue(STR));
-		
-		
+
 		PropertyBox boxToSrlz = PropertyBox.builder(SET).set(NUM, 100).build();
-		
-		Response response = client.target(TestPortProvider.generateURL("/test/srlz")).request()
-				.put(Entity.entity(boxToSrlz, MediaType.APPLICATION_JSON));
-		assertNotNull(response);
-		assertEquals(Status.ACCEPTED.getStatusCode(), response.getStatus());
+
+		try (Response response = client.target(TestPortProvider.generateURL("/test/srlz")).request()
+				.put(Entity.entity(boxToSrlz, MediaType.APPLICATION_JSON))) {
+			assertNotNull(response);
+			assertEquals(Status.ACCEPTED.getStatusCode(), response.getStatus());
+		}
 
 	}
 

@@ -13,21 +13,21 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.holonplatform.json.gson.internal.jaxrs;
+package com.holonplatform.json.jackson.jaxrs.internal;
 
 import javax.ws.rs.core.Feature;
 import javax.ws.rs.core.FeatureContext;
 
 import com.holonplatform.core.internal.Logger;
-import com.holonplatform.json.gson.jaxrs.GsonFeature;
 import com.holonplatform.json.internal.JsonLogger;
+import com.holonplatform.json.jackson.jaxrs.JacksonFeature;
 
 /**
- * {@link Feature} to register Gson JSON providers.
+ * {@link Feature} to register Jackson JSON providers.
  * 
  * @since 5.0.0
  */
-public class GsonProviderFeature implements Feature {
+public class JacksonProviderFeature implements Feature {
 
 	private final static Logger LOGGER = JsonLogger.create();
 
@@ -37,17 +37,19 @@ public class GsonProviderFeature implements Feature {
 	 */
 	@Override
 	public boolean configure(FeatureContext context) {
-		if (context.getConfiguration().getProperties().containsKey(GsonFeature.JAXRS_DISABLE_GSON_AUTO_CONFIG)) {
-			LOGGER.debug(() -> "Skip GsonJsonProvider registration, [" + GsonFeature.JAXRS_DISABLE_GSON_AUTO_CONFIG
-					+ "] property detected");
+		if (context.getConfiguration().getProperties().containsKey(JacksonFeature.JAXRS_DISABLE_JACKSON_AUTO_CONFIG)) {
+			LOGGER.debug(() -> "Skip JacksonJsonProvider registration, ["
+					+ JacksonFeature.JAXRS_DISABLE_JACKSON_AUTO_CONFIG + "] property detected");
 			return false;
 		}
-		if (!context.getConfiguration().isRegistered(GsonJsonProvider.class)) {
+
+		if (!context.getConfiguration().isRegistered(JacksonJsonPropertyBoxProvider.class)) {
 			LOGGER.debug(() -> "<Runtime: " + context.getConfiguration().getRuntimeType() + "> Registering provider ["
-					+ GsonJsonProvider.class.getName() + "]");
-			context.register(GsonJsonProvider.class);
+					+ JacksonJsonPropertyBoxProvider.class.getName() + "]");
+			context.register(JacksonJsonPropertyBoxProvider.class);
 		}
 		return true;
+
 	}
 
 }

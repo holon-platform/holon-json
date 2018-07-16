@@ -13,33 +13,37 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.holonplatform.json.internal.support;
+package com.holonplatform.json.internal.model;
 
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
+import com.holonplatform.core.internal.utils.ObjectUtils;
 import com.holonplatform.core.property.Property;
+import com.holonplatform.json.model.PropertySetSerializationNode;
 
 /**
- * Default {@link PropertyBoxSerializationNode} implementation.
+ * Default {@link PropertySetSerializationNode} implementation.
  * 
  * @since 5.1.0
  */
-public class DefaultPropertyBoxSerializationNode implements PropertyBoxSerializationNode {
+public class DefaultPropertySetSerializationNode implements PropertySetSerializationNode {
 
 	private final String name;
 	private final Property<?> property;
-	private List<PropertyBoxSerializationNode> children;
+	private List<PropertySetSerializationNode> children;
 
 	/**
 	 * Constructor for leaf nodes.
 	 * @param name Serialization name
 	 * @param property The property bound to this node
 	 */
-	public DefaultPropertyBoxSerializationNode(String name, Property<?> property) {
+	public DefaultPropertySetSerializationNode(String name, Property<?> property) {
 		super();
+		ObjectUtils.argumentNotNull(name, "Serialization name must be not null");
+		ObjectUtils.argumentNotNull(property, "Serialization property must be not null");
 		this.name = name;
 		this.property = property;
 	}
@@ -48,8 +52,9 @@ public class DefaultPropertyBoxSerializationNode implements PropertyBoxSerializa
 	 * Constructor for non-leaf nodes.
 	 * @param name Serialization name
 	 */
-	public DefaultPropertyBoxSerializationNode(String name) {
+	public DefaultPropertySetSerializationNode(String name) {
 		super();
+		ObjectUtils.argumentNotNull(name, "Serialization name must be not null");
 		this.name = name;
 		this.property = null;
 	}
@@ -77,15 +82,16 @@ public class DefaultPropertyBoxSerializationNode implements PropertyBoxSerializa
 	 * @see com.holonplatform.json.jackson.internal.PropertyBoxSerializationNode#getChildren()
 	 */
 	@Override
-	public List<PropertyBoxSerializationNode> getChildren() {
-		return (children != null) ? children : Collections.emptyList();
+	public List<PropertySetSerializationNode> getChildren() {
+		return (children != null) ? Collections.unmodifiableList(children) : Collections.emptyList();
 	}
 
 	/**
 	 * Add a child node.
 	 * @param node The node to add
 	 */
-	public void addChild(PropertyBoxSerializationNode node) {
+	public void addChild(PropertySetSerializationNode node) {
+		ObjectUtils.argumentNotNull(node, "Node to add must be not null");
 		if (children == null) {
 			children = new LinkedList<>();
 		}

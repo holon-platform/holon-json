@@ -89,9 +89,9 @@ public class TestNestedPropertyBox {
 		assertEquals(TEST_DATA_VALUE, readBox.getValue(OBJECT_DATA));
 		assertEquals(TestEnum.ONE, readBox.getValue(ENUM));
 		assertTrue(Arrays.equals(new int[] { 1, 2, 3 }, readBox.getValue(ARRAY_DATA)));
-		
+
 		assertNotNull(readBox.getValue(NESTED1));
-		
+
 		PropertyBox readNested = readBox.getValue(NESTED1);
 		assertTrue(readNested.contains(N_CODE));
 

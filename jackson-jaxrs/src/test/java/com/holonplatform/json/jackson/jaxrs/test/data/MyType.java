@@ -27,5 +27,5 @@ public class MyType {
 	public int getValue() {
 		return value;
 	}
-	
+
 }

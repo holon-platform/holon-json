@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.holonplatform.json.jackson.internal.jaxrs;
+package com.holonplatform.json.gson.jaxrs.internal;
 
 import javax.ws.rs.core.Feature;
 import javax.ws.rs.core.FeatureContext;
@@ -21,15 +21,15 @@ import javax.ws.rs.core.FeatureContext;
 import com.holonplatform.core.internal.Logger;
 import com.holonplatform.core.internal.utils.TypeUtils;
 import com.holonplatform.core.property.PropertyBox;
+import com.holonplatform.json.gson.jaxrs.GsonFeature;
 import com.holonplatform.json.internal.JsonLogger;
-import com.holonplatform.json.jackson.jaxrs.JacksonFeature;
 
 /**
- * {@link Feature} to configure Jackson object mapper with {@link PropertyBox} marshalling capabilities.
+ * {@link Feature} to configure Gson with {@link PropertyBox} marshalling capabilities.
  *
  * @since 5.0.0
  */
-public class JacksonConfigurationFeature implements Feature {
+public class GsonContextResolverFeature implements Feature {
 
 	private final static Logger LOGGER = JsonLogger.create();
 
@@ -39,20 +39,24 @@ public class JacksonConfigurationFeature implements Feature {
 	 */
 	@Override
 	public boolean configure(FeatureContext context) {
-		if (context.getConfiguration().getProperties()
-				.containsKey(JacksonFeature.JAXRS_DISABLE_JACKSON_CONTEXT_RESOLVER)) {
-			LOGGER.debug(() -> "Skip JacksonContextResolver registration, ["
-					+ JacksonFeature.JAXRS_DISABLE_JACKSON_CONTEXT_RESOLVER + "] property detected");
+		// check disabled
+		if (context.getConfiguration().getProperties().containsKey(GsonFeature.JAXRS_DISABLE_GSON_AUTO_CONFIG)) {
+			LOGGER.debug(() -> "Skip GsonContextResolver registration, [" + GsonFeature.JAXRS_DISABLE_GSON_AUTO_CONFIG
+					+ "] property detected");
 			return false;
 		}
-		
-		if (!context.getConfiguration().isRegistered(JacksonContextResolver.class)) {
+		if (context.getConfiguration().getProperties().containsKey(GsonFeature.JAXRS_DISABLE_GSON_CONTEXT_RESOLVER)) {
+			LOGGER.debug(() -> "Skip GsonContextResolver registration, ["
+					+ GsonFeature.JAXRS_DISABLE_GSON_CONTEXT_RESOLVER + "] property detected");
+			return false;
+		}
+		if (!context.getConfiguration().isRegistered(GsonContextResolver.class)) {
 
 			// check pretty print
 			boolean prettyPrint = false;
-			if (context.getConfiguration().getProperties().containsKey(JacksonFeature.JAXRS_JSON_PRETTY_PRINT)) {
-				Object pp = context.getConfiguration().getProperties()
-						.getOrDefault(JacksonFeature.JAXRS_JSON_PRETTY_PRINT, Boolean.FALSE);
+			if (context.getConfiguration().getProperties().containsKey(GsonFeature.JAXRS_JSON_PRETTY_PRINT)) {
+				Object pp = context.getConfiguration().getProperties().getOrDefault(GsonFeature.JAXRS_JSON_PRETTY_PRINT,
+						Boolean.FALSE);
 				if (TypeUtils.isBoolean(pp.getClass()) && (boolean) pp) {
 					prettyPrint = true;
 				}
@@ -60,8 +64,8 @@ public class JacksonConfigurationFeature implements Feature {
 
 			// register
 			LOGGER.debug(() -> "<Runtime: " + context.getConfiguration().getRuntimeType()
-					+ "> Registering ContextResolver [" + JacksonContextResolver.class.getName() + "]");
-			context.register(new JacksonContextResolver(prettyPrint));
+					+ "> Registering ContextResolver [" + GsonContextResolver.class.getName() + "]");
+			context.register(new GsonContextResolver(prettyPrint));
 		}
 		return true;
 	}

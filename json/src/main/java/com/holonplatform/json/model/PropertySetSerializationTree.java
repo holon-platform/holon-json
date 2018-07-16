@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2017 Axioma srl.
+ * Copyright 2016-2018 Axioma srl.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -13,22 +13,15 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.holonplatform.json.test;
+package com.holonplatform.json.model;
 
-import static org.junit.Assert.*;
+import com.holonplatform.core.property.PropertySet;
 
-import org.junit.Test;
-
-import com.holonplatform.core.internal.utils.TestUtils;
-import com.holonplatform.json.Json;
-
-public class TestProviders {
-
-	@Test
-	public void testNoProvider() {
-		assertFalse(Json.get().isPresent());
-
-		TestUtils.expectedException(IllegalStateException.class, () -> Json.require());
-	}
+/**
+ * A representation of a {@link PropertySet} property serialization tree.
+ *
+ * @since 5.2.0
+ */
+public interface PropertySetSerializationTree extends Iterable<PropertySetSerializationNode> {
 
 }

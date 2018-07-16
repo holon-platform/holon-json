@@ -61,12 +61,12 @@ public class TestPropertyBoxSerialization {
 	public static void init() {
 		builder = GsonConfiguration.builder();
 	}
-	
+
 	@Test
 	public void testNull() {
-		
+
 		final Gson gson = builder.create();
-		
+
 		String json = gson.toJson(null);
 		assertNotNull(json);
 	}
@@ -78,12 +78,10 @@ public class TestPropertyBoxSerialization {
 
 		// serialize
 
-		PropertyBox box = PropertyBox.builder(PROPERTIES).set(KEY, 1L).set(NAME, "Test")
-				.set(NUMBER, 7.1d).set(BOOL, Boolean.TRUE).set(DATE, DATE_VALUE)
-				.set(OBJECT_DATA, TEST_DATA_VALUE).set(ENUM, TestEnum.ONE)
+		PropertyBox box = PropertyBox.builder(PROPERTIES).set(KEY, 1L).set(NAME, "Test").set(NUMBER, 7.1d)
+				.set(BOOL, Boolean.TRUE).set(DATE, DATE_VALUE).set(OBJECT_DATA, TEST_DATA_VALUE).set(ENUM, TestEnum.ONE)
 				.set(ARRAY_DATA, new int[] { 1, 2, 3 }).set(LOCAL_DATE, LocalDate.of(1979, Month.MARCH, 9))
-				.set(LOCAL_DATETIME, LocalDateTime.of(1979, Month.MARCH, 9, 11, 30))
-				.set(NUMBOOL, Boolean.TRUE).build();
+				.set(LOCAL_DATETIME, LocalDateTime.of(1979, Month.MARCH, 9, 11, 30)).set(NUMBOOL, Boolean.TRUE).build();
 
 		String json = gson.toJson(box);
 
@@ -114,10 +112,10 @@ public class TestPropertyBoxSerialization {
 		// serialize
 
 		final Collection<PropertyBox> boxes = new LinkedList<>();
-		boxes.add(PropertyBox.builder(PROPERTIES).set(KEY, 1L).set(NAME, "Test")
-				.set(NUMBER, 7.1d).set(BOOL, Boolean.TRUE).build());
-		boxes.add(PropertyBox.builder(PROPERTIES).set(KEY, 2L).set(NAME, "Test2")
-				.set(NUMBER, 8.1d).set(BOOL, Boolean.FALSE).build());
+		boxes.add(PropertyBox.builder(PROPERTIES).set(KEY, 1L).set(NAME, "Test").set(NUMBER, 7.1d)
+				.set(BOOL, Boolean.TRUE).build());
+		boxes.add(PropertyBox.builder(PROPERTIES).set(KEY, 2L).set(NAME, "Test2").set(NUMBER, 8.1d)
+				.set(BOOL, Boolean.FALSE).build());
 
 		String json = gson.toJson(boxes);
 

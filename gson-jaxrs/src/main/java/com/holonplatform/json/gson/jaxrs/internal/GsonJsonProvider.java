@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2017 Holon TDCN.
+ * Copyright 2016-2017 Axioma srl.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.holonplatform.json.jackson.internal.jaxrs;
+package com.holonplatform.json.gson.jaxrs.internal;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,98 +27,64 @@ import java.lang.reflect.Type;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
-import javax.annotation.Priority;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.Priorities;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.ext.ContextResolver;
 import javax.ws.rs.ext.MessageBodyReader;
 import javax.ws.rs.ext.MessageBodyWriter;
-import javax.ws.rs.ext.Provider;
 import javax.ws.rs.ext.Providers;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectReader;
-import com.fasterxml.jackson.databind.ObjectWriter;
+import com.google.gson.Gson;
+import com.google.gson.JsonIOException;
+import com.google.gson.JsonSyntaxException;
 import com.holonplatform.core.internal.property.PropertySetRefIntrospector;
 import com.holonplatform.core.internal.property.PropertySetRefIntrospector.PropertySetIntrospectionException;
 import com.holonplatform.core.property.PropertyBox;
 import com.holonplatform.core.property.PropertySet;
 import com.holonplatform.core.property.PropertySetRef;
-import com.holonplatform.json.jackson.JacksonConfiguration;
+import com.holonplatform.json.gson.GsonConfiguration;
 
 /**
- * JAX-RS message body reader and writer for {@link PropertyBox} type using Jackson as JSON serializer/deserializer.
+ * JAX-RS message body reader and writer using {@link Gson} as JSON serializer/deserializer.
  *
  * @since 5.0.0
  */
-@Priority(Priorities.ENTITY_CODER)
-@Provider
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-public class JacksonJsonPropertyBoxProvider implements MessageBodyWriter<PropertyBox>, MessageBodyReader<PropertyBox> {
+public class GsonJsonProvider implements MessageBodyWriter<Object>, MessageBodyReader<Object> {
 
 	private static final Charset CHARSET = StandardCharsets.UTF_8;
 
 	@Context
 	private Providers providers;
 
-	private ObjectMapper _mapper;
-
-	private ObjectReader _reader;
-
-	private ObjectWriter _writer;
+	private Gson gson;
 
 	private PropertySetRefIntrospector propertySetRefIntrospector;
 
 	/**
-	 * Get the {@link ObjectMapper} to use.
-	 * @return The {@link ObjectMapper} obtained from a suitable {@link ContextResolver}, or a default one if not
-	 *         available
+	 * Get the {@link Gson} instance to use.
+	 * @return The {@link Gson} instance to use, from {@link ContextResolver} if available or the default one
 	 */
-	private ObjectMapper getObjectMapper() {
-		if (_mapper == null) {
+	private Gson getGson() {
+		if (gson == null) {
 			// init using a contextresolver, if available
-			ContextResolver<ObjectMapper> contextResolver = providers.getContextResolver(ObjectMapper.class,
+			ContextResolver<Gson> contextResolver = providers.getContextResolver(Gson.class,
 					MediaType.APPLICATION_JSON_TYPE);
 			if (contextResolver != null) {
-				_mapper = contextResolver.getContext(ObjectMapper.class);
+				gson = contextResolver.getContext(Gson.class);
 			}
-			if (_mapper == null) {
+			if (gson == null) {
 				// use default
-				_mapper = JacksonConfiguration.mapper();
+				gson = GsonConfiguration.builder().create();
 			}
 		}
-		return _mapper;
-	}
-
-	/**
-	 * Get the object reader to use to deserialize a {@link PropertyBox}.
-	 * @return The object reader
-	 */
-	private ObjectReader getObjectReader() {
-		if (_reader == null) {
-			_reader = getObjectMapper().readerFor(PropertyBox.class);
-		}
-		return _reader;
-	}
-
-	/**
-	 * Get the object writer to use to serialize a {@link PropertyBox}.
-	 * @return The object writer
-	 */
-	private ObjectWriter getObjectWriter() {
-		if (_writer == null) {
-			_writer = getObjectMapper().writerFor(PropertyBox.class);
-		}
-		return _writer;
+		return gson;
 	}
 
 	/**
@@ -149,7 +115,7 @@ public class JacksonJsonPropertyBoxProvider implements MessageBodyWriter<Propert
 	 */
 	@Override
 	public boolean isReadable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
-		return isPropertyBoxType(type.equals(genericType) ? type : genericType);
+		return true;
 	}
 
 	/*
@@ -159,15 +125,18 @@ public class JacksonJsonPropertyBoxProvider implements MessageBodyWriter<Propert
 	 * java.io.InputStream)
 	 */
 	@Override
-	public PropertyBox readFrom(Class<PropertyBox> type, Type genericType, Annotation[] annotations,
-			MediaType mediaType, MultivaluedMap<String, String> httpHeaders, InputStream entityStream)
+	public Object readFrom(Class<Object> type, Type genericType, Annotation[] annotations, MediaType mediaType,
+			MultivaluedMap<String, String> httpHeaders, InputStream entityStream)
 			throws IOException, WebApplicationException {
+
+		final Type jsonType = type.equals(genericType) ? type : genericType;
+
 		try (final Reader reader = new InputStreamReader(entityStream, CHARSET)) {
 
 			// check property set
 			PropertySet<?> propertySet = null;
-			if (!com.holonplatform.core.Context.get().resource(PropertySet.CONTEXT_KEY, PropertySet.class)
-					.isPresent()) {
+			if (isPropertyBoxType(jsonType) && !com.holonplatform.core.Context.get()
+					.resource(PropertySet.CONTEXT_KEY, PropertySet.class).isPresent()) {
 				PropertySetRef propertySetRef = PropertySetRefIntrospector.getPropertySetRef(annotations).orElse(null);
 				if (propertySetRef != null) {
 					try {
@@ -178,9 +147,9 @@ public class JacksonJsonPropertyBoxProvider implements MessageBodyWriter<Propert
 				}
 			}
 			if (propertySet != null) {
-				return propertySet.execute(() -> readPropertyBox(reader));
+				return propertySet.execute(() -> readPropertyBox(reader, jsonType));
 			} else {
-				return readPropertyBox(reader);
+				return readPropertyBox(reader, jsonType);
 			}
 		}
 	}
@@ -188,16 +157,18 @@ public class JacksonJsonPropertyBoxProvider implements MessageBodyWriter<Propert
 	/**
 	 * Read a {@link PropertyBox} from JSON content, using current {@link com.holonplatform.core.Context} property set.
 	 * @param reader Reader
+	 * @param jsonType JSON type
 	 * @return The deserialized {@link PropertyBox} instance
 	 * @throws IOException IO read error
-	 * @throws WebApplicationException JSON processing exception
+	 * @throws WebApplicationException JSON syntax exception
 	 */
-	private PropertyBox readPropertyBox(Reader reader) throws IOException {
+	private Object readPropertyBox(Reader reader, Type jsonType) throws IOException {
 		try {
-			return getObjectReader().readValue(reader);
-		} catch (JsonProcessingException e) {
-			throw new WebApplicationException(e.getOriginalMessage(), e, Response.status(Status.BAD_REQUEST)
-					.type(MediaType.TEXT_PLAIN).entity(e.getOriginalMessage()).build());
+			return getGson().fromJson(reader, jsonType);
+		} catch (JsonIOException e) {
+			throw new IOException(e);
+		} catch (JsonSyntaxException e) {
+			throw new WebApplicationException(e.getMessage(), e, Status.BAD_REQUEST);
 		}
 	}
 
@@ -208,7 +179,7 @@ public class JacksonJsonPropertyBoxProvider implements MessageBodyWriter<Propert
 	 */
 	@Override
 	public boolean isWriteable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
-		return isPropertyBoxType(type.equals(genericType) ? type : genericType);
+		return true;
 	}
 
 	/*
@@ -217,7 +188,7 @@ public class JacksonJsonPropertyBoxProvider implements MessageBodyWriter<Propert
 	 * java.lang.annotation.Annotation[], javax.ws.rs.core.MediaType)
 	 */
 	@Override
-	public long getSize(PropertyBox t, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
+	public long getSize(Object t, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
 		return -1;
 	}
 
@@ -228,13 +199,16 @@ public class JacksonJsonPropertyBoxProvider implements MessageBodyWriter<Propert
 	 * java.io.OutputStream)
 	 */
 	@Override
-	public void writeTo(PropertyBox t, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType,
+	public void writeTo(Object t, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType,
 			MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream)
 			throws IOException, WebApplicationException {
+		final Type jsonType = type.equals(genericType) ? type : genericType;
 		try (final Writer writer = new OutputStreamWriter(entityStream, CHARSET)) {
 			try {
-				getObjectWriter().writeValue(writer, t);
-			} catch (JsonProcessingException e) {
+				getGson().toJson(t, jsonType, writer);
+			} catch (JsonIOException e) {
+				throw new IOException(e);
+			} catch (JsonSyntaxException e) {
 				throw new WebApplicationException(e.getMessage(), e, Status.BAD_REQUEST);
 			}
 		}

@@ -30,8 +30,10 @@ import com.holonplatform.json.internal.datetime.ISO8601DateFormats;
  */
 public class JacksonISO8601DateSerializer extends JsonSerializer<Date> {
 
-	/* (non-Javadoc)
-	 * @see com.fasterxml.jackson.databind.JsonSerializer#serialize(java.lang.Object, com.fasterxml.jackson.core.JsonGenerator, com.fasterxml.jackson.databind.SerializerProvider)
+	/*
+	 * (non-Javadoc)
+	 * @see com.fasterxml.jackson.databind.JsonSerializer#serialize(java.lang.Object,
+	 * com.fasterxml.jackson.core.JsonGenerator, com.fasterxml.jackson.databind.SerializerProvider)
 	 */
 	@Override
 	public void serialize(Date value, JsonGenerator gen, SerializerProvider serializers) throws IOException {

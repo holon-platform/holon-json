@@ -120,7 +120,7 @@ public class TestJson {
 		final StringBuilder sb = new StringBuilder();
 		json.toJson(box).write(sb);
 
-		assertNotNull(sb);
+		assertTrue(sb.length() > 0);
 
 		String jsonString2 = json.toJsonString(box);
 

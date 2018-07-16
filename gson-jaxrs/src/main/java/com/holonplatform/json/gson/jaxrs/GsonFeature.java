@@ -18,8 +18,8 @@ package com.holonplatform.json.gson.jaxrs;
 import javax.ws.rs.core.Feature;
 import javax.ws.rs.core.FeatureContext;
 
-import com.holonplatform.json.gson.internal.jaxrs.GsonContextResolverFeature;
-import com.holonplatform.json.gson.internal.jaxrs.GsonProviderFeature;
+import com.holonplatform.json.gson.jaxrs.internal.GsonContextResolverFeature;
+import com.holonplatform.json.gson.jaxrs.internal.GsonProviderFeature;
 
 /**
  * JAX-RS {@link Feature} to register Gson JSON providers and context resolver.

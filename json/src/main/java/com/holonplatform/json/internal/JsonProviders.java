@@ -48,9 +48,9 @@ public final class JsonProviders {
 	/**
 	 * {@link Priority} based comparator.
 	 */
-	private static final Comparator<Object> PRIORITY_COMPARATOR = Comparator
-			.comparingInt(p -> p.getClass().isAnnotationPresent(Priority.class)
-					? p.getClass().getAnnotation(Priority.class).value() : JsonProvider.DEFAULT_PRIORITY);
+	private static final Comparator<Object> PRIORITY_COMPARATOR = Comparator.comparingInt(
+			p -> p.getClass().isAnnotationPresent(Priority.class) ? p.getClass().getAnnotation(Priority.class).value()
+					: JsonProvider.DEFAULT_PRIORITY);
 
 	/**
 	 * Providers by ClassLoader
