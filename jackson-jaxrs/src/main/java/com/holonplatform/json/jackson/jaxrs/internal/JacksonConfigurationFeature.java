@@ -45,7 +45,7 @@ public class JacksonConfigurationFeature implements Feature {
 					+ JacksonFeature.JAXRS_DISABLE_JACKSON_CONTEXT_RESOLVER + "] property detected");
 			return false;
 		}
-		
+
 		if (!context.getConfiguration().isRegistered(JacksonContextResolver.class)) {
 
 			// check pretty print

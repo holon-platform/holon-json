@@ -57,7 +57,8 @@ public class JacksonPropertyBoxSerializer extends JsonSerializer<PropertyBox> {
 			throws IOException, JsonProcessingException {
 
 		// get serialization mode
-		final PropertyBoxSerializationMode serializationMode = getPropertyBoxSerializationMode(propertyBox, serializers);
+		final PropertyBoxSerializationMode serializationMode = getPropertyBoxSerializationMode(propertyBox,
+				serializers);
 
 		// JSON object start
 		gen.writeStartObject();
@@ -68,7 +69,7 @@ public class JacksonPropertyBoxSerializer extends JsonSerializer<PropertyBox> {
 		// JSON object end
 		gen.writeEndObject();
 	}
-	
+
 	/**
 	 * Build the PropertySet serialization tree for given PropertyBox.
 	 * @param propertyBox PropertyBox to serialize

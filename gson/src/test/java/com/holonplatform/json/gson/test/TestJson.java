@@ -79,7 +79,7 @@ public class TestJson {
 				.set(LOCAL_DATETIME, LocalDateTime.of(1979, Month.MARCH, 9, 11, 30)).set(NUMBOOL, Boolean.TRUE).build();
 
 		String jsonString = json.toJson(box).asString();
-		
+
 		assertNotNull(jsonString);
 
 		String jsonString2 = json.toJsonString(box);
@@ -337,33 +337,33 @@ public class TestJson {
 
 		assertNotNull(boxes);
 		assertEquals(2, boxes.size());
-		
+
 		boxes = json.fromJsonArray(jsonString, KEY, NAME);
 
 		assertNotNull(boxes);
 		assertEquals(2, boxes.size());
 
 	}
-	
+
 	@Test
 	public void testNulls() {
-		
+
 		final Json json = GsonJson.create();
-		
+
 		String sv = json.toJson(null).asString();
 		assertEquals("null", sv);
-		
+
 		byte[] bv = json.toJson(null).asBytes();
 		assertEquals("null", new String(bv));
-		
+
 		StringBuffer sb = new StringBuffer();
 		json.toJson(null).write(sb);
 		assertEquals("null", sb.toString());
-		
+
 		ByteArrayOutputStream stream = new ByteArrayOutputStream();
 		json.toJson(null).write(stream);
 		assertEquals("null", new String(stream.toByteArray()));
-		
+
 	}
 
 }

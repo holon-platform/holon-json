@@ -74,7 +74,7 @@ public class GsonPropertyBoxSerializer implements JsonSerializer<PropertyBox> {
 
 		return obj;
 	}
-	
+
 	/**
 	 * Build the PropertySet serialization tree for given PropertyBox.
 	 * @param propertyBox PropertyBox to serialize

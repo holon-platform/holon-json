@@ -106,7 +106,8 @@ public class DefaultJacksonJson implements JacksonJson {
 		ObjectUtils.argumentNotNull(propertySet, "PropertySet must be not null");
 
 		final PropertySet<?> ps = (PropertySet.class.isAssignableFrom(propertySet.getClass()))
-				? (PropertySet<?>) propertySet : PropertySet.of(propertySet);
+				? (PropertySet<?>) propertySet
+				: PropertySet.of(propertySet);
 
 		return ps.execute(() -> fromJson(reader, PropertyBox.class));
 	}
@@ -121,7 +122,8 @@ public class DefaultJacksonJson implements JacksonJson {
 		ObjectUtils.argumentNotNull(propertySet, "PropertySet must be not null");
 
 		final PropertySet<?> ps = (PropertySet.class.isAssignableFrom(propertySet.getClass()))
-				? (PropertySet<?>) propertySet : PropertySet.of(propertySet);
+				? (PropertySet<?>) propertySet
+				: PropertySet.of(propertySet);
 
 		return ps.execute(() -> fromJsonArray(reader, PropertyBox.class));
 	}

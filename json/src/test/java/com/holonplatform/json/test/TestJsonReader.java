@@ -29,7 +29,7 @@ import org.junit.Test;
 import com.holonplatform.json.JsonReader;
 
 public class TestJsonReader {
-	
+
 	@Test
 	public void testReader() throws IOException {
 
@@ -51,7 +51,7 @@ public class TestJsonReader {
 			assertEquals(json, read(reader));
 		}
 	}
-	
+
 	@Test
 	public void testBytes() throws IOException {
 
@@ -62,7 +62,7 @@ public class TestJsonReader {
 			assertEquals(json, read(reader));
 		}
 	}
-	
+
 	@Test
 	public void testStream() throws IOException {
 
@@ -73,12 +73,12 @@ public class TestJsonReader {
 			assertNotNull(reader);
 			assertEquals(json, read(reader));
 		}
-		
+
 		try (Reader reader = JsonReader.from(new ByteArrayInputStream(bytes), StandardCharsets.UTF_8).getReader()) {
 			assertNotNull(reader);
 			assertEquals(json, read(reader));
 		}
-		
+
 		try (Reader reader = JsonReader.from(new ByteArrayInputStream(bytes), "UTF-8").getReader()) {
 			assertNotNull(reader);
 			assertEquals(json, read(reader));

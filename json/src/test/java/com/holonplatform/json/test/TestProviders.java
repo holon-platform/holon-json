@@ -27,8 +27,8 @@ public class TestProviders {
 	@Test
 	public void testNoProvider() {
 		assertFalse(Json.get().isPresent());
-		
+
 		TestUtils.expectedException(IllegalStateException.class, () -> Json.require());
 	}
-	
+
 }
