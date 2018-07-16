@@ -38,6 +38,7 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -53,7 +54,7 @@ import com.holonplatform.core.property.PropertySetRef;
 import com.holonplatform.json.jackson.spring.test.data.TestData;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT)
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 public class TestAutoConfiguration {
 
 	@Configuration
@@ -95,6 +96,9 @@ public class TestAutoConfiguration {
 	@Autowired
 	private RestTemplateBuilder restTemplateBuilder;
 
+	@LocalServerPort
+	private int port;
+
 	@Test
 	public void testAutoConfig() throws Exception {
 
@@ -135,15 +139,18 @@ public class TestAutoConfiguration {
 
 	@Test
 	public void testRestTemplate() throws Exception {
-		PropertyBox box = PROPERTIES.execute(
-				() -> restTemplateBuilder.build().getForObject("http://localhost:9999/test/data/7", PropertyBox.class));
+
+		final String baseUrl = "http://localhost:" + port + "/test";
+
+		PropertyBox box = PROPERTIES
+				.execute(() -> restTemplateBuilder.build().getForObject(baseUrl + "/data/7", PropertyBox.class));
 		assertNotNull(box);
 		assertEquals(Integer.valueOf(7), box.getValue(ID));
 		assertEquals("Test-7", box.getValue(DESCRIPTION));
 
 		final PropertyBox box2 = PropertyBox.builder(PROPERTIES).set(ID, 7).set(DESCRIPTION, "Test7").build();
 
-		restTemplateBuilder.build().put("http://localhost:9999/test/srlz", box2);
+		restTemplateBuilder.build().put(baseUrl + "/srlz", box2);
 	}
 
 }

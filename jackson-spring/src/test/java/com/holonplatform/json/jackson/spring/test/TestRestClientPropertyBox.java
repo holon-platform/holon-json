@@ -41,6 +41,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -61,7 +62,7 @@ import com.holonplatform.json.jackson.JacksonConfiguration;
 import com.holonplatform.spring.SpringRestClient;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT)
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 public class TestRestClientPropertyBox {
 
 	public static final PathProperty<Integer> CODE = create("code", int.class);
@@ -149,11 +150,14 @@ public class TestRestClientPropertyBox {
 	@Autowired
 	private RestTemplate restTemplate;
 
+	@LocalServerPort
+	private int port;
+
 	@Test
 	public void testClient() {
 
 		final RestClient client = SpringRestClient.create(restTemplate)
-				.defaultTarget(URI.create("http://localhost:9999/"));
+				.defaultTarget(URI.create("http://localhost:" + port + "/"));
 
 		PropertyBox box = client.request().path("test").path("box/{id}").resolve("id", 1).propertySet(PROPERTIES)
 				.getForEntity(PropertyBox.class).orElse(null);

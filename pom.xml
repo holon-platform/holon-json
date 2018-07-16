@@ -75,7 +75,7 @@
 		<jersey.version>2.27</jersey.version>
 
 		<!-- Resteasy (optional) -->
-		<resteasy.version>3.5.1.Final</resteasy.version>
+		<resteasy.version>3.6.0.Final</resteasy.version>
 
 		<!-- slf4j (test) -->
 		<slf4j.version>1.7.25</slf4j.version>

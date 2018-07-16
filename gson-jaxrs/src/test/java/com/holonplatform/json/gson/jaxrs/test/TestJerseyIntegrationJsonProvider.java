@@ -63,7 +63,7 @@ public class TestJerseyIntegrationJsonProvider extends JerseyTest {
 	@Override
 	protected Client getClient() {
 		ClientConfig config = new ClientConfig();
-		config = config.register(TestJsonProvider.class);
+		config = config.register(TestJsonProvider.class).property("jersey.config.jsonFeature", TestJsonProvider.class);
 		return JerseyClientBuilder.createClient(config);
 	}
 
@@ -82,12 +82,6 @@ public class TestJerseyIntegrationJsonProvider extends JerseyTest {
 			return true;
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * @see javax.ws.rs.ext.MessageBodyReader#readFrom(java.lang.Class, java.lang.reflect.Type,
-		 * java.lang.annotation.Annotation[], javax.ws.rs.core.MediaType, javax.ws.rs.core.MultivaluedMap,
-		 * java.io.InputStream)
-		 */
 		@Override
 		public Object readFrom(Class<Object> type, Type genericType, Annotation[] annotations, MediaType mediaType,
 				MultivaluedMap<String, String> httpHeaders, InputStream entityStream)
@@ -100,22 +94,11 @@ public class TestJerseyIntegrationJsonProvider extends JerseyTest {
 			return true;
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * @see javax.ws.rs.ext.MessageBodyWriter#getSize(java.lang.Object, java.lang.Class, java.lang.reflect.Type,
-		 * java.lang.annotation.Annotation[], javax.ws.rs.core.MediaType)
-		 */
 		@Override
 		public long getSize(Object t, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
 			return -1;
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * @see javax.ws.rs.ext.MessageBodyWriter#writeTo(java.lang.Object, java.lang.Class, java.lang.reflect.Type,
-		 * java.lang.annotation.Annotation[], javax.ws.rs.core.MediaType, javax.ws.rs.core.MultivaluedMap,
-		 * java.io.OutputStream)
-		 */
 		@Override
 		public void writeTo(Object t, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType,
 				MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream)
