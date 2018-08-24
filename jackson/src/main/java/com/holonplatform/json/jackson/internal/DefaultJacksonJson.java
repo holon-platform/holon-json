@@ -100,8 +100,9 @@ public class DefaultJacksonJson implements JacksonJson {
 	 * (non-Javadoc)
 	 * @see com.holonplatform.json.Json#fromJson(com.holonplatform.json.JsonReader, java.lang.Iterable)
 	 */
+	@SuppressWarnings("rawtypes")
 	@Override
-	public <P extends Property<?>> PropertyBox fromJson(JsonReader reader, Iterable<P> propertySet) {
+	public <P extends Property> PropertyBox fromJson(JsonReader reader, Iterable<P> propertySet) {
 		ObjectUtils.argumentNotNull(reader, "JsonReader must be not null");
 		ObjectUtils.argumentNotNull(propertySet, "PropertySet must be not null");
 
@@ -116,8 +117,9 @@ public class DefaultJacksonJson implements JacksonJson {
 	 * (non-Javadoc)
 	 * @see com.holonplatform.json.Json#fromJsonArray(com.holonplatform.json.JsonReader, java.lang.Iterable)
 	 */
+	@SuppressWarnings("rawtypes")
 	@Override
-	public <P extends Property<?>> List<PropertyBox> fromJsonArray(JsonReader reader, Iterable<P> propertySet) {
+	public <P extends Property> List<PropertyBox> fromJsonArray(JsonReader reader, Iterable<P> propertySet) {
 		ObjectUtils.argumentNotNull(reader, "JsonReader must be not null");
 		ObjectUtils.argumentNotNull(propertySet, "PropertySet must be not null");
 

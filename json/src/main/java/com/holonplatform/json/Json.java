@@ -193,7 +193,8 @@ public interface Json {
 	 * @return the deserialized {@link PropertyBox}
 	 * @throws JsonReadException If a JSON deserialization error occured
 	 */
-	<P extends Property<?>> PropertyBox fromJson(JsonReader reader, Iterable<P> propertySet);
+	@SuppressWarnings("rawtypes")
+	<P extends Property> PropertyBox fromJson(JsonReader reader, Iterable<P> propertySet);
 
 	/**
 	 * Deserializes the specified JSON data source into a {@link PropertyBox}, using given <code>propertySet</code> as
@@ -218,7 +219,8 @@ public interface Json {
 	 * @return the deserialized {@link PropertyBox}
 	 * @throws JsonReadException If a JSON deserialization error occured
 	 */
-	default <P extends Property<?>> PropertyBox fromJson(String json, Iterable<P> propertySet) {
+	@SuppressWarnings("rawtypes")
+	default <P extends Property> PropertyBox fromJson(String json, Iterable<P> propertySet) {
 		return fromJson(JsonReader.from(json), propertySet);
 	}
 
@@ -244,7 +246,8 @@ public interface Json {
 	 * @return the deserialized {@link List} of {@link PropertyBox}
 	 * @throws JsonReadException If a JSON deserialization error occured
 	 */
-	<P extends Property<?>> List<PropertyBox> fromJsonArray(JsonReader reader, Iterable<P> propertySet);
+	@SuppressWarnings("rawtypes")
+	<P extends Property> List<PropertyBox> fromJsonArray(JsonReader reader, Iterable<P> propertySet);
 
 	/**
 	 * Deserializes the specified JSON array data source into a list of {@link PropertyBox}, using given
@@ -268,7 +271,8 @@ public interface Json {
 	 * @return the deserialized {@link List} of {@link PropertyBox}
 	 * @throws JsonReadException If a JSON deserialization error occured
 	 */
-	default <P extends Property<?>> List<PropertyBox> fromJsonArray(String json, Iterable<P> propertySet) {
+	@SuppressWarnings("rawtypes")
+	default <P extends Property> List<PropertyBox> fromJsonArray(String json, Iterable<P> propertySet) {
 		return fromJsonArray(JsonReader.from(json), PropertySet.of(propertySet));
 	}
 
