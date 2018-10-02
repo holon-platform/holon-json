@@ -15,9 +15,9 @@
  */
 package com.holonplatform.json.jackson.test;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.holonplatform.json.Json;
 import com.holonplatform.json.jackson.JacksonJson;

@@ -15,6 +15,8 @@
  */
 package com.holonplatform.json.gson.test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -23,8 +25,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import org.apache.commons.lang3.StringUtils;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.google.gson.Gson;
 import com.holonplatform.core.property.PropertyBox;
@@ -50,10 +51,10 @@ public class TestTemporals {
 		final String offsetZ = ((offset < 0) ? "-" : "+") + StringUtils.leftPad("" + Math.abs(offset), 2, '0') + "00";
 
 		String json = gson.toJson(date);
-		Assert.assertEquals("\"1979-03-09T10:30:25" + offsetZ + "\"", json);
+		assertEquals("\"1979-03-09T10:30:25" + offsetZ + "\"", json);
 
 		Date deser = gson.fromJson(json, Date.class);
-		Assert.assertEquals(date, deser);
+		assertEquals(date, deser);
 
 		c = Calendar.getInstance();
 		c.set(1979, 2, 9, 0, 0);
@@ -65,10 +66,10 @@ public class TestTemporals {
 			CurrentSerializationTemporalType.setCurrentTemporalType(TemporalType.DATE);
 
 			json = gson.toJson(date2);
-			Assert.assertEquals("\"1979-03-09\"", json);
+			assertEquals("\"1979-03-09\"", json);
 
 			deser = gson.fromJson(json, Date.class);
-			Assert.assertEquals(date2, deser);
+			assertEquals(date2, deser);
 
 		} finally {
 			CurrentSerializationTemporalType.removeCurrentTemporalType();
@@ -98,7 +99,7 @@ public class TestTemporals {
 		final Date date2 = c.getTime();
 
 		PropertyBox deser = PropertySet.of(DataTest.DATE).execute(() -> gson.fromJson(json, PropertyBox.class));
-		Assert.assertEquals(date2, deser.getValue(DataTest.DATE));
+		assertEquals(date2, deser.getValue(DataTest.DATE));
 
 	}
 
@@ -117,10 +118,10 @@ public class TestTemporals {
 		final String offsetZ = ((offset < 0) ? "-" : "+") + StringUtils.leftPad("" + Math.abs(offset), 2, '0') + "00";
 
 		String json = gson.toJson(date);
-		Assert.assertEquals("\"1979-03-09T10:30:25" + offsetZ + "\"", json);
+		assertEquals("\"1979-03-09T10:30:25" + offsetZ + "\"", json);
 
 		java.sql.Date deser = gson.fromJson(json, java.sql.Date.class);
-		Assert.assertEquals(date, deser);
+		assertEquals(date, deser);
 
 		c = Calendar.getInstance();
 		c.set(1979, 2, 9, 0, 0);
@@ -132,10 +133,10 @@ public class TestTemporals {
 			CurrentSerializationTemporalType.setCurrentTemporalType(TemporalType.DATE);
 
 			json = gson.toJson(date2);
-			Assert.assertEquals("\"1979-03-09\"", json);
+			assertEquals("\"1979-03-09\"", json);
 
 			deser = gson.fromJson(json, java.sql.Date.class);
-			Assert.assertEquals(date2, deser);
+			assertEquals(date2, deser);
 
 		} finally {
 			CurrentSerializationTemporalType.removeCurrentTemporalType();
@@ -151,10 +152,10 @@ public class TestTemporals {
 		final LocalDate date = LocalDate.of(1979, Month.MARCH, 9);
 
 		String json = gson.toJson(date);
-		Assert.assertEquals("\"1979-03-09\"", json);
+		assertEquals("\"1979-03-09\"", json);
 
 		LocalDate deser = gson.fromJson(json, LocalDate.class);
-		Assert.assertEquals(date, deser);
+		assertEquals(date, deser);
 
 	}
 
@@ -166,10 +167,10 @@ public class TestTemporals {
 		final LocalDateTime date = LocalDateTime.of(1979, Month.MARCH, 9, 10, 30, 25);
 
 		String json = gson.toJson(date);
-		Assert.assertEquals("\"1979-03-09T10:30:25\"", json);
+		assertEquals("\"1979-03-09T10:30:25\"", json);
 
 		LocalDateTime deser = gson.fromJson(json, LocalDateTime.class);
-		Assert.assertEquals(date, deser);
+		assertEquals(date, deser);
 
 	}
 
@@ -181,10 +182,10 @@ public class TestTemporals {
 		final LocalTime time = LocalTime.of(10, 30, 25);
 
 		String json = gson.toJson(time);
-		Assert.assertEquals("\"10:30:25\"", json);
+		assertEquals("\"10:30:25\"", json);
 
 		LocalTime deser = gson.fromJson(json, LocalTime.class);
-		Assert.assertEquals(time, deser);
+		assertEquals(time, deser);
 
 	}
 

@@ -15,8 +15,8 @@
  */
 package com.holonplatform.json.jackson.jaxrs.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import javax.annotation.Priority;
 import javax.ws.rs.GET;
@@ -31,9 +31,8 @@ import javax.ws.rs.ext.ContextResolver;
 import org.glassfish.jersey.client.JerseyClientBuilder;
 import org.glassfish.jersey.logging.LoggingFeature;
 import org.glassfish.jersey.server.ResourceConfig;
-import org.glassfish.jersey.test.JerseyTest;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -45,8 +44,9 @@ import com.holonplatform.core.property.StringProperty;
 import com.holonplatform.json.jackson.JacksonConfiguration;
 import com.holonplatform.json.jackson.jaxrs.test.data.MyType;
 import com.holonplatform.json.jackson.jaxrs.test.data.MyTypeModule;
+import com.holonplatform.test.JerseyTest5;
 
-public class TestObjectMapperResolver extends JerseyTest {
+public class TestObjectMapperResolver extends JerseyTest5 {
 
 	public static final Property<Integer> NUM = PathProperty.create("num", Integer.class);
 	public static final StringProperty STR = StringProperty.create("str");
@@ -92,8 +92,8 @@ public class TestObjectMapperResolver extends JerseyTest {
 
 	}
 
-	@BeforeClass
-	public static void setup() {
+	@BeforeAll
+	static void setup() {
 		SLF4JBridgeHandler.removeHandlersForRootLogger();
 		SLF4JBridgeHandler.install();
 	}

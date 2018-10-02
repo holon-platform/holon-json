@@ -18,8 +18,8 @@ package com.holonplatform.json.jackson.jaxrs.test;
 import static com.holonplatform.json.jackson.jaxrs.test.TestJerseyIntegration.NUM;
 import static com.holonplatform.json.jackson.jaxrs.test.TestJerseyIntegration.SET;
 import static com.holonplatform.json.jackson.jaxrs.test.TestJerseyIntegration.STR;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -34,9 +34,9 @@ import javax.ws.rs.core.Response.Status;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.plugins.server.undertow.UndertowJaxrsServer;
 import org.jboss.resteasy.test.TestPortProvider;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import com.holonplatform.core.property.PropertyBox;
 import com.holonplatform.json.jackson.jaxrs.JacksonFeature;
@@ -58,8 +58,8 @@ public class TestResteasyIntegration {
 		}
 	}
 
-	@BeforeClass
-	public static void init() {
+	@BeforeAll
+	static void init() {
 		server = new UndertowJaxrsServer();
 		server.start();
 
@@ -67,8 +67,8 @@ public class TestResteasyIntegration {
 		server.deploy(Config.class);
 	}
 
-	@AfterClass
-	public static void shutdown() {
+	@AfterAll
+	static void shutdown() {
 		server.stop();
 	}
 

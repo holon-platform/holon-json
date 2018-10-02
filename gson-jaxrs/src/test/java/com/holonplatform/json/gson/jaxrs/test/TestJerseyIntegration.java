@@ -15,8 +15,8 @@
  */
 package com.holonplatform.json.gson.jaxrs.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -34,9 +34,8 @@ import javax.ws.rs.core.Response.Status;
 import org.glassfish.jersey.client.JerseyClientBuilder;
 import org.glassfish.jersey.logging.LoggingFeature;
 import org.glassfish.jersey.server.ResourceConfig;
-import org.glassfish.jersey.test.JerseyTest;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 
 import com.holonplatform.core.property.PathProperty;
@@ -46,8 +45,9 @@ import com.holonplatform.core.property.PropertySet;
 import com.holonplatform.core.property.PropertySetRef;
 import com.holonplatform.core.property.VirtualProperty;
 import com.holonplatform.json.gson.jaxrs.GsonFeature;
+import com.holonplatform.test.JerseyTest5;
 
-public class TestJerseyIntegration extends JerseyTest {
+public class TestJerseyIntegration extends JerseyTest5 {
 
 	public static final Property<Integer> NUM = PathProperty.create("num", Integer.class);
 	public static final Property<Double> DBL = PathProperty.create("dbl", Double.class);
@@ -83,8 +83,8 @@ public class TestJerseyIntegration extends JerseyTest {
 
 	}
 
-	@BeforeClass
-	public static void setup() {
+	@BeforeAll
+	static void setup() {
 		SLF4JBridgeHandler.removeHandlersForRootLogger();
 		SLF4JBridgeHandler.install();
 	}

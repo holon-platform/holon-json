@@ -15,6 +15,8 @@
  */
 package com.holonplatform.json.jackson.test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -24,8 +26,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import org.apache.commons.lang3.StringUtils;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.holonplatform.core.internal.utils.CalendarUtils;
@@ -50,10 +51,10 @@ public class TestTemporals {
 		final String offsetZ = ((offset < 0) ? "-" : "+") + StringUtils.leftPad("" + Math.abs(offset), 2, '0') + "00";
 
 		String json = mapper.writeValueAsString(date);
-		Assert.assertEquals("\"1979-03-09T10:30:25" + offsetZ + "\"", json);
+		assertEquals("\"1979-03-09T10:30:25" + offsetZ + "\"", json);
 
 		Date deser = mapper.readValue(json, Date.class);
-		Assert.assertEquals(date, deser);
+		assertEquals(date, deser);
 
 		c = Calendar.getInstance();
 		c.set(1979, 2, 9, 0, 0);
@@ -65,10 +66,10 @@ public class TestTemporals {
 			CurrentSerializationTemporalType.setCurrentTemporalType(TemporalType.DATE);
 
 			json = mapper.writeValueAsString(date2);
-			Assert.assertEquals("\"1979-03-09\"", json);
+			assertEquals("\"1979-03-09\"", json);
 
 			deser = mapper.readValue(json, Date.class);
-			Assert.assertEquals(date2, CalendarUtils.floorTime(deser));
+			assertEquals(date2, CalendarUtils.floorTime(deser));
 
 		} finally {
 			CurrentSerializationTemporalType.removeCurrentTemporalType();
@@ -84,10 +85,10 @@ public class TestTemporals {
 		final LocalDate date = LocalDate.of(1979, Month.MARCH, 9);
 
 		String json = mapper.writeValueAsString(date);
-		Assert.assertEquals("\"1979-03-09\"", json);
+		assertEquals("\"1979-03-09\"", json);
 
 		LocalDate deser = mapper.readValue(json, LocalDate.class);
-		Assert.assertEquals(date, deser);
+		assertEquals(date, deser);
 
 	}
 
@@ -99,10 +100,10 @@ public class TestTemporals {
 		final LocalDateTime date = LocalDateTime.of(1979, Month.MARCH, 9, 10, 30, 25);
 
 		String json = mapper.writeValueAsString(date);
-		Assert.assertEquals("\"1979-03-09T10:30:25\"", json);
+		assertEquals("\"1979-03-09T10:30:25\"", json);
 
 		LocalDateTime deser = mapper.readValue(json, LocalDateTime.class);
-		Assert.assertEquals(date, deser);
+		assertEquals(date, deser);
 
 	}
 
@@ -114,10 +115,10 @@ public class TestTemporals {
 		final LocalTime time = LocalTime.of(10, 30, 25);
 
 		String json = mapper.writeValueAsString(time);
-		Assert.assertEquals("\"10:30:25\"", json);
+		assertEquals("\"10:30:25\"", json);
 
 		LocalTime deser = mapper.readValue(json, LocalTime.class);
-		Assert.assertEquals(time, deser);
+		assertEquals(time, deser);
 
 	}
 

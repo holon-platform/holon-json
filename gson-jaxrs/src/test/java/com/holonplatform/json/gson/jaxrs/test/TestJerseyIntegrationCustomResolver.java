@@ -17,8 +17,8 @@ package com.holonplatform.json.gson.jaxrs.test;
 
 import static com.holonplatform.json.gson.jaxrs.test.TestJerseyIntegration.NUM;
 import static com.holonplatform.json.gson.jaxrs.test.TestJerseyIntegration.SET;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.lang.reflect.Type;
 
@@ -34,9 +34,8 @@ import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.JerseyClientBuilder;
 import org.glassfish.jersey.logging.LoggingFeature;
 import org.glassfish.jersey.server.ResourceConfig;
-import org.glassfish.jersey.test.JerseyTest;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 
 import com.google.gson.Gson;
@@ -49,8 +48,9 @@ import com.holonplatform.core.property.PropertyBox;
 import com.holonplatform.json.gson.GsonConfiguration;
 import com.holonplatform.json.gson.jaxrs.GsonFeature;
 import com.holonplatform.json.gson.jaxrs.test.TestJerseyIntegration.TestEndpoint;
+import com.holonplatform.test.JerseyTest5;
 
-public class TestJerseyIntegrationCustomResolver extends JerseyTest {
+public class TestJerseyIntegrationCustomResolver extends JerseyTest5 {
 
 	@Path("test2")
 	public static class TestEndpoint2 {
@@ -64,8 +64,8 @@ public class TestJerseyIntegrationCustomResolver extends JerseyTest {
 
 	}
 
-	@BeforeClass
-	public static void setup() {
+	@BeforeAll
+	static void setup() {
 		SLF4JBridgeHandler.removeHandlersForRootLogger();
 		SLF4JBridgeHandler.install();
 	}

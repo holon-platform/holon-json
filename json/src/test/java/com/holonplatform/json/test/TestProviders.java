@@ -15,11 +15,11 @@
  */
 package com.holonplatform.json.test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-import com.holonplatform.core.internal.utils.TestUtils;
 import com.holonplatform.json.Json;
 
 public class TestProviders {
@@ -28,7 +28,7 @@ public class TestProviders {
 	public void testNoProvider() {
 		assertFalse(Json.get().isPresent());
 
-		TestUtils.expectedException(IllegalStateException.class, () -> Json.require());
+		Assertions.assertThrows(IllegalStateException.class, () -> Json.require());
 	}
 
 }

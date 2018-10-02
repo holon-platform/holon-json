@@ -18,8 +18,8 @@ package com.holonplatform.json.jackson.spring.test;
 import static com.holonplatform.json.jackson.spring.test.data.TestData.DESCRIPTION;
 import static com.holonplatform.json.jackson.spring.test.data.TestData.ID;
 import static com.holonplatform.json.jackson.spring.test.data.TestData.PROPERTIES;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -31,8 +31,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.glassfish.jersey.server.ResourceConfig;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -43,7 +43,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -53,7 +53,7 @@ import com.holonplatform.core.property.PropertyBox;
 import com.holonplatform.core.property.PropertySetRef;
 import com.holonplatform.json.jackson.spring.test.data.TestData;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 public class TestAutoConfiguration {
 

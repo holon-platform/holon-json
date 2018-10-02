@@ -31,14 +31,14 @@ import static com.holonplatform.json.gson.test.DataTest.OBJECT_DATA;
 import static com.holonplatform.json.gson.test.DataTest.PROPERTIES_NESTED;
 import static com.holonplatform.json.gson.test.DataTest.TEST;
 import static com.holonplatform.json.gson.test.DataTest.TEST_DATA_VALUE;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -50,8 +50,8 @@ public class TestNestedPropertyBox {
 
 	private static GsonBuilder builder;
 
-	@BeforeClass
-	public static void init() {
+	@BeforeAll
+	static void init() {
 		builder = GsonConfiguration.builder();
 	}
 

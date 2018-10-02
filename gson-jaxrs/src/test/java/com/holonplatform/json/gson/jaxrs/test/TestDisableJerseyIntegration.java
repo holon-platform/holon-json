@@ -24,19 +24,20 @@ import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.JerseyClientBuilder;
 import org.glassfish.jersey.logging.LoggingFeature;
 import org.glassfish.jersey.server.ResourceConfig;
-import org.glassfish.jersey.test.JerseyTest;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 
 import com.holonplatform.core.property.PropertyBox;
 import com.holonplatform.json.gson.jaxrs.GsonFeature;
 import com.holonplatform.json.gson.jaxrs.test.TestJerseyIntegration.TestEndpoint;
+import com.holonplatform.test.JerseyTest5;
 
-public class TestDisableJerseyIntegration extends JerseyTest {
+public class TestDisableJerseyIntegration extends JerseyTest5 {
 
-	@BeforeClass
-	public static void setup() {
+	@BeforeAll
+	static void setup() {
 		SLF4JBridgeHandler.removeHandlersForRootLogger();
 		SLF4JBridgeHandler.install();
 	}
@@ -55,9 +56,10 @@ public class TestDisableJerseyIntegration extends JerseyTest {
 		return JerseyClientBuilder.createClient(config);
 	}
 
-	@Test(expected = RuntimeException.class)
+	@Test
 	public void testGsonConfigDisabled() {
-		SET.execute(() -> target("/test/data/{num}").resolveTemplate("num", 1).request().get(PropertyBox.class));
+		Assertions.assertThrows(RuntimeException.class, () -> SET
+				.execute(() -> target("/test/data/{num}").resolveTemplate("num", 1).request().get(PropertyBox.class)));
 	}
 
 }
