@@ -63,7 +63,7 @@
 		<holon.core.version>5.2.0-alpha2-SNAPSHOT</holon.core.version>
 
 		<!-- Jackson -->
-		<jackson.version>2.9.6</jackson.version>
+		<jackson.version>2.9.7</jackson.version>
 
 		<!-- Gson -->
 		<gson.version>2.8.5</gson.version>
@@ -75,7 +75,7 @@
 		<jersey.version>2.27</jersey.version>
 
 		<!-- Resteasy (optional) -->
-		<resteasy.version>3.6.1.Final</resteasy.version>
+		<resteasy.version>3.6.2.Final</resteasy.version>
 
 		<!-- slf4j (test) -->
 		<slf4j.version>1.7.25</slf4j.version>
