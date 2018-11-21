@@ -78,6 +78,11 @@ The Holon Platform provides an *overall Maven BOM (Bill of Materials)* to easily
 
 See link:index.html#obtain-the-platform-artifacts[Obtain the platform artifacts] for details.
 
+[[WhatsNew52x]]
+== What's new in version 5.2.x
+
+* Improved nested and hierarchical `PropertyBox` JSON serialization and deserialization support.
+
 [[WhatsNew51x]]
 == What's new in version 5.1.x
 
