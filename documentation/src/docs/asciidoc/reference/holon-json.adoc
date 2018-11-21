@@ -82,6 +82,8 @@ See link:index.html#obtain-the-platform-artifacts[Obtain the platform artifacts]
 == What's new in version 5.2.x
 
 * Improved nested and hierarchical `PropertyBox` JSON serialization and deserialization support.
+* Support for JDK 9+ module system using `Automatic-Module-Name`.
+* Support for JAX-RS API version *2.1*.
 
 [[WhatsNew51x]]
 == What's new in version 5.1.x
