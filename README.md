@@ -41,7 +41,7 @@ _JSON API - deserialization:_
 ```java
 Json json = Json.require();
 
-MyObject result = json.fromJson("[JSON string]", MyObject.class);
+MyObject result = json.fromJson("JSON string", MyObject.class);
 		
 result = json.fromJson(JsonReader.from(new StringReader("JSON string")), MyObject.class);
 ```
