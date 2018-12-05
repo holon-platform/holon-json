@@ -69,6 +69,26 @@ Json jsonApi = JacksonJson.create();
 Json jsonApi = GsonJson.create();
 ```
 
+_Jackson - Property model support:_
+```java
+ObjectMapper mapper = JacksonConfiguration.mapper();
+// serialize
+PropertyBox propertyBox = PropertyBox.builder(PROPERTY_SET).set(NAME, "John").set(SURNAME, "Doe").build();
+String json = mapper.writer().writeValueAsString(propertyBox);
+// deserialize
+PropertyBox value = PROPERTY_SET.execute(() -> mapper.reader().forType(PropertyBox.class).readValue(json));
+```
+
+_Gson - Property model support:_
+```java
+Gson gson = GsonConfiguration.builder().create();
+// serialize
+PropertyBox propertyBox = PropertyBox.builder(PROPERTY_SET).set(NAME, "John").set(SURNAME, "Doe").build();
+String json = gson.toJson(propertyBox);
+// deserialize
+PropertyBox value = PROPERTY_SET.execute(() -> gson.fromJson(json, PropertyBox.class));
+```
+
 See the [module documentation](https://docs.holon-platform.com/current/reference/holon-json.html) for the user guide and a full set of examples.
 
 ## Code structure
