@@ -21,7 +21,55 @@ See the module [documentation](https://docs.holon-platform.com/current/reference
 
 Just like any other platform module, this artifact is part of the [Holon Platform](https://holon-platform.com) ecosystem, but can be also used as a _stand-alone_ library.
 
-See the [platform documentation](https://docs.holon-platform.com/current/reference) for further details.
+See [Getting started](#getting-started) and the [platform documentation](https://docs.holon-platform.com/current/reference) for further details.
+
+## At-a-glance overview
+
+_JSON API - serialization:_
+```java
+Json json = Json.require();
+
+JsonWriter result = json.toJson(myObject);
+String asString = result.asString(); 
+byte[] asBytes = result.asBytes(); 
+result.write(new StringWriter()); 
+		
+asString = json.toJsonString(myObject);
+```
+
+_JSON API - deserialization:_
+```java
+Json json = Json.require();
+
+MyObject result = json.fromJson("[JSON string]", MyObject.class);
+		
+result = json.fromJson(JsonReader.from(new StringReader("JSON string")), MyObject.class);
+```
+
+_JSON API - Property model:_
+```java
+StringProperty NAME = StringProperty.create("name");
+StringProperty SURNAME = StringProperty.create("surname");
+PropertySet<?> PROPERTY_SET = PropertySet.of(NAME, SURNAME);
+		
+PropertyBox propertyBox = PropertyBox.builder(PROPERTY_SET).set(NAME, "John").set(SURNAME, "Doe").build();
+		
+Json json = Json.require();
+		
+String jsonValue = json.toJson(propertyBox).asString();
+PropertyBox result = json.fromJson(jsonValue, PROPERTY_SET);
+```
+
+_JSON API - Provider:_
+```java
+// Using Jackson
+Json jsonApi = JacksonJson.create();
+		
+// Using Gson
+Json jsonApi = GsonJson.create();
+```
+
+See the [module documentation](https://docs.holon-platform.com/current/reference/holon-json.html) for the user guide and a full set of examples.
 
 ## Code structure
 
