@@ -73,7 +73,7 @@ public class DataTest {
 	public static final PropertySet<?> NESTED_PS = PropertySet.of(N_CODE, N_VALUE);
 
 	public static final PathProperty<PropertyBox> NESTED1 = create("nested1", PropertyBox.class)
-			.configuration(PropertySet.PROPERTY_CONFIGURATION_ATTRIBUTE, NESTED_PS);
+			.withConfiguration(PropertySet.PROPERTY_CONFIGURATION_ATTRIBUTE, NESTED_PS);
 
 	public static final PropertySet<?> PROPERTIES_NESTED = PropertySet.of(KEY, NAME, NUMBER, DATE, ENUM, BOOL,
 			OBJECT_DATA, ARRAY_DATA, LOCAL_DATE, LOCAL_DATETIME, NUMBOOL, NESTED1, TEST);

@@ -75,9 +75,8 @@ public class ExampleJson {
 		VirtualProperty<String> VRT = VirtualProperty.create(String.class, pb -> "(" + pb.getValue(NAME) + ")")
 				.name("vrt"); // <2>
 
-		final PropertySet<?> PROPERTY_SET = PropertySet.builderOf(NAME, VRT)
-				.configuration(JsonConfigProperties.PROPERTYBOX_SERIALIZATION_MODE, PropertyBoxSerializationMode.ALL)
-				.build(); // <3>
+		final PropertySet<?> PROPERTY_SET = PropertySet.builderOf(NAME, VRT).withConfiguration(
+				JsonConfigProperties.PROPERTYBOX_SERIALIZATION_MODE, PropertyBoxSerializationMode.ALL).build(); // <3>
 
 		PropertyBox propertyBox = PropertyBox.builder(PROPERTY_SET).set(NAME, "test").build(); // <4>
 		// end::sconfig[]

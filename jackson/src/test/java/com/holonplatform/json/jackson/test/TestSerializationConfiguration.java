@@ -42,7 +42,7 @@ public class TestSerializationConfiguration {
 	private static final PropertySet<?> PROPERTIES = PropertySet.of(NAME, VRT);
 
 	private static final PropertySet<?> PROPERTIES_CFG = PropertySet.builderOf(NAME, VRT)
-			.configuration(JsonConfigProperties.PROPERTYBOX_SERIALIZATION_MODE, PropertyBoxSerializationMode.ALL)
+			.withConfiguration(JsonConfigProperties.PROPERTYBOX_SERIALIZATION_MODE, PropertyBoxSerializationMode.ALL)
 			.build();
 
 	@Test

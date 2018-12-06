@@ -41,7 +41,7 @@ public class TestPropertyHierarchy {
 	public static final PathProperty<String> N_VALUE = create("value", String.class);
 
 	private static final PathProperty<PropertyBox> NESTED = create("nested", PropertyBox.class)
-			.configuration(PropertySet.PROPERTY_CONFIGURATION_ATTRIBUTE, PropertySet.of(N_CODE, N_VALUE));
+			.withConfiguration(PropertySet.PROPERTY_CONFIGURATION_ATTRIBUTE, PropertySet.of(N_CODE, N_VALUE));
 
 	private static final PropertySet<?> PROPERTIES2 = PropertySet.of(KEY, NAME, NESTED, NESTED_CODE, NESTED_VALUE);
 
