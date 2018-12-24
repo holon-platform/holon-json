@@ -58,7 +58,7 @@
 		<bintray.package>holon-json</bintray.package>
 
 		<!-- Holon Core -->
-		<holon.core.version>5.2.0-rc1</holon.core.version>
+		<holon.core.version>5.2.0-rc2</holon.core.version>
 
 		<!-- Jackson -->
 		<jackson.version>2.9.7</jackson.version>
