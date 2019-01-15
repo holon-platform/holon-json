@@ -1,6 +1,6 @@
 # Holon platform JSON module
 
-> Latest release: [5.1.2](#obtain-the-artifacts)
+> Latest release: [5.2.0](#obtain-the-artifacts)
 
 This is the __JSON__ module of the [Holon Platform](https://holon-platform.com), which provides support for the [JSON](http://www.json.org) data-interchange format using the must popular serialization and deserialization libraries:
 
@@ -105,9 +105,9 @@ The Holon Platform is built using __Java 8__, so you need a JRE/JDK version 8 or
 
 See [releases](https://github.com/holon-platform/holon-json/releases) for the available releases. Each release tag provides a link to the closed issues.
 
-#### 5.1.x release notes
+#### 5.2.x release notes
 
-See [What's new in version 5.1.x](https://docs.holon-platform.com/current/reference/holon-json.html#WhatsNew51x) to learn about the new features and API operations of the 5.1 minor release.
+See [What's new in version 5.2.x](https://docs.holon-platform.com/current/reference/holon-json.html#WhatsNew52x) to learn about the new features and API operations of the 5.2 minor release.
 
 ### Obtain the artifacts
 
@@ -121,7 +121,7 @@ _Maven BOM:_
     <dependency>
         <groupId>com.holon-platform.json</groupId>
         <artifactId>holon-json-bom</artifactId>
-        <version>5.1.2</version>
+        <version>5.2.0</version>
         <type>pom</type>
         <scope>import</scope>
     </dependency>
