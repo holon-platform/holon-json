@@ -1,4 +1,6 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
@@ -58,7 +60,7 @@
 		<bintray.package>holon-json</bintray.package>
 
 		<!-- Holon Core -->
-		<holon.core.version>5.2.0</holon.core.version>
+		<holon.core.version>5.2.1-SNAPSHOT</holon.core.version>
 
 		<!-- Jackson -->
 		<jackson.version>2.9.8</jackson.version>
@@ -73,10 +75,10 @@
 		<jersey.version>2.27</jersey.version>
 
 		<!-- Resteasy (optional) -->
-		<resteasy.version>3.6.2.Final</resteasy.version>
+		<resteasy.version>3.6.3.Final</resteasy.version>
 
 		<!-- slf4j (test) -->
-		<slf4j.version>1.7.25</slf4j.version>
+		<slf4j.version>1.7.26</slf4j.version>
 
 	</properties>
 
@@ -103,12 +105,6 @@
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-engine</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<!-- Logback for tests -->
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-classic</artifactId>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
