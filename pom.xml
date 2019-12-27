@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.holon-platform</groupId>
 		<artifactId>parent</artifactId>
-		<version>1.1.4</version>
+		<version>1.1.5</version>
 	</parent>
 
 	<groupId>com.holon-platform.json</groupId>
@@ -55,26 +55,26 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
 		<!-- Holon Core -->
-		<holon.core.version>5.3.0</holon.core.version>
+		<holon.core.version>5.4.0</holon.core.version>
 
 		<!-- Jackson -->
-		<jackson.version>2.9.9</jackson.version>
-		<jackson.databind.version>2.9.9.3</jackson.databind.version>
+		<jackson.version>2.10.1</jackson.version>
+		<jackson.databind.version>2.10.1</jackson.databind.version>
 
 		<!-- Gson -->
-		<gson.version>2.8.5</gson.version>
+		<gson.version>2.8.6</gson.version>
 
 		<!-- JAX-RS API (optional) -->
 		<jax-rs.api.version>2.1</jax-rs.api.version>
 
 		<!-- Jersey (optional) -->
-		<jersey.version>2.29</jersey.version>
+		<jersey.version>2.29.1</jersey.version>
 
 		<!-- Resteasy (optional) -->
-		<resteasy.version>3.8.1.Final</resteasy.version>
+		<resteasy.version>3.9.3.Final</resteasy.version>
 
 		<!-- slf4j (test) -->
-		<slf4j.version>1.7.26</slf4j.version>
+		<slf4j.version>1.7.29</slf4j.version>
 
 	</properties>
 
