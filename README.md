@@ -1,6 +1,6 @@
 # Holon platform JSON module
 
-> Latest release: [5.3.0](#obtain-the-artifacts)
+> Latest release: [5.4.0](#obtain-the-artifacts)
 
 This is the __JSON__ module of the [Holon Platform](https://holon-platform.com), which provides support for the [JSON](http://www.json.org) data-interchange format using the must popular serialization and deserialization libraries:
 
@@ -121,7 +121,7 @@ _Maven BOM:_
     <dependency>
         <groupId>com.holon-platform.json</groupId>
         <artifactId>holon-json-bom</artifactId>
-        <version>5.3.0</version>
+        <version>5.4.0</version>
         <type>pom</type>
         <scope>import</scope>
     </dependency>
