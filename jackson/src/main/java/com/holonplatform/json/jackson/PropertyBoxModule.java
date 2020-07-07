@@ -24,23 +24,25 @@ import com.holonplatform.json.jackson.internal.JacksonPropertyBoxDeserializer;
 import com.holonplatform.json.jackson.internal.JacksonPropertyBoxSerializer;
 
 /**
- * Jackson module with {@link PropertyBox} serialization and deserialization capabilities.
+ * Jackson module with {@link PropertyBox} serialization and deserialization
+ * capabilities.
  * 
  * @since 5.1.0
  */
 public class PropertyBoxModule extends Module {
 
-	private final SimpleSerializers _serializers = new SimpleSerializers();
-	private final SimpleDeserializers _deserializers = new SimpleDeserializers();
+	private final SimpleSerializers serializers = new SimpleSerializers();
+	private final SimpleDeserializers deserializers = new SimpleDeserializers();
 
 	public PropertyBoxModule() {
 		super();
-		_serializers.addSerializer(PropertyBox.class, new JacksonPropertyBoxSerializer());
-		_deserializers.addDeserializer(PropertyBox.class, new JacksonPropertyBoxDeserializer());
+		serializers.addSerializer(PropertyBox.class, new JacksonPropertyBoxSerializer());
+		deserializers.addDeserializer(PropertyBox.class, new JacksonPropertyBoxDeserializer());
 	}
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see com.fasterxml.jackson.databind.Module#getModuleName()
 	 */
 	@Override
@@ -50,6 +52,7 @@ public class PropertyBoxModule extends Module {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see com.fasterxml.jackson.databind.Module#version()
 	 */
 	@Override
@@ -59,12 +62,14 @@ public class PropertyBoxModule extends Module {
 
 	/*
 	 * (non-Javadoc)
-	 * @see com.fasterxml.jackson.databind.Module#setupModule(com.fasterxml.jackson.databind.Module.SetupContext)
+	 * 
+	 * @see com.fasterxml.jackson.databind.Module#setupModule(com.fasterxml.jackson.
+	 * databind.Module.SetupContext)
 	 */
 	@Override
 	public void setupModule(SetupContext context) {
-		context.addSerializers(_serializers);
-		context.addDeserializers(_deserializers);
+		context.addSerializers(serializers);
+		context.addDeserializers(deserializers);
 	}
 
 }

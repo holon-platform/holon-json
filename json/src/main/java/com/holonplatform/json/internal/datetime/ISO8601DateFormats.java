@@ -26,23 +26,25 @@ import com.holonplatform.core.temporal.TemporalType;
 import com.holonplatform.json.datetime.CurrentSerializationTemporalType;
 
 /**
- * ISO-8601 date formats used by JSON {@link Date} serializers and deserializers.
+ * ISO-8601 date formats used by JSON {@link Date} serializers and
+ * deserializers.
  *
  * @since 5.1.0
  */
 public final class ISO8601DateFormats {
 
-	final static String ISO_DATETIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZ";
-	final static String ISO_DATETIME_FORMAT_NO_TIMEZONE = "yyyy-MM-dd'T'HH:mm:ss";
-	final static String ISO_DATE_FORMAT = "yyyy-MM-dd";
-	final static String ISO_TIME_FORMAT = "HH:mm:ss";
+	static final String ISO_DATETIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZ";
+	static final String ISO_DATETIME_FORMAT_NO_TIMEZONE = "yyyy-MM-dd'T'HH:mm:ss";
+	static final String ISO_DATE_FORMAT = "yyyy-MM-dd";
+	static final String ISO_TIME_FORMAT = "HH:mm:ss";
 
 	private ISO8601DateFormats() {
 	}
 
 	/**
-	 * Format given <code>date</code> using a suitable format pattern according to current {@link TemporalType}, or
-	 * {@link TemporalType#DATE_TIME} if none available.
+	 * Format given <code>date</code> using a suitable format pattern according to
+	 * current {@link TemporalType}, or {@link TemporalType#DATE_TIME} if none
+	 * available.
 	 * @param date Date to format
 	 * @return Formatted date, <code>null</code> if given date was null
 	 */
@@ -51,10 +53,12 @@ public final class ISO8601DateFormats {
 	}
 
 	/**
-	 * Format given <code>date</code> using a suitable format pattern according to given {@link TemporalType}, or
-	 * {@link TemporalType#DATE_TIME} if none available.
-	 * @param date Date to format
-	 * @param temporalType TemporalType to use, <code>null</code> to use current TemporalType
+	 * Format given <code>date</code> using a suitable format pattern according to
+	 * given {@link TemporalType}, or {@link TemporalType#DATE_TIME} if none
+	 * available.
+	 * @param date         Date to format
+	 * @param temporalType TemporalType to use, <code>null</code> to use current
+	 *                     TemporalType
 	 * @return Formatted date, <code>null</code> if given date was null
 	 */
 	public static String format(Date date, TemporalType temporalType) {
@@ -75,9 +79,9 @@ public final class ISO8601DateFormats {
 	}
 
 	/**
-	 * Parse given date/time string, using a suitable date pattern and given {@link TemporalType} to provide a
-	 * consistent Date instance.
-	 * @param str String to parse
+	 * Parse given date/time string, using a suitable date pattern and given
+	 * {@link TemporalType} to provide a consistent Date instance.
+	 * @param str          String to parse
 	 * @param temporalType Temporal type
 	 * @return Parsed Date
 	 * @throws ParseException If a parsing error occurred
@@ -134,7 +138,8 @@ public final class ISO8601DateFormats {
 
 	/**
 	 * Get the date format to use according to given {@link TemporalType}.
-	 * @param temporalType TemporalType to use, <code>null</code> to use current TemporalType
+	 * @param temporalType TemporalType to use, <code>null</code> to use current
+	 *                     TemporalType
 	 * @param withTimeZone Whether to take into account the time zone part or not
 	 * @return Date format
 	 */
@@ -152,10 +157,12 @@ public final class ISO8601DateFormats {
 	}
 
 	/**
-	 * Get the {@link TemporalType} to use to format dates, according to given {@link TemporalType}. If
-	 * <code>null</code>, the {@link #CURRENT_TEMPORAL_TYPE} ThreadLocal is checked. If no {@link TemporalType} is
-	 * available, the DATE_TIME format is used by default.
-	 * @param temporalType Optional {@link TemporalType} to use to select the date format
+	 * Get the {@link TemporalType} to use to format dates, according to given
+	 * {@link TemporalType}. If <code>null</code>, the
+	 * {@link #CURRENT_TEMPORAL_TYPE} ThreadLocal is checked. If no
+	 * {@link TemporalType} is available, the DATE_TIME format is used by default.
+	 * @param temporalType Optional {@link TemporalType} to use to select the date
+	 *                     format
 	 * @return The temporal type
 	 */
 	private static TemporalType getTemporalType(TemporalType temporalType) {

@@ -75,7 +75,6 @@ public class TestResteasyServicesIntegration {
 		server.stop();
 	}
 
-	@SuppressWarnings("static-access")
 	@Test
 	public void testGsonConfig() {
 

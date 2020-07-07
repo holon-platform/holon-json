@@ -26,8 +26,9 @@ import com.holonplatform.core.property.PropertyBox;
 import com.holonplatform.json.gson.GsonConfiguration;
 
 /**
- * JAX-RS {@link ContextResolver} to replace default {@link GsonBuilder} for Gson marshalling using a builder with
- * {@link PropertyBox} handling capabilities.
+ * JAX-RS {@link ContextResolver} to replace default {@link GsonBuilder} for
+ * Gson marshalling using a builder with {@link PropertyBox} handling
+ * capabilities.
  * 
  * @since 5.0.0
  */
@@ -37,22 +38,23 @@ public class GsonContextResolver implements ContextResolver<Gson> {
 	/**
 	 * Default GsonBuilder
 	 */
-	private final GsonBuilder _builder;
+	private final GsonBuilder builder;
 
 	/**
 	 * Gson instance
 	 */
-	private Gson _gson;
+	private Gson gson;
 
 	/**
 	 * Constructor
-	 * @param prettyPrint <code>true</code> to enable <em>pretty printing</em> for serialized JSON
+	 * @param prettyPrint <code>true</code> to enable <em>pretty printing</em> for
+	 *                    serialized JSON
 	 */
 	public GsonContextResolver(boolean prettyPrint) {
 		super();
-		this._builder = GsonConfiguration.builder();
+		this.builder = GsonConfiguration.builder();
 		if (prettyPrint) {
-			_builder.setPrettyPrinting();
+			builder.setPrettyPrinting();
 		}
 	}
 
@@ -61,19 +63,20 @@ public class GsonContextResolver implements ContextResolver<Gson> {
 	 * @return The {@link Gson} instance
 	 */
 	private Gson getDefaultGson() {
-		if (_gson == null) {
-			_gson = _builder.create();
+		if (gson == null) {
+			gson = builder.create();
 		}
-		return _gson;
+		return gson;
 	}
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see javax.ws.rs.ext.ContextResolver#getContext(java.lang.Class)
 	 */
 	@Override
 	public Gson getContext(Class<?> type) {
-		return Context.get().resource(Gson.class.getName(), Gson.class).orElseGet(() -> getDefaultGson());
+		return Context.get().resource(Gson.class.getName(), Gson.class).orElseGet(this::getDefaultGson);
 	}
 
 }

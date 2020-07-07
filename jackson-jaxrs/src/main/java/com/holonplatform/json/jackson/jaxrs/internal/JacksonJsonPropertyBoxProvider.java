@@ -55,7 +55,8 @@ import com.holonplatform.core.property.PropertySetRef;
 import com.holonplatform.json.jackson.JacksonConfiguration;
 
 /**
- * JAX-RS message body reader and writer for {@link PropertyBox} type using Jackson as JSON serializer/deserializer.
+ * JAX-RS message body reader and writer for {@link PropertyBox} type using
+ * Jackson as JSON serializer/deserializer.
  *
  * @since 5.0.0
  */
@@ -70,33 +71,33 @@ public class JacksonJsonPropertyBoxProvider implements MessageBodyWriter<Propert
 	@Context
 	private Providers providers;
 
-	private ObjectMapper _mapper;
+	private ObjectMapper mapper;
 
-	private ObjectReader _reader;
+	private ObjectReader reader;
 
-	private ObjectWriter _writer;
+	private ObjectWriter writer;
 
 	private PropertySetRefIntrospector propertySetRefIntrospector;
 
 	/**
 	 * Get the {@link ObjectMapper} to use.
-	 * @return The {@link ObjectMapper} obtained from a suitable {@link ContextResolver}, or a default one if not
-	 *         available
+	 * @return The {@link ObjectMapper} obtained from a suitable
+	 *         {@link ContextResolver}, or a default one if not available
 	 */
 	private ObjectMapper getObjectMapper() {
-		if (_mapper == null) {
+		if (mapper == null) {
 			// init using a contextresolver, if available
 			ContextResolver<ObjectMapper> contextResolver = providers.getContextResolver(ObjectMapper.class,
 					MediaType.APPLICATION_JSON_TYPE);
 			if (contextResolver != null) {
-				_mapper = contextResolver.getContext(ObjectMapper.class);
+				mapper = contextResolver.getContext(ObjectMapper.class);
 			}
-			if (_mapper == null) {
+			if (mapper == null) {
 				// use default
-				_mapper = JacksonConfiguration.mapper();
+				mapper = JacksonConfiguration.mapper();
 			}
 		}
-		return _mapper;
+		return mapper;
 	}
 
 	/**
@@ -104,10 +105,10 @@ public class JacksonJsonPropertyBoxProvider implements MessageBodyWriter<Propert
 	 * @return The object reader
 	 */
 	private ObjectReader getObjectReader() {
-		if (_reader == null) {
-			_reader = getObjectMapper().readerFor(PropertyBox.class);
+		if (reader == null) {
+			reader = getObjectMapper().readerFor(PropertyBox.class);
 		}
-		return _reader;
+		return reader;
 	}
 
 	/**
@@ -115,16 +116,16 @@ public class JacksonJsonPropertyBoxProvider implements MessageBodyWriter<Propert
 	 * @return The object writer
 	 */
 	private ObjectWriter getObjectWriter() {
-		if (_writer == null) {
-			_writer = getObjectMapper().writerFor(PropertyBox.class);
+		if (writer == null) {
+			writer = getObjectMapper().writerFor(PropertyBox.class);
 		}
-		return _writer;
+		return writer;
 	}
 
 	/**
 	 * Get the {@link PropertySetRefIntrospector} instance to use.
-	 * @return The {@link PropertySetRefIntrospector} instance to use, from {@link ContextResolver} if available or the
-	 *         default one
+	 * @return The {@link PropertySetRefIntrospector} instance to use, from
+	 *         {@link ContextResolver} if available or the default one
 	 */
 	private PropertySetRefIntrospector getPropertySetRefIntrospector() {
 		if (propertySetRefIntrospector == null) {
@@ -144,8 +145,10 @@ public class JacksonJsonPropertyBoxProvider implements MessageBodyWriter<Propert
 
 	/*
 	 * (non-Javadoc)
-	 * @see javax.ws.rs.ext.MessageBodyReader#isReadable(java.lang.Class, java.lang.reflect.Type,
-	 * java.lang.annotation.Annotation[], javax.ws.rs.core.MediaType)
+	 * 
+	 * @see javax.ws.rs.ext.MessageBodyReader#isReadable(java.lang.Class,
+	 * java.lang.reflect.Type, java.lang.annotation.Annotation[],
+	 * javax.ws.rs.core.MediaType)
 	 */
 	@Override
 	public boolean isReadable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
@@ -154,15 +157,17 @@ public class JacksonJsonPropertyBoxProvider implements MessageBodyWriter<Propert
 
 	/*
 	 * (non-Javadoc)
-	 * @see javax.ws.rs.ext.MessageBodyReader#readFrom(java.lang.Class, java.lang.reflect.Type,
-	 * java.lang.annotation.Annotation[], javax.ws.rs.core.MediaType, javax.ws.rs.core.MultivaluedMap,
+	 * 
+	 * @see javax.ws.rs.ext.MessageBodyReader#readFrom(java.lang.Class,
+	 * java.lang.reflect.Type, java.lang.annotation.Annotation[],
+	 * javax.ws.rs.core.MediaType, javax.ws.rs.core.MultivaluedMap,
 	 * java.io.InputStream)
 	 */
 	@Override
 	public PropertyBox readFrom(Class<PropertyBox> type, Type genericType, Annotation[] annotations,
 			MediaType mediaType, MultivaluedMap<String, String> httpHeaders, InputStream entityStream)
 			throws IOException, WebApplicationException {
-		try (final Reader reader = new InputStreamReader(entityStream, CHARSET)) {
+		try (final Reader isr = new InputStreamReader(entityStream, CHARSET)) {
 
 			// check property set
 			PropertySet<?> propertySet = null;
@@ -178,18 +183,19 @@ public class JacksonJsonPropertyBoxProvider implements MessageBodyWriter<Propert
 				}
 			}
 			if (propertySet != null) {
-				return propertySet.execute(() -> readPropertyBox(reader));
+				return propertySet.execute(() -> readPropertyBox(isr));
 			} else {
-				return readPropertyBox(reader);
+				return readPropertyBox(isr);
 			}
 		}
 	}
 
 	/**
-	 * Read a {@link PropertyBox} from JSON content, using current {@link com.holonplatform.core.Context} property set.
+	 * Read a {@link PropertyBox} from JSON content, using current
+	 * {@link com.holonplatform.core.Context} property set.
 	 * @param reader Reader
 	 * @return The deserialized {@link PropertyBox} instance
-	 * @throws IOException IO read error
+	 * @throws IOException             IO read error
 	 * @throws WebApplicationException JSON processing exception
 	 */
 	private PropertyBox readPropertyBox(Reader reader) throws IOException {
@@ -203,8 +209,10 @@ public class JacksonJsonPropertyBoxProvider implements MessageBodyWriter<Propert
 
 	/*
 	 * (non-Javadoc)
-	 * @see javax.ws.rs.ext.MessageBodyWriter#isWriteable(java.lang.Class, java.lang.reflect.Type,
-	 * java.lang.annotation.Annotation[], javax.ws.rs.core.MediaType)
+	 * 
+	 * @see javax.ws.rs.ext.MessageBodyWriter#isWriteable(java.lang.Class,
+	 * java.lang.reflect.Type, java.lang.annotation.Annotation[],
+	 * javax.ws.rs.core.MediaType)
 	 */
 	@Override
 	public boolean isWriteable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
@@ -213,8 +221,10 @@ public class JacksonJsonPropertyBoxProvider implements MessageBodyWriter<Propert
 
 	/*
 	 * (non-Javadoc)
-	 * @see javax.ws.rs.ext.MessageBodyWriter#getSize(java.lang.Object, java.lang.Class, java.lang.reflect.Type,
-	 * java.lang.annotation.Annotation[], javax.ws.rs.core.MediaType)
+	 * 
+	 * @see javax.ws.rs.ext.MessageBodyWriter#getSize(java.lang.Object,
+	 * java.lang.Class, java.lang.reflect.Type, java.lang.annotation.Annotation[],
+	 * javax.ws.rs.core.MediaType)
 	 */
 	@Override
 	public long getSize(PropertyBox t, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
@@ -223,17 +233,19 @@ public class JacksonJsonPropertyBoxProvider implements MessageBodyWriter<Propert
 
 	/*
 	 * (non-Javadoc)
-	 * @see javax.ws.rs.ext.MessageBodyWriter#writeTo(java.lang.Object, java.lang.Class, java.lang.reflect.Type,
-	 * java.lang.annotation.Annotation[], javax.ws.rs.core.MediaType, javax.ws.rs.core.MultivaluedMap,
+	 * 
+	 * @see javax.ws.rs.ext.MessageBodyWriter#writeTo(java.lang.Object,
+	 * java.lang.Class, java.lang.reflect.Type, java.lang.annotation.Annotation[],
+	 * javax.ws.rs.core.MediaType, javax.ws.rs.core.MultivaluedMap,
 	 * java.io.OutputStream)
 	 */
 	@Override
 	public void writeTo(PropertyBox t, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType,
 			MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream)
 			throws IOException, WebApplicationException {
-		try (final Writer writer = new OutputStreamWriter(entityStream, CHARSET)) {
+		try (final Writer osw = new OutputStreamWriter(entityStream, CHARSET)) {
 			try {
-				getObjectWriter().writeValue(writer, t);
+				getObjectWriter().writeValue(osw, t);
 			} catch (JsonProcessingException e) {
 				throw new WebApplicationException(e.getMessage(), e, Status.BAD_REQUEST);
 			}
@@ -243,7 +255,8 @@ public class JacksonJsonPropertyBoxProvider implements MessageBodyWriter<Propert
 	/**
 	 * Checks whether given <code>type</code> is a {@link PropertyBox} type.
 	 * @param type Type to check
-	 * @return <code>true</code> if given <code>type</code> is a {@link PropertyBox} type
+	 * @return <code>true</code> if given <code>type</code> is a {@link PropertyBox}
+	 *         type
 	 */
 	private static boolean isPropertyBoxType(Type type) {
 		if (type != null) {

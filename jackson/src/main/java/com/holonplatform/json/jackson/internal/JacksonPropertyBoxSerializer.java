@@ -49,8 +49,11 @@ public class JacksonPropertyBoxSerializer extends JsonSerializer<PropertyBox> {
 
 	/*
 	 * (non-Javadoc)
-	 * @see com.fasterxml.jackson.databind.JsonSerializer#serialize(java.lang.Object,
-	 * com.fasterxml.jackson.core.JsonGenerator, com.fasterxml.jackson.databind.SerializerProvider)
+	 * 
+	 * @see
+	 * com.fasterxml.jackson.databind.JsonSerializer#serialize(java.lang.Object,
+	 * com.fasterxml.jackson.core.JsonGenerator,
+	 * com.fasterxml.jackson.databind.SerializerProvider)
 	 */
 	@Override
 	public void serialize(PropertyBox propertyBox, JsonGenerator gen, SerializerProvider serializers)
@@ -72,7 +75,7 @@ public class JacksonPropertyBoxSerializer extends JsonSerializer<PropertyBox> {
 
 	/**
 	 * Build the PropertySet serialization tree for given PropertyBox.
-	 * @param propertyBox PropertyBox to serialize
+	 * @param propertyBox       PropertyBox to serialize
 	 * @param serializationMode Serialization mode
 	 * @return the PropertyBox serialization tree
 	 */
@@ -83,9 +86,9 @@ public class JacksonPropertyBoxSerializer extends JsonSerializer<PropertyBox> {
 
 	/**
 	 * Serialize a PropertyBox as a {@link PropertySetSerializationNode} tree.
-	 * @param gen Json generator to use
+	 * @param gen         Json generator to use
 	 * @param propertyBox PropertyBox to serialize
-	 * @param nodes Serialization tree nodes
+	 * @param nodes       Serialization tree nodes
 	 * @throws JsonSerializationException If an error occurred
 	 */
 	private static void serializePropertyBoxNodes(JsonGenerator gen, PropertyBox propertyBox,
@@ -97,9 +100,9 @@ public class JacksonPropertyBoxSerializer extends JsonSerializer<PropertyBox> {
 
 	/**
 	 * Serialize the node of a PropertyBox serialization tree.
-	 * @param gen Json generator to use
+	 * @param gen         Json generator to use
 	 * @param propertyBox PropertyBox to serialize
-	 * @param node The PropertyBox node to serialize
+	 * @param node        The PropertyBox node to serialize
 	 * @throws JsonSerializationException If an error occurred
 	 */
 	private static void serializePropertyBoxNode(JsonGenerator gen, PropertyBox propertyBox,
@@ -122,10 +125,10 @@ public class JacksonPropertyBoxSerializer extends JsonSerializer<PropertyBox> {
 
 	/**
 	 * Serialize a PropertyBox property value.
-	 * @param gen Json generator to use
+	 * @param gen         Json generator to use
 	 * @param propertyBox PropertyBox to which the property belongs
-	 * @param property Property to serialize
-	 * @param name Property serialization name
+	 * @param property    Property to serialize
+	 * @param name        Property serialization name
 	 * @throws JsonSerializationException If an error occurred
 	 */
 	private static void serializePropertyBoxProperty(JsonGenerator gen, PropertyBox propertyBox, Property<?> property,
@@ -136,9 +139,7 @@ public class JacksonPropertyBoxSerializer extends JsonSerializer<PropertyBox> {
 				// check temporal type
 				Optional<TemporalType> temporalType = property.getConfiguration().getTemporalType();
 				try {
-					temporalType.ifPresent(tt -> {
-						CurrentSerializationTemporalType.setCurrentTemporalType(tt);
-					});
+					temporalType.ifPresent(CurrentSerializationTemporalType::setCurrentTemporalType);
 					try {
 						// write JSON property value
 						gen.writeObjectField(name, value);
@@ -147,9 +148,7 @@ public class JacksonPropertyBoxSerializer extends JsonSerializer<PropertyBox> {
 								+ "] using name [" + name + "] and value [" + value + "]", e);
 					}
 				} finally {
-					temporalType.ifPresent(tt -> {
-						CurrentSerializationTemporalType.removeCurrentTemporalType();
-					});
+					temporalType.ifPresent(tt -> CurrentSerializationTemporalType.removeCurrentTemporalType());
 				}
 			});
 		} catch (Exception e) {
@@ -159,10 +158,13 @@ public class JacksonPropertyBoxSerializer extends JsonSerializer<PropertyBox> {
 	}
 
 	/**
-	 * Get the {@link PropertyBoxSerializationMode} to use. Check {@link PropertyBox} configuration attributes using
-	 * {@link JsonConfigProperties#PROPERTYBOX_SERIALIZATION_MODE}. If not available, the
-	 * {@link JsonConfigProperties#PROPERTYBOX_SERIALIZATION_MODE_ATTRIBUTE_NAME} is checked from serialization context.
-	 * If no value is available, the {@link PropertyBoxSerializationMode#getDefault()} value is returned.
+	 * Get the {@link PropertyBoxSerializationMode} to use. Check
+	 * {@link PropertyBox} configuration attributes using
+	 * {@link JsonConfigProperties#PROPERTYBOX_SERIALIZATION_MODE}. If not
+	 * available, the
+	 * {@link JsonConfigProperties#PROPERTYBOX_SERIALIZATION_MODE_ATTRIBUTE_NAME} is
+	 * checked from serialization context. If no value is available, the
+	 * {@link PropertyBoxSerializationMode#getDefault()} value is returned.
 	 * @param propertyBox The PropertBox to serialize
 	 * @param serializers Serialization context
 	 * @return The {@link PropertyBoxSerializationMode} to use

@@ -25,7 +25,7 @@ import com.holonplatform.json.Json;
  */
 public interface JsonLogger {
 
-	final static String NAME = Json.class.getPackage().getName();
+	static final String NAME = Json.class.getPackage().getName();
 
 	/**
 	 * Get a {@link Logger} bound to {@link #NAME}.

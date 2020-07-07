@@ -64,8 +64,10 @@ public class DefaultPropertySetSerializationTreeResolver implements PropertySetS
 
 	/*
 	 * (non-Javadoc)
-	 * @see com.holonplatform.json.model.PropertySetSerializationTreeResolver#resolve(com.holonplatform.core.property.
-	 * PropertySet)
+	 * 
+	 * @see
+	 * com.holonplatform.json.model.PropertySetSerializationTreeResolver#resolve(com
+	 * .holonplatform.core.property. PropertySet)
 	 */
 	@Override
 	public PropertySetSerializationTree resolve(PropertySet<?> propertySet) {
@@ -86,12 +88,10 @@ public class DefaultPropertySetSerializationTreeResolver implements PropertySetS
 
 		// progress tracking list
 		final List<Property<?>> properties = new LinkedList<>();
-		actualPropertySet.forEach(p -> properties.add(p));
+		actualPropertySet.forEach(properties::add);
 
 		for (Property<?> property : actualPropertySet) {
-			getSerializationNode(properties, property).ifPresent(n -> {
-				tree.add(n);
-			});
+			getSerializationNode(properties, property).ifPresent(tree::add);
 		}
 		return tree;
 	}
@@ -99,8 +99,9 @@ public class DefaultPropertySetSerializationTreeResolver implements PropertySetS
 	/**
 	 * Get the {@link PropertySetSerializationNode} for given property.
 	 * @param properties Available properties
-	 * @param property Property to parse
-	 * @return The optional {@link PropertySetSerializationNode} which corresponds to given property
+	 * @param property   Property to parse
+	 * @return The optional {@link PropertySetSerializationNode} which corresponds
+	 *         to given property
 	 */
 	private Optional<PropertySetSerializationNode> getSerializationNode(List<Property<?>> properties,
 			Property<?> property) {
@@ -117,11 +118,13 @@ public class DefaultPropertySetSerializationTreeResolver implements PropertySetS
 	}
 
 	/**
-	 * Get the {@link PropertySetSerializationNode} which corresponds to given parent path names hierarchy.
-	 * @param properties Available properties
-	 * @param parentPathNames Parent path names hierarchy
+	 * Get the {@link PropertySetSerializationNode} which corresponds to given
+	 * parent path names hierarchy.
+	 * @param properties        Available properties
+	 * @param parentPathNames   Parent path names hierarchy
 	 * @param serializationMode Serialization mode
-	 * @return Optional {@link PropertySetSerializationNode} which corresponds to given parent path names hierarchy
+	 * @return Optional {@link PropertySetSerializationNode} which corresponds to
+	 *         given parent path names hierarchy
 	 */
 	private Optional<PropertySetSerializationNode> getSerializationNode(List<Property<?>> properties,
 			List<String> parentPathNames) {
@@ -138,23 +141,20 @@ public class DefaultPropertySetSerializationTreeResolver implements PropertySetS
 					&& pathNamesEquals(pathNames.subList(0, parentPathNames.size()), parentPathNames)) {
 				// check hierarchy
 				if (pathNames.size() == parentPathNames.size() + 1) {
-					getSerializationPropertyName(property).ifPresent(name -> {
-						node.addChild(new DefaultPropertySetSerializationNode(name, property));
-					});
+					getSerializationPropertyName(property)
+							.ifPresent(name -> node.addChild(new DefaultPropertySetSerializationNode(name, property)));
 				} else {
 					List<String> parents = new LinkedList<>();
 					parents.addAll(parentPathNames);
 					parents.add(pathNames.get(parentPathNames.size()));
 					// check sub hierarchy
-					getSerializationNode(properties, parents).ifPresent(n -> {
-						node.addChild(n);
-					});
+					getSerializationNode(properties, parents).ifPresent(node::addChild);
 				}
 			}
 		}
 		if (!node.getChildren().isEmpty()) {
 			// remove processed properties
-			node.getChildren().forEach(c -> c.getProperty().ifPresent(p -> properties.remove(p)));
+			node.getChildren().forEach(c -> c.getProperty().ifPresent(properties::remove));
 			return Optional.of(node);
 		}
 		return Optional.empty();
@@ -179,8 +179,8 @@ public class DefaultPropertySetSerializationTreeResolver implements PropertySetS
 	}
 
 	/**
-	 * Get the property serialization names hierarchy, only if the property must be included in serialization according
-	 * to current validator.
+	 * Get the property serialization names hierarchy, only if the property must be
+	 * included in serialization according to current validator.
 	 * @param property The property for which to obtain the serialization hierarchy
 	 * @return the property serialization names hierarchy
 	 */
@@ -198,8 +198,8 @@ public class DefaultPropertySetSerializationTreeResolver implements PropertySetS
 	}
 
 	/**
-	 * Get the path names hierarchy from given path, ujsing any parent path and splitting the path name if a dot
-	 * notation is detected.
+	 * Get the path names hierarchy from given path, ujsing any parent path and
+	 * splitting the path name if a dot notation is detected.
 	 * @param path Path
 	 * @return the path names hierarchy
 	 */
@@ -215,7 +215,8 @@ public class DefaultPropertySetSerializationTreeResolver implements PropertySetS
 	}
 
 	/**
-	 * Get the property serialization name, if the property serialization names hierarchy is not empty.
+	 * Get the property serialization name, if the property serialization names
+	 * hierarchy is not empty.
 	 * @param property Property
 	 * @return Optional property serialization name
 	 */
@@ -237,9 +238,10 @@ public class DefaultPropertySetSerializationTreeResolver implements PropertySetS
 
 		/*
 		 * (non-Javadoc)
+		 * 
 		 * @see
-		 * com.holonplatform.json.model.PropertySetSerializationTreeResolver.Builder#preProcessor(java.util.function.
-		 * Function)
+		 * com.holonplatform.json.model.PropertySetSerializationTreeResolver.Builder#
+		 * preProcessor(java.util.function. Function)
 		 */
 		@Override
 		public Builder preProcessor(Function<PropertySet<?>, Iterable<Property>> preProcessor) {
@@ -249,8 +251,10 @@ public class DefaultPropertySetSerializationTreeResolver implements PropertySetS
 
 		/*
 		 * (non-Javadoc)
-		 * @see com.holonplatform.json.model.PropertySetSerializationTreeResolver.Builder#validator(java.util.function.
-		 * Predicate)
+		 * 
+		 * @see
+		 * com.holonplatform.json.model.PropertySetSerializationTreeResolver.Builder#
+		 * validator(java.util.function. Predicate)
 		 */
 		@Override
 		public Builder validator(Predicate<Property<?>> validator) {
@@ -260,7 +264,10 @@ public class DefaultPropertySetSerializationTreeResolver implements PropertySetS
 
 		/*
 		 * (non-Javadoc)
-		 * @see com.holonplatform.json.model.PropertySetSerializationTreeResolver.Builder#build()
+		 * 
+		 * @see
+		 * com.holonplatform.json.model.PropertySetSerializationTreeResolver.Builder#
+		 * build()
 		 */
 		@Override
 		public PropertySetSerializationTreeResolver build() {

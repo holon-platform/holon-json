@@ -36,6 +36,8 @@ public class DefaultJacksonJson implements JacksonJson {
 
 	private final ObjectMapper mapper;
 
+	private static final String MESSAGE_JSON_READER_NOT_NULL = "JsonReader must be not null";
+
 	/**
 	 * Constructor
 	 * @param mapper Jackson {@link ObjectMapper} (not null)
@@ -48,6 +50,7 @@ public class DefaultJacksonJson implements JacksonJson {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see com.holonplatform.json.Json#toJson(java.lang.Object)
 	 */
 	@Override
@@ -57,7 +60,9 @@ public class DefaultJacksonJson implements JacksonJson {
 
 	/*
 	 * (non-Javadoc)
-	 * @see com.holonplatform.json.Json#toJsonArray(java.lang.Class, java.util.Collection)
+	 * 
+	 * @see com.holonplatform.json.Json#toJsonArray(java.lang.Class,
+	 * java.util.Collection)
 	 */
 	@Override
 	public <T> JsonWriter toJsonArray(Class<T> type, Collection<T> values) {
@@ -66,11 +71,13 @@ public class DefaultJacksonJson implements JacksonJson {
 
 	/*
 	 * (non-Javadoc)
-	 * @see com.holonplatform.json.Json#fromJson(com.holonplatform.json.JsonReader, java.lang.Class)
+	 * 
+	 * @see com.holonplatform.json.Json#fromJson(com.holonplatform.json.JsonReader,
+	 * java.lang.Class)
 	 */
 	@Override
 	public <T> T fromJson(JsonReader reader, Class<T> type) {
-		ObjectUtils.argumentNotNull(reader, "JsonReader must be not null");
+		ObjectUtils.argumentNotNull(reader, MESSAGE_JSON_READER_NOT_NULL);
 		ObjectUtils.argumentNotNull(type, "Type must be not null");
 		try {
 			return mapper.reader().forType(type).readValue(reader.getReader());
@@ -81,11 +88,14 @@ public class DefaultJacksonJson implements JacksonJson {
 
 	/*
 	 * (non-Javadoc)
-	 * @see com.holonplatform.json.Json#fromJsonArray(com.holonplatform.json.JsonReader, java.lang.Class)
+	 * 
+	 * @see
+	 * com.holonplatform.json.Json#fromJsonArray(com.holonplatform.json.JsonReader,
+	 * java.lang.Class)
 	 */
 	@Override
 	public <T> List<T> fromJsonArray(JsonReader reader, Class<T> type) {
-		ObjectUtils.argumentNotNull(reader, "JsonReader must be not null");
+		ObjectUtils.argumentNotNull(reader, MESSAGE_JSON_READER_NOT_NULL);
 		ObjectUtils.argumentNotNull(type, "Type must be not null");
 		try {
 
@@ -98,12 +108,14 @@ public class DefaultJacksonJson implements JacksonJson {
 
 	/*
 	 * (non-Javadoc)
-	 * @see com.holonplatform.json.Json#fromJson(com.holonplatform.json.JsonReader, java.lang.Iterable)
+	 * 
+	 * @see com.holonplatform.json.Json#fromJson(com.holonplatform.json.JsonReader,
+	 * java.lang.Iterable)
 	 */
 	@SuppressWarnings("rawtypes")
 	@Override
 	public <P extends Property> PropertyBox fromJson(JsonReader reader, Iterable<P> propertySet) {
-		ObjectUtils.argumentNotNull(reader, "JsonReader must be not null");
+		ObjectUtils.argumentNotNull(reader, MESSAGE_JSON_READER_NOT_NULL);
 		ObjectUtils.argumentNotNull(propertySet, "PropertySet must be not null");
 
 		final PropertySet<?> ps = (PropertySet.class.isAssignableFrom(propertySet.getClass()))
@@ -115,12 +127,15 @@ public class DefaultJacksonJson implements JacksonJson {
 
 	/*
 	 * (non-Javadoc)
-	 * @see com.holonplatform.json.Json#fromJsonArray(com.holonplatform.json.JsonReader, java.lang.Iterable)
+	 * 
+	 * @see
+	 * com.holonplatform.json.Json#fromJsonArray(com.holonplatform.json.JsonReader,
+	 * java.lang.Iterable)
 	 */
 	@SuppressWarnings("rawtypes")
 	@Override
 	public <P extends Property> List<PropertyBox> fromJsonArray(JsonReader reader, Iterable<P> propertySet) {
-		ObjectUtils.argumentNotNull(reader, "JsonReader must be not null");
+		ObjectUtils.argumentNotNull(reader, MESSAGE_JSON_READER_NOT_NULL);
 		ObjectUtils.argumentNotNull(propertySet, "PropertySet must be not null");
 
 		final PropertySet<?> ps = (PropertySet.class.isAssignableFrom(propertySet.getClass()))

@@ -40,37 +40,38 @@ public enum DefaultJsonPropertySetSerializationTreeResolver implements JsonPrope
 	 */
 	INSTANCE;
 
-	private final static Predicate<Property<?>> PATH_VALIDATOR = property -> {
-		return Path.class.isAssignableFrom(property.getClass());
-	};
+	private static final Predicate<Property<?>> PATH_VALIDATOR = property -> Path.class
+			.isAssignableFrom(property.getClass());
 
 	/**
 	 * PATH mode resolver
 	 */
-	private final static PropertySetSerializationTreeResolver PATH_MODE_RESOLVER = PropertySetSerializationTreeResolver
+	private static final PropertySetSerializationTreeResolver PATH_MODE_RESOLVER = PropertySetSerializationTreeResolver
 			.builder().validator(PATH_VALIDATOR).build();
 
 	/**
 	 * ALL mode resolver
 	 */
-	private final static PropertySetSerializationTreeResolver ALL_MODE_RESOLVER = PropertySetSerializationTreeResolver
+	private static final PropertySetSerializationTreeResolver ALL_MODE_RESOLVER = PropertySetSerializationTreeResolver
 			.builder().validator(p -> true).build();
 
 	/**
 	 * PATH mode cache
 	 */
-	private final static Map<PropertySet<?>, PropertySetSerializationTree> PATH_CACHE = new WeakHashMap<>();
+	private static final Map<PropertySet<?>, PropertySetSerializationTree> PATH_CACHE = new WeakHashMap<>();
 
 	/**
 	 * ALL mode cache
 	 */
-	private final static Map<PropertySet<?>, PropertySetSerializationTree> ALL_CACHE = new WeakHashMap<>();
+	private static final Map<PropertySet<?>, PropertySetSerializationTree> ALL_CACHE = new WeakHashMap<>();
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see
-	 * com.holonplatform.json.model.JsonPropertySetSerializationTreeResolver#resolve(com.holonplatform.core.property.
-	 * PropertySet, com.holonplatform.json.config.PropertyBoxSerializationMode)
+	 * com.holonplatform.json.model.JsonPropertySetSerializationTreeResolver#resolve
+	 * (com.holonplatform.core.property. PropertySet,
+	 * com.holonplatform.json.config.PropertyBoxSerializationMode)
 	 */
 	@Override
 	public PropertySetSerializationTree resolve(PropertySet<?> propertySet,
@@ -83,10 +84,10 @@ public enum DefaultJsonPropertySetSerializationTreeResolver implements JsonPrope
 
 		switch (mode) {
 		case ALL:
-			return ALL_CACHE.computeIfAbsent(propertySet, ps -> ALL_MODE_RESOLVER.resolve(ps));
+			return ALL_CACHE.computeIfAbsent(propertySet, ALL_MODE_RESOLVER::resolve);
 		case PATH:
 		default:
-			return PATH_CACHE.computeIfAbsent(propertySet, ps -> PATH_MODE_RESOLVER.resolve(ps));
+			return PATH_CACHE.computeIfAbsent(propertySet, PATH_MODE_RESOLVER::resolve);
 		}
 	}
 

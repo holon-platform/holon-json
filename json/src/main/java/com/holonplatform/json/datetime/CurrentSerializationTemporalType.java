@@ -18,8 +18,9 @@ package com.holonplatform.json.datetime;
 import com.holonplatform.core.temporal.TemporalType;
 
 /**
- * Utility class to set the current {@link TemporalType} which has to be used for <code>java.util.Date</code> values
- * JSON serialization using a {@link ThreadLocal}.
+ * Utility class to set the current {@link TemporalType} which has to be used
+ * for <code>java.util.Date</code> values JSON serialization using a
+ * {@link ThreadLocal}.
  * 
  * @since 5.1.0
  */
@@ -28,13 +29,14 @@ public final class CurrentSerializationTemporalType {
 	/**
 	 * Current {@link TemporalType}
 	 */
-	private final static ThreadLocal<TemporalType> CURRENT_TEMPORAL_TYPE = new ThreadLocal<>();
+	private static final ThreadLocal<TemporalType> CURRENT_TEMPORAL_TYPE = new ThreadLocal<>();
 
 	private CurrentSerializationTemporalType() {
 	}
 
 	/**
-	 * Gets the current {@link TemporalType} to use for <code>java.util.Date</code> values JSON serialization.
+	 * Gets the current {@link TemporalType} to use for <code>java.util.Date</code>
+	 * values JSON serialization.
 	 * @return The current {@link TemporalType}
 	 */
 	public static TemporalType getCurrentTemporalType() {
@@ -42,7 +44,8 @@ public final class CurrentSerializationTemporalType {
 	}
 
 	/**
-	 * Sets the current {@link TemporalType} to use for <code>java.util.Date</code> values JSON serialization.
+	 * Sets the current {@link TemporalType} to use for <code>java.util.Date</code>
+	 * values JSON serialization.
 	 * @param temporalType The {@link TemporalType} to set
 	 */
 	public static void setCurrentTemporalType(TemporalType temporalType) {
@@ -50,7 +53,8 @@ public final class CurrentSerializationTemporalType {
 	}
 
 	/**
-	 * Removes the current {@link TemporalType} to use for <code>java.util.Date</code> values JSON serialization.
+	 * Removes the current {@link TemporalType} to use for
+	 * <code>java.util.Date</code> values JSON serialization.
 	 */
 	public static void removeCurrentTemporalType() {
 		CURRENT_TEMPORAL_TYPE.remove();

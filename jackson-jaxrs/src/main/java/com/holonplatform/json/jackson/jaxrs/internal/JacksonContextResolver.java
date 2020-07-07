@@ -26,8 +26,9 @@ import com.holonplatform.core.property.PropertyBox;
 import com.holonplatform.json.jackson.JacksonConfiguration;
 
 /**
- * JAX-RS {@link ContextResolver} to replace default Jackson {@link ObjectMapper} for JSON marshalling with an
- * ObjectMapper with {@link PropertyBox} handling capabilities.
+ * JAX-RS {@link ContextResolver} to replace default Jackson
+ * {@link ObjectMapper} for JSON marshalling with an ObjectMapper with
+ * {@link PropertyBox} handling capabilities.
  * 
  * @since 5.0.0
  */
@@ -46,7 +47,8 @@ public class JacksonContextResolver implements ContextResolver<ObjectMapper> {
 
 	/**
 	 * Constructor.
-	 * @param prettyPrint <code>true</code> to enable <em>pretty printing</em> of serialized JSON
+	 * @param prettyPrint <code>true</code> to enable <em>pretty printing</em> of
+	 *                    serialized JSON
 	 */
 	public JacksonContextResolver(boolean prettyPrint) {
 		super();
@@ -55,17 +57,20 @@ public class JacksonContextResolver implements ContextResolver<ObjectMapper> {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see javax.ws.rs.ext.ContextResolver#getContext(java.lang.Class)
 	 */
 	@Override
 	public ObjectMapper getContext(Class<?> type) {
 		return Context.get().resource(ObjectMapper.class.getName(), ObjectMapper.class)
-				.orElseGet(() -> getDefaultObjectMapper());
+				.orElseGet(this::getDefaultObjectMapper);
 	}
 
 	/**
-	 * Get an {@link ObjectMapper} instance configured according to {@link JacksonConfiguration} configuration strategy.
-	 * @param prettyPrint Whether to enable <em>pretty printing</em> of serialized JSON
+	 * Get an {@link ObjectMapper} instance configured according to
+	 * {@link JacksonConfiguration} configuration strategy.
+	 * @param prettyPrint Whether to enable <em>pretty printing</em> of serialized
+	 *                    JSON
 	 * @return A default {@link ObjectMapper} instance
 	 */
 	private ObjectMapper getDefaultObjectMapper() {

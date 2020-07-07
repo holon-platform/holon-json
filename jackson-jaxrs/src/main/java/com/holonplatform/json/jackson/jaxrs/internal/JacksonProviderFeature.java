@@ -29,10 +29,11 @@ import com.holonplatform.json.jackson.jaxrs.JacksonFeature;
  */
 public class JacksonProviderFeature implements Feature {
 
-	private final static Logger LOGGER = JsonLogger.create();
+	private static final Logger LOGGER = JsonLogger.create();
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see javax.ws.rs.core.Feature#configure(javax.ws.rs.core.FeatureContext)
 	 */
 	@Override
