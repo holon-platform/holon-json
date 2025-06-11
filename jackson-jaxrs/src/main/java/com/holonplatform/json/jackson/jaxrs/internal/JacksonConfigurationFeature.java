@@ -15,8 +15,8 @@
  */
 package com.holonplatform.json.jackson.jaxrs.internal;
 
-import javax.ws.rs.core.Feature;
-import javax.ws.rs.core.FeatureContext;
+import jakarta.ws.rs.core.Feature;
+import jakarta.ws.rs.core.FeatureContext;
 
 import com.holonplatform.core.internal.Logger;
 import com.holonplatform.core.internal.utils.TypeUtils;
@@ -37,7 +37,7 @@ public class JacksonConfigurationFeature implements Feature {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see javax.ws.rs.core.Feature#configure(javax.ws.rs.core.FeatureContext)
+	 * @see jakarta.ws.rs.core.Feature#configure(jakarta.ws.rs.core.FeatureContext)
 	 */
 	@Override
 	public boolean configure(FeatureContext context) {

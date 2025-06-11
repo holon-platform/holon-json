@@ -95,9 +95,9 @@ public class TestPropertyBoxSerialization {
 
 		assertNotNull(readBox);
 
-		assertEquals(new Long(1), readBox.getValue(KEY));
+		assertEquals(Long.valueOf(1), readBox.getValue(KEY));
 		assertEquals("Test", readBox.getValue(NAME));
-		assertEquals(new Double(7.1), readBox.getValue(NUMBER));
+		assertEquals(Double.valueOf(7.1), readBox.getValue(NUMBER));
 		assertEquals("Name is: Test", readBox.getValue(TEST));
 		assertEquals(Boolean.TRUE, readBox.getValue(BOOL));
 		assertEquals(DATE_VALUE, readBox.getValue(DATE));
@@ -133,18 +133,18 @@ public class TestPropertyBoxSerialization {
 		PropertyBox readBox = read[0];
 
 		assertNotNull(readBox);
-		assertEquals(new Long(1), readBox.getValue(KEY));
+		assertEquals(Long.valueOf(1), readBox.getValue(KEY));
 		assertEquals("Test", readBox.getValue(NAME));
-		assertEquals(new Double(7.1), readBox.getValue(NUMBER));
+		assertEquals(Double.valueOf(7.1), readBox.getValue(NUMBER));
 		assertEquals("Name is: Test", readBox.getValue(TEST));
 		assertEquals(Boolean.TRUE, readBox.getValue(BOOL));
 
 		readBox = read[1];
 
 		assertNotNull(readBox);
-		assertEquals(new Long(2), readBox.getValue(KEY));
+		assertEquals(Long.valueOf(2), readBox.getValue(KEY));
 		assertEquals("Test2", readBox.getValue(NAME));
-		assertEquals(new Double(8.1), readBox.getValue(NUMBER));
+		assertEquals(Double.valueOf(8.1), readBox.getValue(NUMBER));
 		assertEquals("Name is: Test2", readBox.getValue(TEST));
 		assertEquals(Boolean.FALSE, readBox.getValue(BOOL));
 
@@ -157,18 +157,18 @@ public class TestPropertyBoxSerialization {
 		readBox = lread.get(0);
 
 		assertNotNull(readBox);
-		assertEquals(new Long(1), readBox.getValue(KEY));
+		assertEquals(Long.valueOf(1), readBox.getValue(KEY));
 		assertEquals("Test", readBox.getValue(NAME));
-		assertEquals(new Double(7.1), readBox.getValue(NUMBER));
+		assertEquals(Double.valueOf(7.1), readBox.getValue(NUMBER));
 		assertEquals("Name is: Test", readBox.getValue(TEST));
 		assertEquals(Boolean.TRUE, readBox.getValue(BOOL));
 
 		readBox = lread.get(1);
 
 		assertNotNull(readBox);
-		assertEquals(new Long(2), readBox.getValue(KEY));
+		assertEquals(Long.valueOf(2), readBox.getValue(KEY));
 		assertEquals("Test2", readBox.getValue(NAME));
-		assertEquals(new Double(8.1), readBox.getValue(NUMBER));
+		assertEquals(Double.valueOf(8.1), readBox.getValue(NUMBER));
 		assertEquals("Name is: Test2", readBox.getValue(TEST));
 		assertEquals(Boolean.FALSE, readBox.getValue(BOOL));
 

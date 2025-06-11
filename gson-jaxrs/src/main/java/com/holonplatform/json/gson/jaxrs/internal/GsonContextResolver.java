@@ -15,9 +15,9 @@
  */
 package com.holonplatform.json.gson.jaxrs.internal;
 
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.ext.ContextResolver;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.ext.ContextResolver;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -72,7 +72,7 @@ public class GsonContextResolver implements ContextResolver<Gson> {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see javax.ws.rs.ext.ContextResolver#getContext(java.lang.Class)
+	 * @see jakarta.ws.rs.ext.ContextResolver#getContext(java.lang.Class)
 	 */
 	@Override
 	public Gson getContext(Class<?> type) {

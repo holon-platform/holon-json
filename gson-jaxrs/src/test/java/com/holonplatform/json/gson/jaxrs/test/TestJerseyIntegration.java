@@ -18,18 +18,18 @@ package com.holonplatform.json.gson.jaxrs.test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.core.Application;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.PUT;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.Entity;
+import jakarta.ws.rs.core.Application;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
 
 import org.glassfish.jersey.client.JerseyClientBuilder;
 import org.glassfish.jersey.logging.LoggingFeature;
@@ -51,10 +51,10 @@ public class TestJerseyIntegration extends JerseyTest5 {
 
 	public static final Property<Integer> NUM = PathProperty.create("num", Integer.class);
 	public static final Property<Double> DBL = PathProperty.create("dbl", Double.class);
-	public static final Property<String> STR = VirtualProperty.create(String.class)
+	public static final Property<String> STR1 = VirtualProperty.create(String.class)
 			.valueProvider(b -> "Str_" + b.getValue(NUM));
 
-	public static final PropertySet<?> SET = PropertySet.of(NUM, DBL, STR);
+	public static final PropertySet<?> SET = PropertySet.of(NUM, DBL, STR1);
 
 	@Path("test")
 	public static class TestEndpoint {
@@ -111,12 +111,12 @@ public class TestJerseyIntegration extends JerseyTest5 {
 				.execute(() -> target("/test/data/{num}").resolveTemplate("num", 1).request().get(PropertyBox.class));
 		assertNotNull(box);
 		assertEquals(Integer.valueOf(1), box.getValue(NUM));
-		assertEquals("Str_1", box.getValue(STR));
+		assertEquals("Str_1", box.getValue(STR1));
 
 		box = SET.execute(() -> target("/test/data/2").request().get(PropertyBox.class));
 		assertNotNull(box);
 		assertEquals(Integer.valueOf(2), box.getValue(NUM));
-		assertEquals("Str_2", box.getValue(STR));
+		assertEquals("Str_2", box.getValue(STR1));
 
 		PropertyBox boxToSrlz = PropertyBox.builder(SET).set(NUM, 100).set(DBL, 77.7).build();
 

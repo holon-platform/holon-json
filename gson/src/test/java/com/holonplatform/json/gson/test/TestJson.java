@@ -92,9 +92,9 @@ public class TestJson {
 
 		assertNotNull(readBox);
 
-		assertEquals(new Long(1), readBox.getValue(KEY));
+		assertEquals(Long.valueOf(1), readBox.getValue(KEY));
 		assertEquals("Test", readBox.getValue(NAME));
-		assertEquals(new Double(7.1), readBox.getValue(NUMBER));
+		assertEquals(Double.valueOf(7.1), readBox.getValue(NUMBER));
 		assertEquals("Name is: Test", readBox.getValue(TEST));
 		assertEquals(Boolean.TRUE, readBox.getValue(BOOL));
 		assertEquals(DATE_VALUE, readBox.getValue(DATE));
@@ -133,9 +133,9 @@ public class TestJson {
 
 		assertNotNull(readBox);
 
-		assertEquals(new Long(1), readBox.getValue(KEY));
+		assertEquals(Long.valueOf(1), readBox.getValue(KEY));
 		assertEquals("Test", readBox.getValue(NAME));
-		assertEquals(new Double(7.1), readBox.getValue(NUMBER));
+		assertEquals(Double.valueOf(7.1), readBox.getValue(NUMBER));
 		assertEquals("Name is: Test", readBox.getValue(TEST));
 		assertEquals(Boolean.TRUE, readBox.getValue(BOOL));
 		assertEquals(DATE_VALUE, readBox.getValue(DATE));
@@ -166,9 +166,9 @@ public class TestJson {
 
 		assertNotNull(readBox);
 
-		assertEquals(new Long(1), readBox.getValue(KEY));
+		assertEquals(Long.valueOf(1), readBox.getValue(KEY));
 		assertEquals("Test", readBox.getValue(NAME));
-		assertEquals(new Double(7.1), readBox.getValue(NUMBER));
+		assertEquals(Double.valueOf(7.1), readBox.getValue(NUMBER));
 		assertEquals("Name is: Test", readBox.getValue(TEST));
 		assertEquals(Boolean.TRUE, readBox.getValue(BOOL));
 		assertEquals(DATE_VALUE, readBox.getValue(DATE));
@@ -199,9 +199,9 @@ public class TestJson {
 
 		assertNotNull(readBox);
 
-		assertEquals(new Long(1), readBox.getValue(KEY));
+		assertEquals(Long.valueOf(1), readBox.getValue(KEY));
 		assertEquals("Test", readBox.getValue(NAME));
-		assertEquals(new Double(7.1), readBox.getValue(NUMBER));
+		assertEquals(Double.valueOf(7.1), readBox.getValue(NUMBER));
 		assertEquals("Name is: Test", readBox.getValue(TEST));
 		assertEquals(Boolean.TRUE, readBox.getValue(BOOL));
 		assertEquals(DATE_VALUE, readBox.getValue(DATE));
@@ -232,9 +232,9 @@ public class TestJson {
 
 		assertNotNull(readBox);
 
-		assertEquals(new Long(1), readBox.getValue(KEY));
+		assertEquals(Long.valueOf(1), readBox.getValue(KEY));
 		assertEquals("Test", readBox.getValue(NAME));
-		assertEquals(new Double(7.1), readBox.getValue(NUMBER));
+		assertEquals(Double.valueOf(7.1), readBox.getValue(NUMBER));
 		assertEquals("Name is: Test", readBox.getValue(TEST));
 		assertEquals(Boolean.TRUE, readBox.getValue(BOOL));
 		assertEquals(DATE_VALUE, readBox.getValue(DATE));
@@ -249,9 +249,9 @@ public class TestJson {
 
 		assertNotNull(readBox);
 
-		assertEquals(new Long(1), readBox.getValue(KEY));
+		assertEquals(Long.valueOf(1), readBox.getValue(KEY));
 		assertEquals("Test", readBox.getValue(NAME));
-		assertEquals(new Double(7.1), readBox.getValue(NUMBER));
+		assertEquals(Double.valueOf(7.1), readBox.getValue(NUMBER));
 		assertEquals("Name is: Test", readBox.getValue(TEST));
 		assertEquals(Boolean.TRUE, readBox.getValue(BOOL));
 		assertEquals(DATE_VALUE, readBox.getValue(DATE));
@@ -275,7 +275,7 @@ public class TestJson {
 		assertFalse(readBox.contains(OBJECT_DATA));
 		assertFalse(readBox.contains(ENUM));
 
-		assertEquals(new Long(1), readBox.getValue(KEY));
+		assertEquals(Long.valueOf(1), readBox.getValue(KEY));
 		assertEquals("Test", readBox.getValue(NAME));
 
 	}
@@ -305,9 +305,9 @@ public class TestJson {
 
 		assertNotNull(readBox);
 
-		assertEquals(new Long(1), readBox.getValue(KEY));
+		assertEquals(Long.valueOf(1), readBox.getValue(KEY));
 		assertEquals("Test", readBox.getValue(NAME));
-		assertEquals(new Double(7.1), readBox.getValue(NUMBER));
+		assertEquals(Double.valueOf(7.1), readBox.getValue(NUMBER));
 		assertEquals("Name is: Test", readBox.getValue(TEST));
 		assertEquals(Boolean.TRUE, readBox.getValue(BOOL));
 		assertEquals(DATE_VALUE, readBox.getValue(DATE));
@@ -322,7 +322,7 @@ public class TestJson {
 
 		assertNotNull(readBox);
 
-		assertEquals(new Long(2), readBox.getValue(KEY));
+		assertEquals(Long.valueOf(2), readBox.getValue(KEY));
 		assertEquals("Test2", readBox.getValue(NAME));
 
 		Collection<PropertyBox> bx2 = new ArrayList<>();

@@ -1,2 +1,1 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
 com.holonplatform.json.jackson.spring.boot.JacksonAutoConfiguration

@@ -15,7 +15,7 @@
  */
 package com.holonplatform.json.gson.internal;
 
-import javax.annotation.Priority;
+import jakarta.annotation.Priority;
 
 import com.holonplatform.json.Json;
 import com.holonplatform.json.JsonProvider;

@@ -24,16 +24,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-
 import org.glassfish.jersey.server.ResourceConfig;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -41,7 +31,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -60,6 +50,16 @@ import com.holonplatform.http.rest.RequestEntity;
 import com.holonplatform.http.rest.RestClient;
 import com.holonplatform.json.jackson.JacksonConfiguration;
 import com.holonplatform.spring.SpringRestClient;
+
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
@@ -162,7 +162,7 @@ public class TestRestClientPropertyBox {
 		PropertyBox box = client.request().path("test").path("box/{id}").resolve("id", 1).propertySet(PROPERTIES)
 				.getForEntity(PropertyBox.class).orElse(null);
 		assertNotNull(box);
-		assertEquals(new Integer(1), box.getValue(CODE));
+		assertEquals(Integer.valueOf(1), box.getValue(CODE));
 		assertEquals("value1", box.getValue(VALUE));
 
 		HttpResponse<PropertyBox> rsp2 = client.request().path("test").path("box/{id}").resolve("id", 1)
@@ -170,7 +170,7 @@ public class TestRestClientPropertyBox {
 		assertEquals(HttpStatus.OK, rsp2.getStatus());
 		box = rsp2.getPayload().orElse(null);
 		assertNotNull(box);
-		assertEquals(new Integer(1), box.getValue(CODE));
+		assertEquals(Integer.valueOf(1), box.getValue(CODE));
 		assertEquals("value1", box.getValue(VALUE));
 
 		List<PropertyBox> boxes = client.request().path("test").path("boxes").propertySet(PROPERTIES)
@@ -180,12 +180,12 @@ public class TestRestClientPropertyBox {
 
 		box = boxes.get(0);
 		assertNotNull(box);
-		assertEquals(new Integer(1), box.getValue(CODE));
+		assertEquals(Integer.valueOf(1), box.getValue(CODE));
 		assertEquals("value1", box.getValue(VALUE));
 
 		box = boxes.get(1);
 		assertNotNull(box);
-		assertEquals(new Integer(2), box.getValue(CODE));
+		assertEquals(Integer.valueOf(2), box.getValue(CODE));
 		assertEquals("value2", box.getValue(VALUE));
 
 		List<Integer> codes = client.request().path("test").path("boxes").propertySet(PROPERTIES)

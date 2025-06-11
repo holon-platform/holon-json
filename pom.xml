@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.holon-platform</groupId>
 		<artifactId>parent</artifactId>
-		<version>1.2.0</version>
+		<version>2.0.0</version>
 	</parent>
 
 	<groupId>com.holon-platform.json</groupId>
@@ -55,26 +55,26 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
 		<!-- Holon Core -->
-		<holon.core.version>5.7.0</holon.core.version>
+		<holon.core.version>6.0.0</holon.core.version>
 
 		<!-- Jackson -->
-		<jackson.version>2.13.5</jackson.version>
-		<jackson.databind.version>2.13.5</jackson.databind.version>
+		<jackson.version>2.18.3</jackson.version>
+		<jackson.databind.version>2.18.3</jackson.databind.version>
 
 		<!-- Gson -->
-		<gson.version>2.9.1</gson.version>
+		<gson.version>2.11.0</gson.version>
 
 		<!-- JAX-RS API (optional) -->
-		<jax-rs.api.version>2.1</jax-rs.api.version>
+		<jax-rs.api.version>3.1.0</jax-rs.api.version>
 
 		<!-- Jersey (optional) -->
-		<jersey.version>2.35</jersey.version>
+		<jersey.version>3.1.10</jersey.version>
 
 		<!-- Resteasy (optional) -->
-		<resteasy.version>3.15.3.Final</resteasy.version>
+		<resteasy.version>6.2.12.Final</resteasy.version>
 
 		<!-- slf4j (test) -->
-		<slf4j.version>1.7.36</slf4j.version>
+		<slf4j.version>2.0.17</slf4j.version>
 
 	</properties>
 
@@ -123,6 +123,7 @@
 							<show>public</show>
 							<excludePackageNames>*.internal.*;*.examples.*</excludePackageNames>
 							<quiet>true</quiet>
+							<sourcepath>src/main/java</sourcepath>
 						</configuration>
 					</execution>
 				</executions>

@@ -17,7 +17,7 @@ package com.holonplatform.json.jackson.jaxrs.test;
 
 import static com.holonplatform.json.jackson.jaxrs.test.TestJerseyIntegration.NUM;
 import static com.holonplatform.json.jackson.jaxrs.test.TestJerseyIntegration.SET;
-import static com.holonplatform.json.jackson.jaxrs.test.TestJerseyIntegration.STR;
+import static com.holonplatform.json.jackson.jaxrs.test.TestJerseyIntegration.STR1;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -26,8 +26,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import javax.ws.rs.client.Client;
-import javax.ws.rs.core.Application;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.core.Application;
 
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.plugins.server.undertow.UndertowJaxrsServer;
@@ -88,13 +88,13 @@ public class TestResteasyServicesIntegration {
 				.resolveTemplate("num", 1).request().get(PropertyBox.class));
 		assertNotNull(box);
 		assertEquals(Integer.valueOf(1), box.getValue(NUM));
-		assertEquals("Str_1", box.getValue(STR));
+		assertEquals("Str_1", box.getValue(STR1));
 
 		box = SET.execute(
 				() -> client.target(TestPortProvider.generateURL("/test/data/2")).request().get(PropertyBox.class));
 		assertNotNull(box);
 		assertEquals(Integer.valueOf(2), box.getValue(NUM));
-		assertEquals("Str_2", box.getValue(STR));
+		assertEquals("Str_2", box.getValue(STR1));
 
 	}
 

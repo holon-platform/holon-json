@@ -15,8 +15,8 @@
  */
 package com.holonplatform.json.jackson.jaxrs;
 
-import javax.ws.rs.core.Feature;
-import javax.ws.rs.core.FeatureContext;
+import jakarta.ws.rs.core.Feature;
+import jakarta.ws.rs.core.FeatureContext;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.holonplatform.core.property.PropertyBox;
@@ -56,7 +56,7 @@ public class JacksonFeature implements Feature {
 
 	/*
 	 * (non-Javadoc)
-	 * @see javax.ws.rs.core.Feature#configure(javax.ws.rs.core.FeatureContext)
+	 * @see jakarta.ws.rs.core.Feature#configure(jakarta.ws.rs.core.FeatureContext)
 	 */
 	@Override
 	public boolean configure(FeatureContext context) {

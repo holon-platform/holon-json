@@ -17,7 +17,7 @@ package com.holonplatform.json;
 
 import java.util.ServiceLoader;
 
-import javax.annotation.Priority;
+import jakarta.annotation.Priority;
 
 /**
  * Concrete {@link Json} implementation provider.

@@ -17,23 +17,23 @@ package com.holonplatform.json.jackson.spring.boot;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.holonplatform.core.property.PropertyBox;
 import com.holonplatform.json.jackson.JacksonConfiguration;
 
 /**
- * Spring boot auto-configuration to configure Jackson {@link ObjectMapper} bean, registering serializers and
- * deserializers for {@link PropertyBox} type handling.
+ * Spring boot auto-configuration to configure Jackson {@link ObjectMapper} bean, registering
+ * serializers and deserializers for {@link PropertyBox} type handling.
  * 
  * @since 5.0.0
  */
-@Configuration
+@AutoConfiguration
 @ConditionalOnClass(ObjectMapper.class)
 @ConditionalOnBean(ObjectMapper.class)
 @AutoConfigureAfter(org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration.class)
@@ -49,8 +49,8 @@ public class JacksonAutoConfiguration {
 		/*
 		 * (non-Javadoc)
 		 * @see
-		 * org.springframework.beans.factory.config.BeanPostProcessor#postProcessBeforeInitialization(java.lang.Object,
-		 * java.lang.String)
+		 * org.springframework.beans.factory.config.BeanPostProcessor#postProcessBeforeInitialization(java.
+		 * lang.Object, java.lang.String)
 		 */
 		@Override
 		public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
@@ -60,8 +60,8 @@ public class JacksonAutoConfiguration {
 		/*
 		 * (non-Javadoc)
 		 * @see
-		 * org.springframework.beans.factory.config.BeanPostProcessor#postProcessAfterInitialization(java.lang.Object,
-		 * java.lang.String)
+		 * org.springframework.beans.factory.config.BeanPostProcessor#postProcessAfterInitialization(java.
+		 * lang.Object, java.lang.String)
 		 */
 		@Override
 		public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {

@@ -76,9 +76,9 @@ public class TestNestedPropertyBox {
 
 		assertNotNull(readBox);
 
-		assertEquals(new Long(1), readBox.getValue(KEY));
+		assertEquals(Long.valueOf(1), readBox.getValue(KEY));
 		assertEquals("Test", readBox.getValue(NAME));
-		assertEquals(new Double(7.1), readBox.getValue(NUMBER));
+		assertEquals(Double.valueOf(7.1), readBox.getValue(NUMBER));
 		assertEquals("Name is: Test", readBox.getValue(TEST));
 		assertEquals(Boolean.TRUE, readBox.getValue(BOOL));
 		assertEquals(DATE_VALUE, readBox.getValue(DATE));

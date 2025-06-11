@@ -17,8 +17,8 @@ package com.holonplatform.json.gson.jaxrs.test;
 
 import static com.holonplatform.json.gson.jaxrs.test.TestJerseyIntegration.SET;
 
-import javax.ws.rs.client.Client;
-import javax.ws.rs.core.Application;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.core.Application;
 
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.JerseyClientBuilder;

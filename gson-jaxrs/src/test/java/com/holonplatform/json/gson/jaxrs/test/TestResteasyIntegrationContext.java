@@ -18,7 +18,7 @@ package com.holonplatform.json.gson.jaxrs.test;
 import static com.holonplatform.json.gson.jaxrs.test.TestJerseyIntegration.DBL;
 import static com.holonplatform.json.gson.jaxrs.test.TestJerseyIntegration.NUM;
 import static com.holonplatform.json.gson.jaxrs.test.TestJerseyIntegration.SET;
-import static com.holonplatform.json.gson.jaxrs.test.TestJerseyIntegration.STR;
+import static com.holonplatform.json.gson.jaxrs.test.TestJerseyIntegration.STR1;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -26,14 +26,9 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.core.Application;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-
+import org.jboss.jandex.Main;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
+import org.jboss.resteasy.core.ResteasyDeploymentImpl;
 import org.jboss.resteasy.plugins.server.undertow.UndertowJaxrsServer;
 import org.jboss.resteasy.spi.ResteasyDeployment;
 import org.jboss.resteasy.test.TestPortProvider;
@@ -44,6 +39,14 @@ import org.junit.jupiter.api.Test;
 import com.holonplatform.core.property.PropertyBox;
 import com.holonplatform.json.gson.jaxrs.GsonFeature;
 import com.holonplatform.json.gson.jaxrs.test.TestJerseyIntegration.TestEndpoint;
+
+import io.undertow.servlet.api.DeploymentInfo;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.Entity;
+import jakarta.ws.rs.core.Application;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
 
 public class TestResteasyIntegrationContext {
 
@@ -67,11 +70,22 @@ public class TestResteasyIntegrationContext {
 		server.start();
 
 		// deploy
-		ResteasyDeployment deployment = new ResteasyDeployment();
+		ResteasyDeployment deployment = new ResteasyDeploymentImpl();
 		deployment.setApplication(new Config());
-		server.deploy(deployment, "/",
-				Collections.singletonMap("resteasy.resources", "com.holonplatform.json.gson.jaxrs.GsonFeature"),
-				Collections.emptyMap());
+
+		server.setContextParams(
+				Collections.singletonMap("resteasy.resources", "com.holonplatform.json.gson.jaxrs.GsonFeature"));
+
+		DeploymentInfo deploymentInfo = server.undertowDeployment(deployment);
+		deploymentInfo.setClassLoader(Main.class.getClassLoader());
+		deploymentInfo.setDeploymentName("Test");
+		deploymentInfo.setContextPath("/");
+
+		server.deploy(deploymentInfo);
+
+//		server.deploy(deployment, "/",
+//				Collections.singletonMap("resteasy.resources", "com.holonplatform.json.gson.jaxrs.GsonFeature"),
+//				Collections.emptyMap());
 	}
 
 	@AfterAll
@@ -94,13 +108,13 @@ public class TestResteasyIntegrationContext {
 				.resolveTemplate("num", 1).request().get(PropertyBox.class));
 		assertNotNull(box);
 		assertEquals(Integer.valueOf(1), box.getValue(NUM));
-		assertEquals("Str_1", box.getValue(STR));
+		assertEquals("Str_1", box.getValue(STR1));
 
 		box = SET.execute(
 				() -> client.target(TestPortProvider.generateURL("/test/data/2")).request().get(PropertyBox.class));
 		assertNotNull(box);
 		assertEquals(Integer.valueOf(2), box.getValue(NUM));
-		assertEquals("Str_2", box.getValue(STR));
+		assertEquals("Str_2", box.getValue(STR1));
 
 		PropertyBox boxToSrlz = PropertyBox.builder(SET).set(NUM, 100).set(DBL, 77.7).build();
 

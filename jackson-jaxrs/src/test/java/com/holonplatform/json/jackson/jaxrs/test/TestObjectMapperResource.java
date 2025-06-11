@@ -18,13 +18,13 @@ package com.holonplatform.json.jackson.jaxrs.test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.core.Application;
-import javax.ws.rs.core.MediaType;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.core.Application;
+import jakarta.ws.rs.core.MediaType;
 
 import org.glassfish.jersey.client.JerseyClientBuilder;
 import org.glassfish.jersey.logging.LoggingFeature;
@@ -49,10 +49,10 @@ import com.holonplatform.test.JerseyTest5;
 public class TestObjectMapperResource extends JerseyTest5 {
 
 	public static final Property<Integer> NUM = PathProperty.create("num", Integer.class);
-	public static final StringProperty STR = StringProperty.create("str");
+	public static final StringProperty STR1 = StringProperty.create("str");
 	public static final PathProperty<MyType> MYT = PathProperty.create("myt", MyType.class);
 
-	public static final PropertySet<?> SET = PropertySet.of(NUM, STR, MYT);
+	public static final PropertySet<?> SET = PropertySet.of(NUM, STR1, MYT);
 
 	@Path("test")
 	public static class TestEndpoint {
@@ -68,7 +68,7 @@ public class TestObjectMapperResource extends JerseyTest5 {
 		@Path("data/{num}")
 		@Produces(MediaType.APPLICATION_JSON)
 		public PropertyBox getData(@PathParam("num") int num) {
-			return PropertyBox.builder(SET).set(NUM, num).set(STR, "Str-" + num).set(MYT, new MyType(num)).build();
+			return PropertyBox.builder(SET).set(NUM, num).set(STR1, "Str-" + num).set(MYT, new MyType(num)).build();
 		}
 
 	}
@@ -111,7 +111,7 @@ public class TestObjectMapperResource extends JerseyTest5 {
 				.execute(() -> target("/test/data/{num}").resolveTemplate("num", 1).request().get(PropertyBox.class));
 		assertNotNull(box);
 		assertEquals(Integer.valueOf(1), box.getValue(NUM));
-		assertEquals("Str-1", box.getValue(STR));
+		assertEquals("Str-1", box.getValue(STR1));
 		assertNotNull(box.getValue(MYT));
 		assertEquals(1, box.getValue(MYT).getValue());
 	}

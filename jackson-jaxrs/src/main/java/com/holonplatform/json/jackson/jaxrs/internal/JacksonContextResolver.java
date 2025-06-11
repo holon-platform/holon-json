@@ -15,9 +15,9 @@
  */
 package com.holonplatform.json.jackson.jaxrs.internal;
 
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.ext.ContextResolver;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.ext.ContextResolver;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -58,7 +58,7 @@ public class JacksonContextResolver implements ContextResolver<ObjectMapper> {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see javax.ws.rs.ext.ContextResolver#getContext(java.lang.Class)
+	 * @see jakarta.ws.rs.ext.ContextResolver#getContext(java.lang.Class)
 	 */
 	@Override
 	public ObjectMapper getContext(Class<?> type) {
